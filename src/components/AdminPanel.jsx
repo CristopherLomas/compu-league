@@ -342,55 +342,56 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
     <div className={isStandalone ? "flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6 overflow-y-auto" : "flex-1 overflow-y-auto p-4 sm:p-6 space-y-6"}>
             
             {/* Quick Metrics Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-4 rounded-none bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-none bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
-                  <Users className="w-5 h-5" />
+            {/* Quick Metrics Bar */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 block font-medium">Inscritos Totales</span>
-                  <strong className="text-xl font-mono text-white">{registrations.length}</strong>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-none bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-none bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-                  <AlertCircle className="w-5 h-5" />
-                </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 block font-medium">Por Validar</span>
-                  <strong className="text-xl font-mono text-amber-400">{totalPending}</strong>
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Inscritos Totales</span>
+                  <strong className="text-lg sm:text-xl font-mono text-white font-bold block">{registrations.length}</strong>
                 </div>
               </div>
 
-              <div className="p-4 rounded-none bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-none bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-5 h-5" />
+              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 block font-medium">Validados / Pagados</span>
-                  <strong className="text-xl font-mono text-emerald-400">{totalApproved}</strong>
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Por Validar</span>
+                  <strong className="text-lg sm:text-xl font-mono text-amber-400 font-bold block">{totalPending}</strong>
                 </div>
               </div>
 
-              <div className="p-4 rounded-none bg-slate-900/80 border border-slate-800 flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-none bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0">
-                  <DollarSign className="w-5 h-5" />
+              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <span className="text-[11px] text-slate-400 block font-medium">Recaudación Validada</span>
-                  <strong className="text-xl font-mono text-yellow-400">${totalRevenue.toFixed(2)} USD</strong>
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Validados / Pagados</span>
+                  <strong className="text-lg sm:text-xl font-mono text-emerald-400 font-bold block">{totalApproved}</strong>
+                </div>
+              </div>
+
+              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0">
+                  <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Recaudación Validada</span>
+                  <strong className="text-base sm:text-xl font-mono text-yellow-400 font-bold block">${totalRevenue.toFixed(2)} USD</strong>
                 </div>
               </div>
             </div>
 
             {/* Navigation Tabs within Admin */}
-            <div className="flex overflow-x-auto gap-2 pb-2 border-b border-slate-800">
+            <div className="flex overflow-x-auto gap-2 pb-2 border-b border-slate-800 font-cyber">
               {[
                 { id: 'registrations', label: `Inscripciones (${registrations.length})`, icon: Users },
-                { id: 'free_agents', label: `Inscripciones Individuales (${freeAgentsList.length})`, icon: Users },
-                { id: 'brackets', label: 'Gestor de Brackets & Marcadores', icon: Trophy },
-                { id: 'supabase', label: 'Conexión Supabase (Nube)', icon: Database },
+                { id: 'free_agents', label: `Individuales (${freeAgentsList.length})`, icon: Users },
+                { id: 'brackets', label: 'Gestor de Brackets', icon: Trophy },
+                { id: 'supabase', label: 'Conexión Supabase', icon: Database },
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeAdminTab === tab.id;
@@ -398,13 +399,13 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                   <button
                     key={tab.id}
                     onClick={() => setActiveAdminTab(tab.id)}
-                    className={`px-4 py-2.5 rounded-none font-bold text-xs sm:text-sm whitespace-nowrap transition flex items-center gap-2 ${
+                    className={`px-3.5 sm:px-4 py-2 sm:py-2.5 font-bold text-xs sm:text-sm whitespace-nowrap transition flex items-center gap-2 cursor-pointer ${
                       isActive
                         ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                        : 'bg-slate-900/60 text-slate-400 hover:text-white'
+                        : 'bg-slate-900/80 text-slate-400 hover:text-white'
                     }`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-4 h-4 shrink-0" />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -418,57 +419,226 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
               <div className="space-y-4">
                 
                 {/* Search & Filter Toolbar */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-none border border-slate-800">
-                  <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-slate-900/80 p-3 border border-slate-800 font-cyber">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1">
                     {/* Search */}
-                    <div className="relative">
+                    <div className="relative flex-1">
                       <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
                         type="text"
-                        placeholder="Buscar por nombre, nick, equipo o cel..."
+                        placeholder="Buscar por nombre, ID, equipo o cel..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-9 pr-3 py-1.5 rounded-none bg-slate-950 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 w-56 sm:w-64"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-700 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 font-sans"
                       />
                     </div>
 
-                    {/* Filter Game */}
-                    <select
-                      value={filterGame}
-                      onChange={(e) => setFilterGame(e.target.value)}
-                      className="px-3 py-1.5 rounded-none bg-slate-950 border border-slate-700 text-xs text-slate-300 focus:outline-none"
-                    >
-                      <option value="all">Todos los Juegos</option>
-                      {GAMES.map(g => (
-                        <option key={g.id} value={g.id}>{g.name}</option>
-                      ))}
-                    </select>
+                    {/* Filter Game & Status in 2 columns on mobile */}
+                    <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
+                      <select
+                        value={filterGame}
+                        onChange={(e) => setFilterGame(e.target.value)}
+                        className="w-full sm:w-auto px-3 py-2 bg-slate-950 border border-slate-700 text-xs sm:text-sm text-slate-200 focus:outline-none font-sans"
+                      >
+                        <option value="all">Todos los Juegos</option>
+                        {GAMES.map(g => (
+                          <option key={g.id} value={g.id}>{g.name}</option>
+                        ))}
+                      </select>
 
-                    {/* Filter Status */}
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                      className="px-3 py-1.5 rounded-none bg-slate-950 border border-slate-700 text-xs text-slate-300 focus:outline-none"
-                    >
-                      <option value="all">Todos los Estados</option>
-                      <option value="pending">Pendientes de Pago</option>
-                      <option value="approved">Aprobados / Validados</option>
-                      <option value="rejected">Rechazados</option>
-                    </select>
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="w-full sm:w-auto px-3 py-2 bg-slate-950 border border-slate-700 text-xs sm:text-sm text-slate-200 focus:outline-none font-sans"
+                      >
+                        <option value="all">Todos los Estados</option>
+                        <option value="pending">Pendientes de Pago</option>
+                        <option value="approved">Aprobados / Validados</option>
+                        <option value="rejected">Rechazados</option>
+                      </select>
+                    </div>
                   </div>
 
                   {/* Super Button: Copy WhatsApp Numbers */}
                   <button
+                    type="button"
                     onClick={handleCopyAllPhones}
-                    className="px-4 py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition"
+                    className="w-full lg:w-auto px-4 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
                   >
                     {copiedPhones ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                     <span>{copiedPhones ? '¡Números Copiados!' : 'Copiar WhatsApps para Grupos'}</span>
                   </button>
                 </div>
 
-                {/* Table of Registrations */}
-                <div className="rounded-none bg-slate-900/60 border border-slate-800 overflow-hidden">
+                {/* 1. VISTA MÓVIL EN TARJETAS (Visible solo en smartphones/pantallas pequeñas < md) */}
+                <div className="block md:hidden space-y-3.5 font-sans">
+                  {filteredRegs.length === 0 ? (
+                    <div className="py-8 px-4 text-center text-slate-400 bg-slate-900/60 border border-slate-800 text-xs">
+                      No hay inscripciones registradas que coincidan con los filtros.
+                    </div>
+                  ) : (
+                    filteredRegs.map((reg) => {
+                      const amount = (parseFloat(reg.amount_due) || 1).toFixed(2);
+                      const hasReceipt = Boolean(reg.receipt_url);
+                      const isApproved = reg.status === 'approved';
+                      const isRejected = reg.status === 'rejected';
+
+                      return (
+                        <div
+                          key={reg.id}
+                          className="bg-slate-900/90 border border-slate-800 p-3.5 space-y-3 shadow-lg"
+                        >
+                          {/* Cabecera de la Tarjeta: Juego, Modalidad y Estado */}
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-black text-xs uppercase tracking-wide text-white">
+                                  {reg.game.replace('_', ' ')}
+                                </span>
+                                <span className="text-[10px] px-1.5 py-0.5 bg-cyan-950/80 border border-cyan-500/30 text-cyan-400 font-mono font-semibold uppercase">
+                                  {reg.modality}
+                                </span>
+                              </div>
+                              <h4 className="text-sm font-bold text-slate-100 mt-1">
+                                {reg.team_name || 'Inscripción Individual'}
+                              </h4>
+                              {reg.is_free_agent && (
+                                <span className="text-[10px] px-1.5 py-0.5 bg-amber-400/20 text-amber-300 font-bold inline-block mt-0.5">
+                                  Individual (Sin Equipo)
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="shrink-0 text-right">
+                              <span
+                                className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                                  isApproved
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                    : isRejected
+                                    ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                    : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse'
+                                }`}
+                              >
+                                {isApproved ? '✓ Validado' : isRejected ? '✗ Rechazado' : '⏳ Pendiente'}
+                              </span>
+                              <div className="text-xs font-mono font-bold text-amber-400 mt-1">
+                                ${amount} USD
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Datos del Capitán / Contacto */}
+                          <div className="bg-slate-950/80 p-2.5 border border-slate-800/80 space-y-1.5 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-slate-400 uppercase font-mono">Capitán / Jugador:</span>
+                              <span className="text-[10px] text-cyan-400 font-mono font-bold">
+                                ID: {reg.captain_game_id}
+                              </span>
+                            </div>
+                            <div className="font-semibold text-white truncate">
+                              {reg.captain_name}
+                            </div>
+                            {reg.captain_whatsapp && (
+                              <div className="pt-1 flex items-center justify-between">
+                                <span className="text-[10px] text-slate-400">WhatsApp:</span>
+                                <a
+                                  href={`https://wa.me/${reg.captain_whatsapp.replace(/[^0-9]/g, '')}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold transition"
+                                >
+                                  <Phone className="w-3 h-3 text-emerald-400" />
+                                  <span>{reg.captain_whatsapp}</span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Integrantes del Equipo con Gamer IDs */}
+                          {Array.isArray(reg.members) && reg.members.length > 0 && (
+                            <div className="bg-slate-950/60 p-2.5 border border-slate-800/80 space-y-1.5">
+                              <div className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+                                <span>Integrantes del Equipo ({reg.members.length}):</span>
+                              </div>
+                              <div className="space-y-1">
+                                {reg.members.map((m, idx) => {
+                                  const memberId = m.game_id || m.gameId || '';
+                                  const isSub = Boolean(m.isSubstitute || m.is_substitute);
+                                  return (
+                                    <div
+                                      key={idx}
+                                      className="flex items-center justify-between text-xs bg-slate-900/60 px-2 py-1 border border-slate-800/60"
+                                    >
+                                      <span className="text-slate-300 truncate mr-2 font-medium">
+                                        {idx + 2}P. {m.name} {isSub && <span className="text-amber-400 text-[10px]">(Suplente)</span>}
+                                      </span>
+                                      {memberId ? (
+                                        <span className="text-[#00F0FF] font-mono font-bold text-[11px] shrink-0 bg-cyan-950/60 px-1.5 py-0.5 border border-cyan-500/30">
+                                          ID: {memberId}
+                                        </span>
+                                      ) : (
+                                        <span className="text-slate-500 text-[10px] italic">Sin ID</span>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Botón para Ver Comprobante */}
+                          {hasReceipt ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelectedReceipt(reg.receipt_url)}
+                              className="w-full py-2 bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                            >
+                              <Eye className="w-4 h-4 text-cyan-400" />
+                              <span>Ver Comprobante de Pago</span>
+                            </button>
+                          ) : (
+                            <div className="text-center py-2 text-slate-500 text-xs italic bg-slate-950/40 border border-dashed border-slate-800">
+                              Sin comprobante de transferencia subido
+                            </div>
+                          )}
+
+                          {/* Acciones de Validación para Staff */}
+                          <div className="flex items-center gap-2 pt-1 border-t border-slate-800/80">
+                            {reg.status !== 'approved' && (
+                              <button
+                                type="button"
+                                onClick={() => handleStatusChange(reg.id, 'approved')}
+                                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
+                              >
+                                <CheckCircle className="w-4 h-4" />
+                                <span>Aprobar Pago</span>
+                              </button>
+                            )}
+                            {reg.status !== 'rejected' && (
+                              <button
+                                type="button"
+                                onClick={() => handleStatusChange(reg.id, 'rejected')}
+                                className="flex-1 py-2.5 bg-rose-600/90 hover:bg-rose-600 active:bg-rose-700 text-white font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
+                              >
+                                <XCircle className="w-4 h-4" />
+                                <span>Rechazar</span>
+                              </button>
+                            )}
+                            {reg.status === 'approved' && (
+                              <div className="flex-1 py-2 bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-xs font-bold text-center flex items-center justify-center gap-1.5">
+                                <CheckCircle className="w-4 h-4" />
+                                <span>Inscripción Validada</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+
+                {/* 2. VISTA DE TABLA PARA ESCRITORIO (Visible en pantallas medianas y grandes >= md) */}
+                <div className="hidden md:block rounded-none bg-slate-900/60 border border-slate-800 overflow-hidden font-sans">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
                       <thead className="bg-slate-950/80 text-slate-400 uppercase font-mono text-[10px] border-b border-slate-800">
@@ -554,7 +724,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                                 {reg.receipt_url ? (
                                   <button
                                     onClick={() => setSelectedReceipt(reg.receipt_url)}
-                                    className="px-2.5 py-1 rounded-none bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-semibold text-[11px] flex items-center gap-1 mx-auto transition"
+                                    className="px-2.5 py-1 rounded-none bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 font-semibold text-[11px] flex items-center gap-1 mx-auto transition cursor-pointer"
                                   >
                                     <Eye className="w-3 h-3" />
                                     Ver Captura
@@ -580,7 +750,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                                     <button
                                       onClick={() => handleStatusChange(reg.id, 'approved')}
                                       title="Validar y Aprobar Pago"
-                                      className="p-1.5 rounded-none bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 transition"
+                                      className="p-1.5 rounded-none bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 transition cursor-pointer"
                                     >
                                       <CheckCircle className="w-4 h-4" />
                                     </button>
@@ -589,7 +759,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                                     <button
                                       onClick={() => handleStatusChange(reg.id, 'rejected')}
                                       title="Rechazar Comprobante"
-                                      className="p-1.5 rounded-none bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 transition"
+                                      className="p-1.5 rounded-none bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 transition cursor-pointer"
                                     >
                                       <XCircle className="w-4 h-4" />
                                     </button>
@@ -893,28 +1063,39 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   );
 
   const receiptModal = selectedReceipt && (
-    <div className="fixed inset-0 z-60 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
-      <div className="relative max-w-lg w-full bg-slate-900 border border-cyan-500/40 rounded-none p-4 shadow-2xl">
-        <button
-          onClick={() => setSelectedReceipt(null)}
-          className="absolute top-4 right-4 p-2 rounded-none bg-slate-800 text-white hover:bg-slate-700 cursor-pointer"
-        >
-          <X className="w-5 h-5" />
-        </button>
-        <h4 className="text-sm font-bold text-white mb-3">
-          Comprobante de Transferencia Bancaria:
-        </h4>
-        <div className="max-h-[75vh] overflow-auto rounded-none border border-slate-800 flex items-center justify-center bg-black/50 p-2">
+    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4">
+      <div className="relative max-w-lg w-full bg-slate-900 border border-cyan-500/40 rounded-none p-4 shadow-2xl flex flex-col max-h-[92vh] font-sans">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+          <h4 className="text-sm font-bold text-white flex items-center gap-2">
+            <Eye className="w-4 h-4 text-cyan-400" />
+            Comprobante de Transferencia Bancaria
+          </h4>
+          <button
+            onClick={() => setSelectedReceipt(null)}
+            className="p-1.5 rounded-none bg-slate-800 text-white hover:bg-slate-700 cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-auto rounded-none border border-slate-800 flex items-center justify-center bg-black/60 p-2 my-3 min-h-[220px]">
           <img
             src={selectedReceipt}
             alt="Comprobante en detalle"
-            className="max-w-full h-auto object-contain rounded-none"
+            className="max-w-full max-h-[65vh] object-contain rounded-none"
           />
         </div>
-        <div className="mt-4 flex justify-end">
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800 shrink-0">
+          <a
+            href={selectedReceipt}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-1.5 bg-cyan-950 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-900 transition flex items-center gap-1"
+          >
+            Abrir original ↗
+          </a>
           <button
             onClick={() => setSelectedReceipt(null)}
-            className="px-4 py-2 rounded-none bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white cursor-pointer"
+            className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white cursor-pointer"
           >
             Cerrar Visor
           </button>
@@ -925,7 +1106,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
 
   if (isStandalone) {
     return (
-      <div className="min-h-screen bg-[#0A0E1A] text-slate-100 flex flex-col font-['Press_Start_2P',monospace] select-none">
+      <div className="min-h-screen bg-[#0A0E1A] text-slate-100 flex flex-col font-sans select-none">
         {headerBar}
         {!isAuthenticated ? loginScreen : dashboardContent}
         {receiptModal}
@@ -934,8 +1115,8 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-6xl bg-[#1a2742] border-4 border-[#364e78] shadow-2xl overflow-hidden my-6 max-h-[92vh] flex flex-col font-['Press_Start_2P',monospace] select-none text-slate-100">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200 font-sans">
+      <div className="relative w-full max-w-6xl bg-[#1a2742] border-4 border-[#364e78] shadow-2xl overflow-hidden my-6 max-h-[92vh] flex flex-col select-none text-slate-100 font-sans">
         {headerBar}
         {!isAuthenticated ? loginScreen : dashboardContent}
       </div>
