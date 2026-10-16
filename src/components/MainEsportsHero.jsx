@@ -144,9 +144,9 @@ export default function MainEsportsHero({
               El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
             </p>
 
-            {/* Neo-Brutalist Prize Box (Centrado, compacto y equilibrado) */}
-            <div className="w-full bg-[#0D121D] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-[#FFE600] tracking-wider uppercase leading-none drop-shadow-[2px_2px_0px_#000] whitespace-nowrap">
+            {/* Neo-Brutalist Arcade Neon Prize Box (Prende y apaga con estilo retro arcade) */}
+            <div className="w-full bg-[#0D121D] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2 animate-arcade-neon-box">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-wider uppercase leading-none whitespace-nowrap animate-arcade-neon-title">
                 PREMIOS
               </div>
 

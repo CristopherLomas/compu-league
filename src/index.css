@@ -434,3 +434,86 @@
   animation: arcade-blink 0.9s infinite steps(1);
 }
 
+/* ======================================================== */
+/* ARCADE NEON SIGN "PREMIOS" ON/OFF ANIMATION              */
+/* ======================================================== */
+@keyframes arcade-neon-box {
+  0%, 54% {
+    /* ON: Neon Yellow lit state with brutal yellow shadow + ambient glow */
+    border-color: #FFE600;
+    box-shadow: 6px 6px 0px #FFE600, 0 0 24px rgba(255, 230, 0, 0.4);
+    background-color: #0D1424;
+  }
+  55%, 57% {
+    /* Micro neon flicker */
+    border-color: rgba(255, 230, 0, 0.4);
+    box-shadow: 6px 6px 0px #000000;
+    background-color: #080C14;
+  }
+  58%, 59% {
+    /* Quick pulse before shutting off */
+    border-color: #FFE600;
+    box-shadow: 6px 6px 0px #FFE600, 0 0 14px rgba(255, 230, 0, 0.25);
+    background-color: #0D1424;
+  }
+  60%, 94% {
+    /* OFF: Unlit arcade state with hard brutal black shadow */
+    border-color: rgba(255, 230, 0, 0.35);
+    box-shadow: 6px 6px 0px #000000;
+    background-color: #080C14;
+  }
+  95%, 97% {
+    /* Ignition strike / power surge */
+    border-color: #FFFFFF;
+    box-shadow: 6px 6px 0px #FFFFFF, 0 0 30px rgba(255, 255, 255, 0.6);
+    background-color: #121A2E;
+  }
+  98%, 100% {
+    /* Full ON */
+    border-color: #FFE600;
+    box-shadow: 6px 6px 0px #FFE600, 0 0 24px rgba(255, 230, 0, 0.4);
+    background-color: #0D1424;
+  }
+}
+
+@keyframes arcade-neon-title {
+  0%, 54% {
+    /* ON: Glowing electric arcade yellow */
+    color: #FFE600;
+    text-shadow: 0 0 12px rgba(255, 230, 0, 0.95), 0 0 24px rgba(255, 230, 0, 0.5), 3px 3px 0px #000000;
+  }
+  55%, 57% {
+    /* Micro neon flicker */
+    color: #9E8715;
+    text-shadow: 2px 2px 0px #000000;
+  }
+  58%, 59% {
+    color: #FFE600;
+    text-shadow: 0 0 10px rgba(255, 230, 0, 0.7), 3px 3px 0px #000000;
+  }
+  60%, 94% {
+    /* OFF: Unlit crisp white letters with brutal black shadow */
+    color: #FFFFFF;
+    text-shadow: 3px 3px 0px #000000;
+  }
+  95%, 97% {
+    /* Ignition strike / flash */
+    color: #FFFFFF;
+    text-shadow: 0 0 25px #FFFFFF, 3px 3px 0px #000000;
+  }
+  98%, 100% {
+    /* Full ON */
+    color: #FFE600;
+    text-shadow: 0 0 12px rgba(255, 230, 0, 0.95), 0 0 24px rgba(255, 230, 0, 0.5), 3px 3px 0px #000000;
+  }
+}
+
+.animate-arcade-neon-box {
+  animation: arcade-neon-box 2.2s infinite ease-in-out;
+}
+
+.animate-arcade-neon-title {
+  animation: arcade-neon-title 2.2s infinite ease-in-out;
+}
+
+
