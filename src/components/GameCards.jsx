@@ -181,7 +181,6 @@ export default function GameCards({ onSelectGame }) {
         {/* ── 4 Arcade Slots Grid (Cartuchos de Arcade) ───────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {ARCADE_GAMES.map((game) => {
-            const PlatformIcon = game.platformIcon;
             const isHovered = activeSlot === game.id;
 
             return (
@@ -237,14 +236,6 @@ export default function GameCards({ onSelectGame }) {
                         <span className="font-pixel text-[9px] text-[#FFE600] block mt-0.5">
                           {game.players}
                         </span>
-                      </div>
-                    </div>
-
-                    <div className="bg-black/90 border border-white/20 px-2 py-1 font-pixel text-[9px] text-right">
-                      <div className="text-slate-400 text-[8px]">PLATAFORMA</div>
-                      <div className="text-white flex items-center gap-1 justify-end">
-                        <PlatformIcon className="w-3 h-3 text-[#00F0FF]" />
-                        <span className="text-[8px]">{game.platform}</span>
                       </div>
                     </div>
                   </div>
