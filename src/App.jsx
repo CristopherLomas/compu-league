@@ -42,10 +42,10 @@ function App() {
   const initialIsAdmin = (() => {
     try {
       const path = window.location.pathname.toLowerCase();
-      if (path === '/admin' || path.startsWith('/admin/')) return true;
+      if (path === '/admin' || path.startsWith('/admin/') || path.includes('admin')) return true;
       const params = new URLSearchParams(window.location.search);
       if (params.get('page') === 'admin' || params.has('admin')) return true;
-      if (window.location.hash === '#/admin' || window.location.hash === '#admin') return true;
+      if (window.location.hash.toLowerCase().includes('admin')) return true;
       return false;
     } catch {
       return false;
@@ -142,7 +142,7 @@ function App() {
     const handlePopState = () => {
       try {
         const path = window.location.pathname.toLowerCase();
-        if (path === '/admin' || path.startsWith('/admin/')) {
+        if (path === '/admin' || path.startsWith('/admin/') || path.includes('admin')) {
           setCurrentView('admin');
           return;
         }
