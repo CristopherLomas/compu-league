@@ -196,9 +196,7 @@ export default function GameCards({ onSelectGame }) {
                     <div className="flex items-center gap-3">
                       {/* Real Game Logo */}
                       <div 
-                        className={`h-12 sm:h-14 bg-black border-2 shrink-0 flex items-center justify-center shadow-brutal-black p-1.5 ${
-                          game.id === 'free_fire' ? 'w-16 sm:w-20 px-2' : 'w-12 sm:w-14'
-                        }`}
+                        className="h-12 sm:h-14 w-12 sm:w-14 bg-black border-2 shrink-0 flex items-center justify-center shadow-brutal-black p-1"
                         style={{ borderColor: game.accentColor }}
                       >
                         <GameLogo gameId={game.id} color={game.accentColor} />

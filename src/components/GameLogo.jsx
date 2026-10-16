@@ -16,13 +16,13 @@ export const GameLogo = ({ gameId, color, className = "w-full h-full" }) => {
     );
   }
 
-  // 2. FREE FIRE - Official Garena Free Fire Logo with Flaming Dagger
+  // 2. FREE FIRE - Official Garena Free Fire App Icon / Logo
   if (gameId === 'free_fire') {
     return (
       <img
         src="/assets/free_fire_logo.png"
         alt="Logo oficial de Free Fire"
-        className={`${className} object-contain filter drop-shadow-[0_0_6px_rgba(255,230,0,0.6)]`}
+        className={`${className} object-cover rounded-[2px] filter drop-shadow-[0_0_6px_rgba(255,230,0,0.6)]`}
         loading="lazy"
       />
     );
