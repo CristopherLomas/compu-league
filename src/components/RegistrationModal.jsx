@@ -18,7 +18,7 @@ export default function RegistrationModal({
 }) {
   const [selectedGame, setSelectedGame] = useState(preselectedGame || 'valorant');
   const [isFreeAgent, setIsFreeAgent] = useState(false);
-  const [paymentMode, setPaymentMode] = useState('now'); // 'now' | 'later'
+  const [paymentMode, setPaymentMode] = useState(null); // null | 'now' | 'later'
   const [copiedAccount, setCopiedAccount] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedMagicLink, setCopiedMagicLink] = useState(false);
@@ -52,6 +52,16 @@ export default function RegistrationModal({
       }));
     }
   }, [initialGamerTag]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setPaymentMode(null);
+      setErrorMessage('');
+      setReceiptPreview(null);
+      setReceiptFile(null);
+      setSuccessData(null);
+    }
+  }, [isOpen]);
 
   const [members, setMembers] = useState([
     { name: '', gameId: '', whatsapp: '', isSubstitute: false }
@@ -128,6 +138,11 @@ export default function RegistrationModal({
     setErrorMessage('');
 
     const targetMode = forcedMode || paymentMode;
+
+    if (!targetMode) {
+      setErrorMessage('Por favor selecciona si deseas PAGAR AHORA o PAGAR DESPUÉS para continuar.');
+      return;
+    }
 
     if (!captain.name.trim() || !captain.gameId.trim() || !captain.whatsapp.trim()) {
       setErrorMessage('Por favor completa todos los datos obligatorios del Capitán / Jugador principal.');
@@ -962,7 +977,7 @@ export default function RegistrationModal({
                       </>
                     )}
                   </button>
-                ) : (
+                ) : paymentMode === 'later' ? (
                   <button
                     type="submit"
                     disabled={submitting}
@@ -976,6 +991,14 @@ export default function RegistrationModal({
                         <span>[ PRE-REGISTRARSE // PAGAR DESPUES ]</span>
                       </>
                     )}
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="btn-arcade-press shadow-brutal-black w-full py-4 bg-[#141C2B] hover:bg-[#1E293B] text-slate-300 hover:text-white font-pixel text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-white/20"
+                  >
+                    <ArrowRight className="w-4 h-4 text-[#FFE600]" />
+                    <span>[ SELECCIONA: PAGAR AHORA O PAGAR DESPUES ]</span>
                   </button>
                 )}
               </div>
