@@ -1,33 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, Check, Monitor, Smartphone, Gamepad2, Coins } from 'lucide-react';
-
-// ─── Real Game Logos in SVG ───────────────────────────────────────────────────
-const GameLogo = ({ gameId, color }) => {
-  if (gameId === 'valorant') return (
-    <svg viewBox="0 0 60 60" fill="none" className="w-full h-full">
-      <path d="M5 12 L30 48 L55 12" stroke={color} strokeWidth="6" strokeLinecap="square" fill="none"/>
-      <path d="M5 12 L30 32 L55 12" stroke="white" strokeWidth="2.5" strokeLinecap="square" fill="none" opacity="0.6"/>
-    </svg>
-  );
-  if (gameId === 'free_fire') return (
-    <svg viewBox="0 0 60 60" fill="none" className="w-full h-full">
-      <path d="M30 4 C30 4 17 20 21 32 C16 28 16 28 14 22 C8 33 13 46 26 52 C22 48 22 43 25 39 C26 44 32 48 34 52 C42 45 47 35 43 25 C47 30 48 36 47 41 C55 29 50 13 30 4Z" fill={color}/>
-    </svg>
-  );
-  if (gameId === 'fortnite') return (
-    <svg viewBox="0 0 60 60" fill="none" className="w-full h-full">
-      <path d="M14 8 H46 V17 H34 V24 H44 V33 H34 V52 H24 V33 H14 V8Z" fill="white"/>
-      <path d="M24 17 H34 V24 H24 Z" fill={color}/>
-    </svg>
-  );
-  if (gameId === 'clash_royale') return (
-    <svg viewBox="0 0 60 60" fill="none" className="w-full h-full">
-      <path d="M30 5 L37 19 L53 22 L41 34 L44 50 L30 43 L16 50 L19 34 L7 22 L23 19 Z" fill={color} stroke="white" strokeWidth="1.5"/>
-      <circle cx="30" cy="30" r="7" fill="white" opacity="0.4"/>
-    </svg>
-  );
-  return null;
-};
+import { GameLogo } from './GameLogo';
 
 const ARCADE_GAMES = [
   {
@@ -223,7 +196,9 @@ export default function GameCards({ onSelectGame }) {
                     <div className="flex items-center gap-3">
                       {/* Real Game Logo */}
                       <div 
-                        className="w-12 h-12 bg-black border-2 p-1.5 shrink-0 flex items-center justify-center shadow-brutal-black"
+                        className={`h-12 sm:h-14 bg-black border-2 shrink-0 flex items-center justify-center shadow-brutal-black p-1.5 ${
+                          game.id === 'free_fire' ? 'w-16 sm:w-20 px-2' : 'w-12 sm:w-14'
+                        }`}
                         style={{ borderColor: game.accentColor }}
                       >
                         <GameLogo gameId={game.id} color={game.accentColor} />

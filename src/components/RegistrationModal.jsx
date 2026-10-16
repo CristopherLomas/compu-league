@@ -7,6 +7,7 @@ import {
 import confetti from 'canvas-confetti';
 import { BANK_INFO, GAMES, CONTACT_INFO } from '../data/tournamentData';
 import { saveRegistration, generateUUID } from '../lib/storage';
+import { GameLogo } from './GameLogo';
 
 export default function RegistrationModal({ 
   isOpen, 
@@ -509,18 +510,23 @@ export default function RegistrationModal({
                         key={game.id}
                         type="button"
                         onClick={() => setSelectedGame(game.id)}
-                        className={`btn-arcade-press p-3 border-2 border-black text-left transition relative cursor-pointer ${
+                        className={`btn-arcade-press p-3 border-2 border-black text-left transition relative cursor-pointer flex flex-col justify-between ${
                           isSelected
                             ? 'bg-[#FFE600] text-black shadow-brutal-yellow font-black'
                             : 'bg-black text-slate-300 hover:text-white shadow-brutal-black'
                         }`}
                       >
-                        <h4 className="font-display font-black text-sm uppercase leading-tight">
-                          {game.name}
-                        </h4>
-                        <span className={`font-pixel text-[8px] block mt-1 ${isSelected ? 'text-black' : 'text-[#FFE600]'}`}>
-                          {game.badge}
-                        </span>
+                        <div className="w-6 h-6 mb-2 flex items-center justify-center">
+                          <GameLogo gameId={game.id} color={isSelected ? '#000000' : game.color} />
+                        </div>
+                        <div>
+                          <h4 className="font-display font-black text-sm uppercase leading-tight">
+                            {game.name}
+                          </h4>
+                          <span className={`font-pixel text-[8px] block mt-1 ${isSelected ? 'text-black' : 'text-[#FFE600]'}`}>
+                            {game.badge}
+                          </span>
+                        </div>
                       </button>
                     );
                   })}

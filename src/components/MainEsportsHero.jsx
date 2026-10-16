@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Coins, ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert } from 'lucide-react';
 import { CONTACT_INFO } from '../data/tournamentData';
+import { GameLogo } from './GameLogo';
 
 // ─── Countdown calculation ───────────────────────────────────────────────────
 function calcTimeLeft() {
@@ -325,8 +326,11 @@ export default function MainEsportsHero({
                     className={`btn-arcade-press bg-[#0A0E17] hover:bg-[#141C2E] ${slot.border} border-2 px-3 py-2.5 ${slot.shadow} flex items-center justify-between font-pixel text-[9px] sm:text-[10px] cursor-pointer hover:border-white active:translate-x-1 active:translate-y-1 transition-all group`}
                     title={`Ver reglas y formato de ${slot.name}`}
                   >
-                    <span className="text-white font-bold tracking-wider uppercase truncate group-hover:text-[#FFE600] transition-colors">
-                      {slot.name}
+                    <span className="text-white font-bold tracking-wider uppercase truncate group-hover:text-[#FFE600] transition-colors flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 shrink-0 inline-flex items-center justify-center">
+                        <GameLogo gameId={slot.id} color={slot.color} />
+                      </span>
+                      <span className="truncate">{slot.name}</span>
                     </span>
                     <span style={{ color: slot.color }} className="font-pixel text-[11px] shrink-0 ml-1.5 group-hover:translate-x-0.5 transition-transform">
                       ▸

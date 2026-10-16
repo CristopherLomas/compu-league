@@ -4,6 +4,7 @@ import {
   Search, Check, Clock, Sparkles, Terminal, ArrowRight, Zap
 } from 'lucide-react';
 import { getRegistrations } from '../lib/storage';
+import { GameLogo } from './GameLogo';
 
 export default function ParticipantsSection({ onOpenRegister }) {
   const [registrations, setRegistrations] = useState([]);
@@ -226,7 +227,13 @@ export default function ParticipantsSection({ onOpenRegister }) {
                       : 'bg-black text-slate-300 hover:text-white shadow-brutal-black'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: isSelected ? '#000' : tab.color }} />
+                  {tab.id !== 'all' ? (
+                    <div className="w-3.5 h-3.5 shrink-0 flex items-center justify-center">
+                      <GameLogo gameId={tab.id} color={isSelected ? '#000000' : tab.color} />
+                    </div>
+                  ) : (
+                    <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: isSelected ? '#000' : tab.color }} />
+                  )}
                   <span>{tab.label}</span>
                 </button>
               );
@@ -336,7 +343,9 @@ export default function ParticipantsSection({ onOpenRegister }) {
                           style={{ backgroundColor: '#000' }}
                         >
                           <div className="flex items-center gap-1.5" style={{ color: badgeInfo.color }}>
-                            <GameIcon className="w-3.5 h-3.5 shrink-0" />
+                            <div className="w-3.5 h-3.5 shrink-0 flex items-center justify-center">
+                              <GameLogo gameId={item.game} color={badgeInfo.color} />
+                            </div>
                             <span className="truncate">{badgeInfo.label}</span>
                           </div>
 
@@ -456,7 +465,9 @@ export default function ParticipantsSection({ onOpenRegister }) {
                         {/* Header Bar */}
                         <div className="p-2 px-3 bg-black border-b-2 border-black flex items-center justify-between font-pixel text-[8px]">
                           <div className="flex items-center gap-1.5" style={{ color: badgeInfo.color }}>
-                            <GameIcon className="w-3 h-3 shrink-0" />
+                            <div className="w-3.5 h-3.5 shrink-0 flex items-center justify-center">
+                              <GameLogo gameId={item.game} color={badgeInfo.color} />
+                            </div>
                             <span className="truncate">{badgeInfo.label}</span>
                           </div>
 

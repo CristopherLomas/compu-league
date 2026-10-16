@@ -8,6 +8,7 @@ import {
   DEMO_CLASH_MATCHES, 
   DEMO_BATTLE_ROYALE_STANDINGS 
 } from '../data/tournamentData';
+import { GameLogo } from './GameLogo';
 
 export default function LiveBrackets() {
   const [activeTab, setActiveTab] = useState('valorant');
@@ -102,7 +103,9 @@ export default function LiveBrackets() {
                     : 'bg-black text-slate-300 hover:text-white shadow-brutal-black'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: isActive ? '#000' : tab.color }} />
+                <div className="w-3.5 h-3.5 shrink-0 flex items-center justify-center">
+                  <GameLogo gameId={tab.id} color={isActive ? '#000000' : tab.color} />
+                </div>
                 <span>{tab.name}</span>
               </button>
             );
