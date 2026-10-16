@@ -598,7 +598,7 @@ export default function RegistrationModal({
                     placeholder="EJ. CYBERKNIGHTS, NULLPOINTERS, DRAGONS..."
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-black border-2 border-black text-xs text-[#00F0FF] placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-pixel uppercase shadow-brutal-black"
+                    className="w-full px-3.5 py-2.5 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#00F0FF] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-pixel uppercase shadow-brutal-black transition-colors"
                   />
                 </div>
               )}
@@ -612,38 +612,38 @@ export default function RegistrationModal({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="space-y-1">
-                    <span className="font-pixel text-[8px] text-slate-400 uppercase">NOMBRE COMPLETO *</span>
+                    <span className="font-pixel text-[8px] text-slate-300 uppercase">NOMBRE COMPLETO *</span>
                     <input
                       type="text"
                       required
                       placeholder="Ej. Carlos Mendoza"
                       value={captain.name}
                       onChange={(e) => setCaptain({ ...captain, name: e.target.value })}
-                      className="w-full px-3 py-2 bg-black border-2 border-black text-xs text-white placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-cyber shadow-brutal-black"
+                      className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-white placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber shadow-brutal-black transition-colors"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <span className="font-pixel text-[8px] text-slate-400 uppercase">ID EN JUEGO (NICK) *</span>
+                    <span className="font-pixel text-[8px] text-slate-300 uppercase">ID EN JUEGO (NICK) *</span>
                     <input
                       type="text"
                       required
                       placeholder="Ej. Shadow#LAN"
                       value={captain.gameId}
                       onChange={(e) => setCaptain({ ...captain, gameId: e.target.value })}
-                      className="w-full px-3 py-2 bg-black border-2 border-black text-xs text-[#00F0FF] placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-cyber shadow-brutal-black"
+                      className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#00F0FF] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber shadow-brutal-black transition-colors"
                     />
                   </div>
 
                   <div className="space-y-1">
-                    <span className="font-pixel text-[8px] text-slate-400 uppercase">WHATSAPP ACTIVO *</span>
+                    <span className="font-pixel text-[8px] text-slate-300 uppercase">WHATSAPP ACTIVO *</span>
                     <input
                       type="tel"
                       required
                       placeholder="Ej. 0987654321"
                       value={captain.whatsapp}
                       onChange={(e) => setCaptain({ ...captain, whatsapp: e.target.value })}
-                      className="w-full px-3 py-2 bg-black border-2 border-black text-xs text-[#FFE600] placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-mono shadow-brutal-black"
+                      className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#FFE600] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-mono shadow-brutal-black transition-colors"
                     />
                   </div>
                 </div>
@@ -664,14 +664,14 @@ export default function RegistrationModal({
 
                   <div className="space-y-2">
                     {Array.from({ length: selectedGame === 'valorant' ? 4 : selectedGame === 'free_fire' ? 3 : 1 }).map((_, idx) => (
-                      <div key={idx} className="p-3 bg-black border-2 border-black grid grid-cols-1 sm:grid-cols-3 gap-2 shadow-brutal-black">
+                      <div key={idx} className="p-3 bg-[#080D17] border-2 border-black grid grid-cols-1 sm:grid-cols-3 gap-2.5 shadow-brutal-black">
                         <input
                           type="text"
                           required
                           placeholder={`Jugador #${idx + 2} - Nombre`}
                           value={members[idx]?.name || ''}
                           onChange={(e) => handleMemberChange(idx, 'name', e.target.value)}
-                          className="px-3 py-2 bg-[#0C121D] border border-white/10 text-xs text-white placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-cyber"
+                          className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-white placeholder:text-slate-300 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-cyber transition-colors"
                         />
                         <input
                           type="text"
@@ -679,7 +679,7 @@ export default function RegistrationModal({
                           placeholder="ID de Juego / Nick"
                           value={members[idx]?.gameId || ''}
                           onChange={(e) => handleMemberChange(idx, 'gameId', e.target.value)}
-                          className="px-3 py-2 bg-[#0C121D] border border-white/10 text-xs text-[#00F0FF] placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-cyber"
+                          className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#00F0FF] placeholder:text-slate-300 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-cyber transition-colors"
                         />
                         <input
                           type="tel"
@@ -687,7 +687,7 @@ export default function RegistrationModal({
                           placeholder="WhatsApp (+593...)"
                           value={members[idx]?.whatsapp || ''}
                           onChange={(e) => handleMemberChange(idx, 'whatsapp', e.target.value)}
-                          className="px-3 py-2 bg-[#0C121D] border border-white/10 text-xs text-[#FFE600] placeholder:text-slate-600 focus:border-[#FFE600] focus:outline-none font-mono"
+                          className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#FFE600] placeholder:text-slate-300 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-mono transition-colors"
                         />
                       </div>
                     ))}
@@ -715,27 +715,27 @@ export default function RegistrationModal({
                                 [ QUITAR ]
                               </button>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                               <input
                                 type="text"
                                 placeholder="Nombre Suplente"
                                 value={members[4]?.name || ''}
                                 onChange={(e) => handleMemberChange(4, 'name', e.target.value)}
-                                className="px-3 py-2 bg-black border border-white/20 text-xs text-white placeholder:text-slate-600 focus:border-[#A855F7] focus:outline-none font-cyber"
+                                className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs text-white placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-cyber transition-colors"
                               />
                               <input
                                 type="text"
                                 placeholder="ID Juego Suplente"
                                 value={members[4]?.gameId || ''}
                                 onChange={(e) => handleMemberChange(4, 'gameId', e.target.value)}
-                                className="px-3 py-2 bg-black border border-white/20 text-xs text-[#A855F7] placeholder:text-slate-600 focus:border-[#A855F7] focus:outline-none font-cyber"
+                                className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs text-[#A855F7] placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-cyber transition-colors"
                               />
                               <input
                                 type="tel"
                                 placeholder="WhatsApp Suplente"
                                 value={members[4]?.whatsapp || ''}
                                 onChange={(e) => handleMemberChange(4, 'whatsapp', e.target.value)}
-                                className="px-3 py-2 bg-black border border-white/20 text-xs text-white placeholder:text-slate-600 focus:border-[#A855F7] focus:outline-none font-mono"
+                                className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs text-white placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-mono transition-colors"
                               />
                             </div>
                           </div>
