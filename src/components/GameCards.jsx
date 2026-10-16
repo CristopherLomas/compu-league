@@ -42,9 +42,8 @@ const ARCADE_GAMES = [
     fallbackImage: '/assets/valorant.jpg',
     imagePosition: 'object-center',
     coinPrice: '$5.00',
-    coinDetail: '$1.00 POR TITULAR • SUPLENTE GRATIS',
-    difficulty: '[█████████░] COMPETITIVO',
-    difficultyLevel: 'DIFICULTAD: ALTA',
+    coinDetail: '$1.00 POR TITULAR (5 JUGADORES)',
+    difficulty: 'COMPETITIVO',
     players: '5 TITULARES + 1 SUPLENTE',
     platform: 'PC EXCLUSIVO',
     platformIcon: Monitor,
@@ -59,23 +58,22 @@ const ARCADE_GAMES = [
     id: 'free_fire',
     slot: 'SLOT 02 // ESCUADRAS',
     name: 'FREE FIRE',
-    badge: 'PROMO 2X1 AUTO',
+    badge: 'ESCUADRAS / SOLO',
     accentColor: '#FFE600',
     bgBorder: 'border-[#FFE600]',
     shadowClass: 'shadow-brutal-yellow',
     image: '/assets/free_fire_lobby.jpg',
     fallbackImage: '/assets/free_fire.jpg',
     imagePosition: 'object-center',
-    coinPrice: '$4.00',
-    coinDetail: '¡INCLUYE TORNEO INDIVIDUAL GRATIS!',
-    difficulty: '[███████░░░] SURVIVAL',
-    difficultyLevel: 'DIFICULTAD: MEDIA',
-    players: '4 JUGADORES (ESCUADRA)',
+    coinPrice: '$4.00 / $1.00',
+    coinDetail: 'INDIVIDUAL: $1.00 • EQUIPO: $4.00',
+    difficulty: 'SURVIVAL',
+    players: '4 (ESCUADRA) O 1 (SOLO)',
     platform: 'MOVIL / SALAS PRIVADAS',
     platformIcon: Smartphone,
     buttonText: '[ INSCRIBIR ESCUADRA ]',
     rules: [
-      'Inscribir tu escuadra inscribe automáticamente a todos al torneo individual gratis.',
+      'Modalidades disponibles: Escuadras Battle Royale y Torneo Individual.',
       'Salas privadas Battle Royale coordinadas con árbitros oficiales del torneo.',
       'Puntaje acumulativo oficial por posición final y bajas confirmadas.',
     ],
@@ -93,8 +91,7 @@ const ARCADE_GAMES = [
     imagePosition: 'object-center',
     coinPrice: '$2.00',
     coinDetail: '$1.00 POR INTEGRANTE DEL DUO',
-    difficulty: '[████████░░] VELOCIDAD',
-    difficultyLevel: 'DIFICULTAD: ALTA',
+    difficulty: 'VELOCIDAD',
     players: '2 JUGADORES (DUO)',
     platform: 'PC / CONSOLA / MOVIL',
     platformIcon: Gamepad2,
@@ -118,8 +115,7 @@ const ARCADE_GAMES = [
     imagePosition: 'object-top',
     coinPrice: '$1.00',
     coinDetail: 'INSCRIPCION INDIVIDUAL DIRECTA',
-    difficulty: '[██████░░░░] ESTRATEGIA',
-    difficultyLevel: 'DIFICULTAD: TACTICA',
+    difficulty: 'ESTRATEGIA',
     players: '1 JUGADOR (SOLITARIO)',
     platform: 'MOVIL (ANDROID / IOS)',
     platformIcon: Smartphone,
@@ -261,32 +257,48 @@ export default function GameCards({ onSelectGame }) {
                   <div className="grid grid-cols-2 gap-2 bg-black border-2 border-white/10 p-3">
                     
                     {/* Coin Price */}
-                    <div>
-                      <div className="font-pixel text-[8px] text-slate-400 uppercase flex items-center gap-1">
-                        <Coins className="w-3 h-3 text-[#FFE600]" />
-                        <span>VALOR DE FICHA:</span>
+                    {game.id === 'free_fire' ? (
+                      <div>
+                        <div className="font-pixel text-[8px] text-slate-400 uppercase flex items-center gap-1">
+                          <Coins className="w-3 h-3 text-[#FFE600]" />
+                          <span>VALOR DE FICHA:</span>
+                        </div>
+                        <div className="space-y-1 mt-1 font-pixel text-[8px] sm:text-[9px]">
+                          <div className="flex items-center justify-between text-white pr-1">
+                            <span className="text-slate-400 text-[8px]">INDIVIDUAL:</span>
+                            <span className="text-[#FFE600] font-black text-xs sm:text-sm">$1.00 <span className="text-[8px] text-slate-300">USD</span></span>
+                          </div>
+                          <div className="flex items-center justify-between text-white pr-1 border-t border-white/10 pt-1">
+                            <span className="text-slate-400 text-[8px]">POR EQUIPO:</span>
+                            <span className="text-[#FFE600] font-black text-xs sm:text-sm">$4.00 <span className="text-[8px] text-slate-300">USD</span></span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="font-pixel text-lg sm:text-xl text-[#FFE600] mt-1 font-black">
-                        {game.coinPrice} <span className="text-[9px] text-slate-300">USD</span>
+                    ) : (
+                      <div>
+                        <div className="font-pixel text-[8px] text-slate-400 uppercase flex items-center gap-1">
+                          <Coins className="w-3 h-3 text-[#FFE600]" />
+                          <span>VALOR DE FICHA:</span>
+                        </div>
+                        <div className="font-pixel text-lg sm:text-xl text-[#FFE600] mt-1 font-black">
+                          {game.coinPrice} <span className="text-[9px] text-slate-300">USD</span>
+                        </div>
+                        <div className="font-cyber text-[10px] text-slate-400 truncate mt-0.5">
+                          {game.coinDetail}
+                        </div>
                       </div>
-                      <div className="font-cyber text-[10px] text-slate-400 truncate mt-0.5">
-                        {game.coinDetail}
-                      </div>
-                    </div>
+                    )}
 
-                    {/* Difficulty Meter */}
-                    <div className="border-l border-white/10 pl-3">
-                      <div className="font-pixel text-[8px] text-slate-400 uppercase">
+                    {/* Difficulty Meter: Solo Nivel de Reto sin barra ASCII ni DIFICULTAD: ALTA */}
+                    <div className="border-l border-white/10 pl-3 flex flex-col justify-center">
+                      <div className="font-pixel text-[8px] text-slate-400 uppercase tracking-wider">
                         NIVEL DE RETO:
                       </div>
                       <div 
-                        className="font-pixel text-xs sm:text-sm mt-1 font-black truncate"
+                        className="font-pixel text-sm sm:text-base lg:text-lg mt-1 font-black tracking-wide"
                         style={{ color: game.accentColor }}
                       >
                         {game.difficulty}
-                      </div>
-                      <div className="font-cyber text-[10px] text-slate-400 mt-0.5">
-                        {game.difficultyLevel}
                       </div>
                     </div>
 
