@@ -45,7 +45,7 @@ export default function Footer({ onOpenAdmin, onOpenRegister }) {
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed font-cyber">
-              El torneo oficial de videojuegos de la Carrera de Computación. Compite con tu equipo y participa por los premios en efectivo.
+              El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
             </p>
 
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#10B981] text-black border-2 border-black font-pixel text-[8px] font-black uppercase">
@@ -101,7 +101,7 @@ export default function Footer({ onOpenAdmin, onOpenRegister }) {
               <div className="p-3 bg-[#0B101A] border-2 border-[#FFE600] text-[#FFE600] shadow-brutal-black">
                 <div className="flex items-center gap-2 font-pixel text-[9px] font-black uppercase">
                   <span className="text-[#FFE600] text-xs font-pixel font-black">$</span>
-                  <span>PREMIOS EN EFECTIVO</span>
+                  <span>PREMIOS</span>
                 </div>
               </div>
             </div>

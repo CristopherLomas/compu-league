@@ -69,7 +69,7 @@ export default function MainEsportsHero({ playerName = '', onOpenRegister, onScr
           <span className="tracking-wider">★ 4, 5 Y 6 DE NOVIEMBRE ★</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FORTNITE DUOS</span>
-          <span className="bg-[#FF0055] text-white px-2 py-0.5 animate-arcade-blink">PREMIOS EN EFECTIVO</span>
+          <span className="bg-[#FF0055] text-white px-2 py-0.5 animate-arcade-blink">PREMIOS</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">CLASH ROYALE 1v1</span>
           <span className="tracking-wider">★ INSCRIPCION: $1 POR JUGADOR ★</span>
@@ -85,7 +85,7 @@ export default function MainEsportsHero({ playerName = '', onOpenRegister, onScr
           <span className="tracking-wider">★ 4, 5 Y 6 DE NOVIEMBRE ★</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FORTNITE DUOS</span>
-          <span className="bg-[#FF0055] text-white px-2 py-0.5 animate-arcade-blink">PREMIOS EN EFECTIVO</span>
+          <span className="bg-[#FF0055] text-white px-2 py-0.5 animate-arcade-blink">PREMIOS</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">CLASH ROYALE 1v1</span>
           <span className="tracking-wider">★ INSCRIPCION: $1 POR JUGADOR ★</span>
@@ -135,7 +135,7 @@ export default function MainEsportsHero({ playerName = '', onOpenRegister, onScr
 
             {/* Clean readable description in Chakra Petch (Floats cleanly over grid, no blockquote border) */}
             <p className="text-slate-300 font-cyber text-sm sm:text-base leading-relaxed max-w-xl">
-              El torneo oficial de videojuegos de la Carrera de Computación. Compite con tu equipo en tu juego favorito y participa por los premios en efectivo.
+              El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
             </p>
 
             {/* Neo-Brutalist Prize Box (Centrado, compacto y equilibrado) */}
@@ -145,12 +145,12 @@ export default function MainEsportsHero({ playerName = '', onOpenRegister, onScr
                 <span>POZO DEL TORNEO</span>
               </div>
 
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-white tracking-wide uppercase leading-none drop-shadow-[2px_2px_0px_#000] whitespace-nowrap">
-                PREMIOS EN EFECTIVO
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-white tracking-wider uppercase leading-none drop-shadow-[2px_2px_0px_#000] whitespace-nowrap">
+                PREMIOS
               </div>
 
               <p className="text-xs sm:text-sm text-slate-200 font-cyber leading-relaxed max-w-lg">
-                Pozo acumulado por inscripciones repartido entre los ganadores de cada videojuego.
+                Recompensas para los mejores equipos y jugadores.
               </p>
             </div>
 
