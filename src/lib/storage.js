@@ -50,6 +50,21 @@ export const getSupabaseClient = () => {
 
 export const sanitizeRegistrationRecord = (r) => {
   if (!r) return r;
+  const rawMembers = Array.isArray(r.members) ? r.members : [];
+  const normalizedMembers = rawMembers.map((m) => {
+    const idVal = String(m.game_id || m.gameId || m.nick || m.gamerTag || m.id_juego || '').trim();
+    const isSub = Boolean(m.is_substitute || m.isSubstitute);
+    return {
+      ...m,
+      name: m.name ? String(m.name).trim() : '',
+      game_id: idVal,
+      gameId: idVal,
+      whatsapp: m.whatsapp ? String(m.whatsapp).trim() : '',
+      is_substitute: isSub,
+      isSubstitute: isSub,
+    };
+  });
+
   if (r.game === 'clash_royale') {
     return {
       ...r,
@@ -64,6 +79,7 @@ export const sanitizeRegistrationRecord = (r) => {
   }
   return {
     ...r,
+    members: normalizedMembers,
     admin_notes: r.admin_notes ? r.admin_notes.replace(/agente libre/gi, 'individual') : r.admin_notes
   };
 };
@@ -451,7 +467,7 @@ export const getRegistrationById = async (id) => {
         .select('*')
         .eq('id', cleanId)
         .maybeSingle();
-      if (!error && data) return data;
+      if (!error && data) return sanitizeRegistrationRecord(data);
     } catch (e) {
       console.warn('Error al buscar registro en Supabase:', e);
     }
@@ -552,7 +568,7 @@ export const saveRegistration = async (registrationData) => {
         .from('registrations')
         .insert([dbPayload])
         .select();
-      if (!error && data && data[0]) return data[0];
+      if (!error && data && data[0]) return sanitizeRegistrationRecord(data[0]);
       if (error) {
         console.warn('⚠️ Error al insertar en Supabase:', error.message);
       }

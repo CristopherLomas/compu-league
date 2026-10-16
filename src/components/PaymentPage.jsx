@@ -316,6 +316,30 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
                     </p>
                   </div>
 
+                  {Array.isArray(registration.members) && registration.members.length > 0 && (
+                    <div className="pt-2 border-t border-white/10 space-y-1 max-w-md">
+                      <span className="font-pixel text-[8px] text-slate-400 uppercase block">COMPAÑEROS REGISTRADOS:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px]">
+                        {registration.members.map((m, idx) => {
+                          const idVal = m.game_id || m.gameId || '';
+                          const isSub = Boolean(m.is_substitute || m.isSubstitute);
+                          return (
+                            <div key={idx} className="flex items-center justify-between bg-black/60 px-2 py-0.5 border border-white/10 font-cyber">
+                              <span className="text-slate-300 truncate">
+                                {idx + 2}P. {m.name} {isSub ? '(Sub)' : ''}
+                              </span>
+                              {idVal && (
+                                <span className={`font-pixel text-[9px] font-bold shrink-0 ml-1.5 ${isSub ? 'text-[#D8B4FE]' : 'text-[#00F0FF]'}`}>
+                                  {idVal}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   {registration.status !== 'approved' && onEdit && (
                     <div className="pt-1">
                       <button

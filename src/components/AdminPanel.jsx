@@ -196,7 +196,11 @@ export default function AdminPanel({ isOpen, onClose }) {
       const matchTeam = r.team_name?.toLowerCase().includes(q);
       const matchId = r.captain_game_id?.toLowerCase().includes(q);
       const matchPhone = r.captain_whatsapp?.includes(q);
-      return matchName || matchTeam || matchId || matchPhone;
+      const matchMembers = r.members?.some(m => 
+        m.name?.toLowerCase().includes(q) || 
+        (m.game_id || m.gameId)?.toLowerCase().includes(q)
+      );
+      return matchName || matchTeam || matchId || matchPhone || matchMembers;
     }
     return true;
   });
@@ -468,11 +472,15 @@ export default function AdminPanel({ isOpen, onClose }) {
                                     <span className="text-slate-400 text-[10px] block font-mono">
                                       {reg.members.length} miembros:
                                     </span>
-                                    {reg.members.map((m, idx) => (
-                                      <span key={idx} className="block text-[11px] text-slate-300 truncate">
-                                        • {m.name} ({m.game_id}) {m.isSubstitute && <em className="text-amber-400">(Suplente)</em>}
-                                      </span>
-                                    ))}
+                                    {reg.members.map((m, idx) => {
+                                      const memberId = m.game_id || m.gameId || '';
+                                      const isSub = Boolean(m.isSubstitute || m.is_substitute);
+                                      return (
+                                        <span key={idx} className="block text-[11px] text-slate-300 truncate">
+                                          • {m.name} {memberId ? <span className="text-[#00F0FF] font-mono font-bold">[{memberId}]</span> : ''} {isSub && <em className="text-amber-400"> (Suplente)</em>}
+                                        </span>
+                                      );
+                                    })}
                                   </div>
                                 ) : (
                                   <span className="text-slate-500 italic text-[11px]">Sin miembros extra</span>

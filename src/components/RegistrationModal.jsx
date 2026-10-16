@@ -211,7 +211,18 @@ export default function RegistrationModal({
     try {
       setSubmitting(true);
 
-      const teamMembersToSave = isSoloGame ? [] : members.slice(0, selectedGame === 'valorant' ? (hasSubstitute ? 5 : 4) : selectedGame === 'free_fire' ? 3 : 1);
+      const teamMembersToSave = isSoloGame ? [] : members.slice(0, selectedGame === 'valorant' ? (hasSubstitute ? 5 : 4) : selectedGame === 'free_fire' ? 3 : 1).map(m => {
+        const idVal = String(m.game_id || m.gameId || '').trim();
+        const isSub = Boolean(m.isSubstitute || m.is_substitute);
+        return {
+          name: String(m.name || '').trim(),
+          game_id: idVal,
+          gameId: idVal,
+          whatsapp: String(m.whatsapp || '').trim(),
+          is_substitute: isSub,
+          isSubstitute: isSub,
+        };
+      });
       const isPayLater = targetMode === 'later';
 
       if (editingRegistration) {
@@ -435,6 +446,30 @@ export default function RegistrationModal({
                     </div>
                   </div>
 
+                  {Array.isArray(successData.members) && successData.members.length > 0 && (
+                    <div className="pt-2 border-t border-white/10 space-y-1">
+                      <span className="font-pixel text-[8px] text-slate-500 uppercase block">COMPAÑEROS REGISTRADOS:</span>
+                      <div className="space-y-1">
+                        {successData.members.map((m, idx) => {
+                          const mId = m.game_id || m.gameId;
+                          const isSub = Boolean(m.is_substitute || m.isSubstitute);
+                          return (
+                            <div key={idx} className="flex items-center justify-between text-[11px] bg-white/5 px-2 py-0.5 border border-white/10">
+                              <span className="text-slate-300 truncate">
+                                {idx + 2}P. {m.name} {isSub ? '(Sub)' : ''}
+                              </span>
+                              {mId && (
+                                <span className={`font-pixel text-[9px] font-bold shrink-0 ml-1 ${isSub ? 'text-[#D8B4FE]' : 'text-[#00F0FF]'}`}>
+                                  {mId}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="pt-2 border-t border-white/10 flex items-center justify-between font-pixel">
                     <span className="text-slate-400 text-[10px]">VALOR TOTAL:</span>
                     <strong className="text-xl text-[#FFE600] font-black">${totalCost.toFixed(2)} USD</strong>
@@ -563,6 +598,29 @@ export default function RegistrationModal({
                     <span className="font-pixel text-[8px] text-slate-500 uppercase block">WHATSAPP DE CONTACTO:</span>
                     <span className="text-[#FFE600] font-mono font-bold">{successData.captain_whatsapp}</span>
                   </div>
+                  {Array.isArray(successData.members) && successData.members.length > 0 && (
+                    <div className="pt-2 border-t border-white/10 space-y-1">
+                      <span className="font-pixel text-[8px] text-slate-500 uppercase block">COMPAÑEROS REGISTRADOS:</span>
+                      <div className="space-y-1">
+                        {successData.members.map((m, idx) => {
+                          const mId = m.game_id || m.gameId;
+                          const isSub = Boolean(m.is_substitute || m.isSubstitute);
+                          return (
+                            <div key={idx} className="flex items-center justify-between text-[11px] bg-white/5 px-2 py-0.5 border border-white/10">
+                              <span className="text-slate-300 truncate">
+                                {idx + 2}P. {m.name} {isSub ? '(Sub)' : ''}
+                              </span>
+                              {mId && (
+                                <span className={`font-pixel text-[9px] font-bold shrink-0 ml-1 ${isSub ? 'text-[#D8B4FE]' : 'text-[#00F0FF]'}`}>
+                                  {mId}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   <div className="pt-2 text-[10px] text-slate-400 leading-relaxed border-t border-white/10 font-cyber">
                     ⚠️ El staff de Compu League E-Sports validará tu comprobante de Banco Pichincha. Una vez verificado, te agregaremos al grupo oficial de WhatsApp y coordinaremos tus partidas.
                   </div>

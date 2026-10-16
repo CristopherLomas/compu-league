@@ -59,7 +59,9 @@ export default function ParticipantsSection({ onOpenRegister }) {
       const matchCapName = reg.captain_name?.toLowerCase().includes(q);
       const matchCapId = reg.captain_game_id?.toLowerCase().includes(q);
       const matchMembers = reg.members?.some(m => 
-        m.name?.toLowerCase().includes(q) || m.game_id?.toLowerCase().includes(q)
+        m.name?.toLowerCase().includes(q) || 
+        m.game_id?.toLowerCase().includes(q) || 
+        m.gameId?.toLowerCase().includes(q)
       );
       return matchTeam || matchCapName || matchCapId || matchMembers;
     }
@@ -398,37 +400,49 @@ export default function ParticipantsSection({ onOpenRegister }) {
                                     <span className="font-pixel text-[8px] bg-[#FFE600] text-black px-1 font-black">1P</span>
                                     <span className="truncate font-bold">{item.captain_name}</span>
                                   </div>
-                                  <span className="text-[#FFE600] font-pixel text-[9px] shrink-0">
+                                  <span className="text-[#FFE600] font-pixel text-[9px] shrink-0 font-bold">
                                     {item.captain_game_id}
                                   </span>
                                 </div>
 
                                 {/* Members */}
-                                {item.members.map((member, idx) => (
-                                  <div 
-                                    key={idx} 
-                                    className={`flex items-center justify-between py-1 px-2 font-cyber text-xs border border-white/5 ${
-                                      member.is_substitute 
-                                        ? 'bg-[#A855F7]/15 text-slate-300' 
-                                        : 'bg-[#0E1524] text-slate-200'
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-2 truncate pr-1">
-                                      <span className="font-pixel text-[8px] text-slate-500">
-                                        {String(idx + 2)}P
-                                      </span>
-                                      <span className="truncate">
-                                        {member.name || `Jugador #${idx + 2}`}
-                                      </span>
-                                      {member.is_substitute && (
-                                        <span className="font-pixel text-[7px] bg-[#A855F7] text-black px-1 font-bold">SUB</span>
-                                      )}
+                                {item.members.map((member, idx) => {
+                                  const memberId = member.game_id || member.gameId || member.nick || member.gamerTag || '';
+                                  const isSub = Boolean(member.is_substitute || member.isSubstitute);
+                                  return (
+                                    <div 
+                                      key={idx} 
+                                      className={`flex items-center justify-between py-1 px-2 font-cyber text-xs border border-white/5 ${
+                                        isSub 
+                                          ? 'bg-[#A855F7]/15 text-slate-300' 
+                                          : 'bg-[#0E1524] text-slate-200'
+                                      }`}
+                                    >
+                                      <div className="flex items-center gap-2 truncate pr-1">
+                                        <span className="font-pixel text-[8px] text-slate-500">
+                                          {String(idx + 2)}P
+                                        </span>
+                                        <span className="truncate">
+                                          {member.name || `Jugador #${idx + 2}`}
+                                        </span>
+                                        {isSub && (
+                                          <span className="font-pixel text-[7px] bg-[#A855F7] text-black px-1 font-bold">SUB</span>
+                                        )}
+                                      </div>
+                                      {memberId ? (
+                                        <span className={`font-pixel text-[9px] shrink-0 font-bold ${
+                                          isSub ? 'text-[#D8B4FE]' : 'text-[#00F0FF]'
+                                        }`}>
+                                          {memberId}
+                                        </span>
+                                      ) : isSub ? (
+                                        <span className="text-[#A855F7] shrink-0 font-pixel text-[8px]">
+                                          (Suplente)
+                                        </span>
+                                      ) : null}
                                     </div>
-                                    <span className="text-slate-400 shrink-0 font-cyber text-[11px]">
-                                      {member.game_id || (member.is_substitute ? '(Suplente)' : '')}
-                                    </span>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
                             </div>
                           </div>
