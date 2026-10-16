@@ -59,7 +59,7 @@ export const GAMES = [
     priceTotal: 4.00,
     priceNote: '$4 por Escuadra, o $1 solo Individual.',
     bracketType: 'battle_royale',
-    formatDetail: 'Partida Battle Royale por modalidad (1 sala Escuadras y 1 sala Individual). Gana el último sobreviviente en pie (Top 1).',
+    formatDetail: 'Partida Battle Royale por modalidad (1 sala Escuadras y 1 sala Individual). Gana quien se lleve el BOOYAH o victoria total.',
     platform: 'Móvil / Emulador oficial',
     icon: 'flame',
   },

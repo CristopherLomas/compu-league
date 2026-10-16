@@ -47,8 +47,8 @@ const ARCADE_GAMES = [
     buttonText: '[ INSCRIBIR ESCUADRA ]',
     rules: [
       'Modalidades disponibles: Escuadras Battle Royale y Torneo Individual.',
-      'Salas privadas Battle Royale coordinadas con árbitros oficiales del torneo.',
-      'Puntaje acumulativo oficial por posición final y bajas confirmadas.',
+      'Salas privadas exclusivas de Battle Royale.',
+      'Gana quien se lleve el BOOYAH o victoria total.',
     ],
   },
   {
@@ -139,7 +139,7 @@ export default function GameCards({ onSelectGame }) {
               </h2>
 
               <p className="text-slate-300 font-cyber text-xs sm:text-sm max-w-2xl">
-                Cada videojuego cuenta con su propio fixture, árbitros y premios. Inscribe a tu equipo en el juego correspondiente.
+                Cada videojuego cuenta con su propio fixture, reglas y premios. Inscribe a tu equipo en el juego correspondiente.
               </p>
             </div>
 
