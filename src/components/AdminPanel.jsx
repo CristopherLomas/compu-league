@@ -210,7 +210,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
 
   // Calculations
   const totalApproved = registrations.filter(r => r.status === 'approved').length;
-  const totalPending = registrations.filter(r => r.status === 'pending').length;
+  const totalPending = registrations.filter(r => r.status === 'pending' || r.status === 'payment_pending').length;
   const totalRevenue = registrations
     .filter(r => r.status === 'approved')
     .reduce((acc, r) => acc + (parseFloat(r.amount_due) || 0), 0);
@@ -219,7 +219,13 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   // Filtered registrations
   const filteredRegs = registrations.filter(r => {
     if (filterGame !== 'all' && r.game !== filterGame) return false;
-    if (filterStatus !== 'all' && r.status !== filterStatus) return false;
+    if (filterStatus !== 'all') {
+      if (filterStatus === 'pending') {
+        if (r.status !== 'pending' && r.status !== 'payment_pending') return false;
+      } else if (r.status !== filterStatus) {
+        return false;
+      }
+    }
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
       const matchName = r.captain_name?.toLowerCase().includes(q);
@@ -530,10 +536,18 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                                     ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                                     : isRejected
                                     ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                    : reg.status === 'payment_pending'
+                                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
                                     : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse'
                                 }`}
                               >
-                                {isApproved ? '✓ Validado' : isRejected ? '✗ Rechazado' : '⏳ Pendiente'}
+                                {isApproved
+                                  ? '✓ Validado'
+                                  : isRejected
+                                  ? '✗ Rechazado'
+                                  : reg.status === 'payment_pending'
+                                  ? '⏳ Pre-Registro'
+                                  : '⏳ Por Validar'}
                               </span>
                               <div className="text-xs font-mono font-bold text-amber-400 mt-1">
                                 ${amount} USD
@@ -753,9 +767,17 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                                     ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                                     : reg.status === 'rejected'
                                       ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                                      : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse'
+                                      : reg.status === 'payment_pending'
+                                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse'
                                 }`}>
-                                  {reg.status === 'approved' ? 'Validado' : reg.status === 'rejected' ? 'Rechazado' : 'Pendiente'}
+                                  {reg.status === 'approved' 
+                                    ? 'Validado' 
+                                    : reg.status === 'rejected' 
+                                      ? 'Rechazado' 
+                                      : reg.status === 'payment_pending' 
+                                        ? 'Pre-Registro' 
+                                        : 'Por Validar'}
                                 </span>
                               </td>
                               <td className="py-3 px-4 text-right">
