@@ -85,7 +85,81 @@ export const sanitizeRegistrationRecord = (r) => {
 };
 
 // -------------------------------------------------------------
-// REGISTROS / INSCRIPCIONES
+// REGISTROS PÚBLICOS (PROTECCIÓN DE PRIVACIDAD: SIN TELÉFONOS, EMAILS NI COMPROBANTES)
+// -------------------------------------------------------------
+export const getPublicRegistrations = async () => {
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      // SOLO columnas públicas necesarias para el fixture y roster
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('id, created_at, game, game_name, modality, ff_modality, team_name, is_free_agent, captain_name, captain_game_id, members, status')
+        .order('created_at', { ascending: false });
+
+      if (!error && Array.isArray(data)) {
+        return data.map((r) => {
+          const sanitized = sanitizeRegistrationRecord(r);
+          // Ocultar números de WhatsApp que pudieran estar en miembros
+          const safeMembers = Array.isArray(sanitized.members)
+            ? sanitized.members.map((m) => ({
+                name: m.name || '',
+                game_id: m.game_id || m.gameId || '',
+                gameId: m.game_id || m.gameId || '',
+                is_substitute: Boolean(m.is_substitute || m.isSubstitute),
+                isSubstitute: Boolean(m.is_substitute || m.isSubstitute),
+              }))
+            : [];
+
+          return {
+            id: sanitized.id,
+            created_at: sanitized.created_at,
+            game: sanitized.game,
+            game_name: sanitized.game_name,
+            modality: sanitized.modality,
+            ff_modality: sanitized.ff_modality,
+            team_name: sanitized.team_name,
+            is_free_agent: sanitized.is_free_agent,
+            captain_name: sanitized.captain_name,
+            captain_game_id: sanitized.captain_game_id,
+            members: safeMembers,
+            status: sanitized.status,
+          };
+        });
+      }
+    } catch (err) {
+      console.warn('Error obteniendo registros públicos:', err);
+    }
+  }
+
+  // Fallback a registros locales pero sanitizando campos sensibles
+  const all = await getRegistrations();
+  return all.map((r) => ({
+    id: r.id,
+    created_at: r.created_at,
+    game: r.game,
+    game_name: r.game_name,
+    modality: r.modality,
+    ff_modality: r.ff_modality,
+    team_name: r.team_name,
+    is_free_agent: r.is_free_agent,
+    captain_name: r.captain_name,
+    captain_game_id: r.captain_game_id,
+    status: r.status,
+    members: Array.isArray(r.members)
+      ? r.members.map((m) => ({
+          name: m.name,
+          game_id: m.game_id || m.gameId,
+          gameId: m.game_id || m.gameId,
+          is_substitute: Boolean(m.is_substitute || m.isSubstitute),
+          isSubstitute: Boolean(m.is_substitute || m.isSubstitute),
+        }))
+      : [],
+  }));
+};
+
+// -------------------------------------------------------------
+// REGISTROS COMPLETOS (USO EXCLUSIVO DEL PANEL DE ADMINISTRACIÓN)
 // -------------------------------------------------------------
 export const getRegistrations = async () => {
   const supabase = getSupabaseClient();

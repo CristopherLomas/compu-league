@@ -68,16 +68,30 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
     }
   }, [isAuthenticated]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (passwordInput === 'compu2026' || passwordInput === 'admin2026') {
-      setIsAuthenticated(true);
-      try {
-        sessionStorage.setItem('compu_admin_authenticated', 'true');
-      } catch {}
-      setAuthError('');
-    } else {
-      setAuthError('Contraseña incorrecta. Inténtalo de nuevo.');
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(passwordInput.trim());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Hashes criptográficos SHA-256 (no almacena texto plano en el cliente)
+      if (
+        hashHex === '112e778720ebbe3c308377ad0ece44ba937153c6a224769269b294085b2591fa' || 
+        hashHex === '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6'
+      ) {
+        setIsAuthenticated(true);
+        try {
+          sessionStorage.setItem('compu_admin_authenticated', 'true');
+        } catch {}
+        setAuthError('');
+      } else {
+        setAuthError('Contraseña incorrecta. Inténtalo de nuevo.');
+      }
+    } catch {
+      setAuthError('Error de verificación. Inténtalo de nuevo.');
     }
   };
 

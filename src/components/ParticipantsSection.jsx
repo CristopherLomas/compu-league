@@ -3,7 +3,7 @@ import {
   Users, User, Shield, Flame, Crosshair, Crown, 
   Search, Check, Clock, Sparkles, Terminal, ArrowRight, Zap
 } from 'lucide-react';
-import { getRegistrations } from '../lib/storage';
+import { getPublicRegistrations } from '../lib/storage';
 import { GameLogo } from './GameLogo';
 
 export default function ParticipantsSection({ onOpenRegister }) {
@@ -15,7 +15,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
 
   const loadData = async () => {
     try {
-      const data = await getRegistrations();
+      const data = await getPublicRegistrations();
       if (Array.isArray(data)) {
         setRegistrations(data);
       }
