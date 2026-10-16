@@ -48,6 +48,26 @@ export const getSupabaseClient = () => {
   return null;
 };
 
+export const sanitizeRegistrationRecord = (r) => {
+  if (!r) return r;
+  if (r.game === 'clash_royale') {
+    return {
+      ...r,
+      is_free_agent: true,
+      members: [],
+      modality: '1v1',
+      total_amount: 1.00,
+      amount_due: 1.00,
+      team_name: r.captain_name || r.team_name || 'Individual',
+      admin_notes: r.admin_notes ? r.admin_notes.replace(/agente libre/gi, 'individual') : r.admin_notes
+    };
+  }
+  return {
+    ...r,
+    admin_notes: r.admin_notes ? r.admin_notes.replace(/agente libre/gi, 'individual') : r.admin_notes
+  };
+};
+
 // -------------------------------------------------------------
 // REGISTROS / INSCRIPCIONES
 // -------------------------------------------------------------
@@ -58,7 +78,7 @@ export const getRegistrations = async () => {
       .from('registrations')
       .select('*')
       .order('created_at', { ascending: false });
-    if (!error && data) return data;
+    if (!error && data) return data.map(sanitizeRegistrationRecord);
   }
 
   // Fallback LocalStorage
@@ -67,12 +87,7 @@ export const getRegistrations = async () => {
     try {
       const parsed = JSON.parse(savedLocal);
       if (Array.isArray(parsed) && parsed.length >= 8) {
-        // Sanitize any legacy 'agente libre' text in cached localStorage
-        const sanitized = parsed.map(r => ({
-          ...r,
-          admin_notes: r.admin_notes ? r.admin_notes.replace(/agente libre/gi, 'individual') : r.admin_notes
-        }));
-        return sanitized;
+        return parsed.map(sanitizeRegistrationRecord);
       }
     } catch (e) {}
   }
@@ -326,8 +341,8 @@ export const getRegistrations = async () => {
       created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
       game: 'clash_royale',
       modality: '1v1',
-      team_name: 'Alex_Master',
-      is_free_agent: false,
+      team_name: 'Alejandro Morales',
+      is_free_agent: true,
       captain_name: 'Alejandro Morales',
       captain_game_id: '#9PR88CLQ',
       captain_whatsapp: '+593963456789',
@@ -343,8 +358,8 @@ export const getRegistrations = async () => {
       created_at: new Date(Date.now() - 3600000 * 3).toISOString(),
       game: 'clash_royale',
       modality: '1v1',
-      team_name: 'Mat_LogBait',
-      is_free_agent: false,
+      team_name: 'Mateo Cárdenas',
+      is_free_agent: true,
       captain_name: 'Mateo Cárdenas',
       captain_game_id: '#28Y00PQL',
       captain_whatsapp: '+593964567890',
@@ -360,8 +375,8 @@ export const getRegistrations = async () => {
       created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
       game: 'clash_royale',
       modality: '1v1',
-      team_name: 'Chris_Pekka',
-      is_free_agent: false,
+      team_name: 'Christian Benalcázar',
+      is_free_agent: true,
       captain_name: 'Christian Benalcázar',
       captain_game_id: '#88LU00Q',
       captain_whatsapp: '+593965678901',
@@ -377,8 +392,8 @@ export const getRegistrations = async () => {
       created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
       game: 'clash_royale',
       modality: '1v1',
-      team_name: 'Erick_Miner',
-      is_free_agent: false,
+      team_name: 'Erick Cadena',
+      is_free_agent: true,
       captain_name: 'Erick Cadena',
       captain_game_id: '#99VR11Q',
       captain_whatsapp: '+593966789012',
@@ -394,8 +409,8 @@ export const getRegistrations = async () => {
       created_at: new Date(Date.now() - 600000).toISOString(),
       game: 'clash_royale',
       modality: '1v1',
-      team_name: 'Josue_Hog',
-      is_free_agent: false,
+      team_name: 'Josué Revelo',
+      is_free_agent: true,
       captain_name: 'Josué Revelo',
       captain_game_id: '#33PQ22X',
       captain_whatsapp: '+593967890123',
@@ -495,6 +510,19 @@ export const uploadReceiptToSupabase = async (file, registrationId) => {
 };
 
 export const saveRegistration = async (registrationData) => {
+  // If Clash Royale, strictly enforce 1v1 individual constraints
+  if (registrationData.game === 'clash_royale') {
+    registrationData = {
+      ...registrationData,
+      is_free_agent: true,
+      members: [],
+      modality: '1v1',
+      total_amount: 1.00,
+      amount_due: 1.00,
+      team_name: registrationData.captain_name || registrationData.team_name || 'Individual',
+    };
+  }
+
   const supabase = getSupabaseClient();
   const recordId = registrationData.id || generateUUID();
   // Si hay un archivo y Supabase está activo, intentar subir al Storage

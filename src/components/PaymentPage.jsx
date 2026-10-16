@@ -160,11 +160,13 @@ export default function PaymentPage({ paymentId, onGoHome }) {
     }
   };
 
-  const totalCost = registration?.total_amount || (
-    registration?.members && registration.members.length > 0 
-      ? registration.members.length + 1 
-      : (registration?.amount_due || 1)
-  );
+  const totalCost = (registration?.game === 'clash_royale' || registration?.game_id === 'clash_royale')
+    ? 1.00
+    : (registration?.total_amount || (
+        registration?.members && registration.members.length > 0 
+          ? registration.members.length + 1 
+          : (registration?.amount_due || 1)
+      ));
 
   const whatsappStaffMsg = registration
     ? `Hola Staff Compu League 2026, he subido el comprobante de pago para mi equipo *${registration.team_name}* (ID: ${registration.id}). ¡Por favor confirmen mi inscripción!`
@@ -306,7 +308,8 @@ export default function PaymentPage({ paymentId, onGoHome }) {
 
                   <div className="text-xs text-slate-300 font-cyber space-y-0.5">
                     <p>
-                      Capitán: <strong className="text-white">{registration.captain_name}</strong> ({registration.captain_game_id})
+                      {(registration.game === 'clash_royale' || registration.game_id === 'clash_royale' || registration.is_free_agent) ? 'Jugador: ' : 'Capitán: '}
+                      <strong className="text-white">{registration.captain_name}</strong> ({registration.captain_game_id})
                     </p>
                     <p>
                       WhatsApp: <strong className="text-[#FFE600] font-mono">{registration.captain_whatsapp}</strong>

@@ -31,14 +31,24 @@ export default function ParticipantsSection({ onOpenRegister }) {
   }, []);
 
   // Filter registrations
-  const filtered = registrations.filter((reg) => {
+  const filtered = registrations.map((reg) => {
+    if (reg.game === 'clash_royale') {
+      return {
+        ...reg,
+        is_free_agent: true,
+        members: [],
+        modality: '1v1',
+      };
+    }
+    return reg;
+  }).filter((reg) => {
     // Game filter
     if (selectedGame !== 'all' && reg.game !== selectedGame) {
       return false;
     }
 
-    // Type filter
-    const isTeam = !reg.is_free_agent && reg.members && reg.members.length > 0;
+    // Type filter (Clash Royale is strictly individual, never a team)
+    const isTeam = reg.game !== 'clash_royale' && !reg.is_free_agent && Array.isArray(reg.members) && reg.members.length > 0;
     if (selectedType === 'teams' && !isTeam) return false;
     if (selectedType === 'individuals' && isTeam) return false;
 
@@ -57,11 +67,12 @@ export default function ParticipantsSection({ onOpenRegister }) {
     return true;
   });
 
-  const teamsList = filtered.filter(item => !item.is_free_agent && item.members && item.members.length > 0);
-  const individualsList = filtered.filter(item => item.is_free_agent || !item.members || item.members.length === 0);
+  const teamsList = filtered.filter(item => item.game !== 'clash_royale' && !item.is_free_agent && Array.isArray(item.members) && item.members.length > 0);
+  const individualsList = filtered.filter(item => item.game === 'clash_royale' || item.is_free_agent || !Array.isArray(item.members) || item.members.length === 0);
 
-  const totalTeams = registrations.filter(r => !r.is_free_agent && r.members && r.members.length > 0).length;
+  const totalTeams = registrations.filter(r => r.game !== 'clash_royale' && !r.is_free_agent && Array.isArray(r.members) && r.members.length > 0).length;
   const totalPlayers = registrations.reduce((acc, r) => {
+    if (r.game === 'clash_royale') return acc + 1;
     const memberCount = Array.isArray(r.members) ? r.members.length : 0;
     return acc + 1 + memberCount;
   }, 0);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Check, Copy, Upload, AlertCircle, 
   Zap, Phone, Link2, ExternalLink, Send, 
-  CheckCircle2, Clock, ArrowRight, Terminal, Coins, CreditCard
+  CheckCircle2, Clock, ArrowRight, Terminal, Coins, CreditCard, Crown
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BANK_INFO, GAMES, CONTACT_INFO } from '../data/tournamentData';
@@ -17,7 +17,7 @@ export default function RegistrationModal({
   onNavigateToPayment
 }) {
   const [selectedGame, setSelectedGame] = useState(preselectedGame || 'valorant');
-  const [isFreeAgent, setIsFreeAgent] = useState(false);
+  const [isFreeAgent, setIsFreeAgent] = useState(preselectedGame === 'clash_royale');
   const [paymentMode, setPaymentMode] = useState(null); // null | 'now' | 'later'
   const [copiedAccount, setCopiedAccount] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -40,8 +40,17 @@ export default function RegistrationModal({
   useEffect(() => {
     if (preselectedGame) {
       setSelectedGame(preselectedGame);
+      if (preselectedGame === 'clash_royale') {
+        setIsFreeAgent(true);
+      }
     }
   }, [preselectedGame]);
+
+  useEffect(() => {
+    if (selectedGame === 'clash_royale') {
+      setIsFreeAgent(true);
+    }
+  }, [selectedGame]);
 
   useEffect(() => {
     if (initialGamerTag) {
@@ -72,18 +81,17 @@ export default function RegistrationModal({
   const [receiptFile, setReceiptFile] = useState(null);
 
   const gameConfig = GAMES.find(g => g.id === selectedGame) || GAMES[0];
+  const isSoloGame = selectedGame === 'clash_royale' || isFreeAgent;
 
   // Calculate total price ($1 USD per player)
   let totalCost = 1.00;
-  if (!isFreeAgent) {
+  if (!isSoloGame) {
     if (selectedGame === 'valorant') {
       totalCost = 5.00;
     } else if (selectedGame === 'free_fire') {
       totalCost = 4.00;
     } else if (selectedGame === 'fortnite') {
       totalCost = 2.00;
-    } else if (selectedGame === 'clash_royale') {
-      totalCost = 1.00;
     }
   }
 
@@ -149,7 +157,7 @@ export default function RegistrationModal({
       return;
     }
 
-    if (!isFreeAgent && selectedGame !== 'clash_royale') {
+    if (!isSoloGame) {
       if (!teamName.trim()) {
         setErrorMessage('Por favor ingresa el nombre de tu equipo.');
         return;
@@ -173,7 +181,7 @@ export default function RegistrationModal({
     try {
       setSubmitting(true);
 
-      const teamMembersToSave = isFreeAgent ? [] : members.slice(0, selectedGame === 'valorant' ? (hasSubstitute ? 5 : 4) : selectedGame === 'free_fire' ? 3 : 1);
+      const teamMembersToSave = isSoloGame ? [] : members.slice(0, selectedGame === 'valorant' ? (hasSubstitute ? 5 : 4) : selectedGame === 'free_fire' ? 3 : 1);
       const isPayLater = targetMode === 'later';
       const recordUUID = generateUUID();
 
@@ -183,10 +191,10 @@ export default function RegistrationModal({
         game: selectedGame,
         game_id: selectedGame,
         game_name: gameConfig.name,
-        team_name: isFreeAgent ? `Individual (${captain.name})` : teamName,
-        is_free_agent: isFreeAgent,
-        modality: isFreeAgent ? 'individual' : (selectedGame === 'valorant' ? '5v5' : selectedGame === 'fortnite' ? 'duos' : selectedGame === 'clash_royale' ? '1v1' : 'escuadras'),
-        ff_modality: selectedGame === 'free_fire' ? (isFreeAgent ? 'individual' : 'escuadras') : null,
+        team_name: isSoloGame ? (selectedGame === 'clash_royale' ? captain.name : `Individual (${captain.name})`) : teamName,
+        is_free_agent: isSoloGame,
+        modality: selectedGame === 'clash_royale' ? '1v1' : (isSoloGame ? 'individual' : (selectedGame === 'valorant' ? '5v5' : selectedGame === 'fortnite' ? 'duos' : 'escuadras')),
+        ff_modality: selectedGame === 'free_fire' ? (isSoloGame ? 'individual' : 'escuadras') : null,
         captain_name: captain.name,
         captain_game_id: captain.gameId,
         captain_whatsapp: captain.whatsapp,
@@ -523,7 +531,12 @@ export default function RegistrationModal({
                       <button
                         key={game.id}
                         type="button"
-                        onClick={() => setSelectedGame(game.id)}
+                        onClick={() => {
+                          setSelectedGame(game.id);
+                          if (game.id === 'clash_royale') {
+                            setIsFreeAgent(true);
+                          }
+                        }}
                         className={`btn-arcade-press p-3 border-2 border-black text-left transition relative cursor-pointer flex flex-col justify-between ${
                           isSelected
                             ? 'bg-[#FFE600] text-black shadow-brutal-yellow font-black'
@@ -555,39 +568,50 @@ export default function RegistrationModal({
                       TIPO DE PARTICIPACION
                     </h4>
                     <p className="text-xs text-slate-400 font-cyber mt-0.5">
-                      ¿Participas con tu equipo armado o te inscribes de forma individual?
+                      {selectedGame === 'clash_royale'
+                        ? 'En Clash Royale la modalidad oficial es exclusivamente 1v1 Individual. No existe inscripción por equipos.'
+                        : '¿Participas con tu equipo armado o te inscribes de forma individual?'}
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsFreeAgent(false)}
-                      className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
-                        !isFreeAgent
-                          ? 'bg-[#FFE600] text-black font-black shadow-brutal-yellow'
-                          : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
-                      }`}
-                    >
-                      CON MI EQUIPO
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsFreeAgent(true)}
-                      className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
-                        isFreeAgent
-                          ? 'bg-[#00F0FF] text-black font-black shadow-brutal-cyan'
-                          : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
-                      }`}
-                    >
-                      INDIVIDUAL
-                    </button>
-                  </div>
+                  {selectedGame === 'clash_royale' ? (
+                    <div className="flex items-center gap-2">
+                      <div className="font-pixel text-[9px] px-3.5 py-2 bg-[#A855F7] text-white border-2 border-black font-black uppercase shadow-brutal-purple flex items-center gap-1.5">
+                        <Crown className="w-3.5 h-3.5" />
+                        <span>1v1 INDIVIDUAL ($1.00 USD)</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsFreeAgent(false)}
+                        className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
+                          !isFreeAgent
+                            ? 'bg-[#FFE600] text-black font-black shadow-brutal-yellow'
+                            : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
+                        }`}
+                      >
+                        CON MI EQUIPO
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsFreeAgent(true)}
+                        className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
+                          isFreeAgent
+                            ? 'bg-[#00F0FF] text-black font-black shadow-brutal-cyan'
+                            : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
+                        }`}
+                      >
+                        INDIVIDUAL
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Nombre de Equipo */}
-              {!isFreeAgent && selectedGame !== 'clash_royale' && (
+              {!isSoloGame && (
                 <div className="space-y-1.5">
                   <label className="font-pixel text-[9px] uppercase text-[#FFE600] block font-bold">
                     NOMBRE DEL EQUIPO / CLAN *
@@ -607,7 +631,7 @@ export default function RegistrationModal({
               <div className="space-y-2.5">
                 <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
                   <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">2</span>
-                  <span>{isFreeAgent || selectedGame === 'clash_royale' ? 'DATOS DEL JUGADOR' : 'DATOS DEL CAPITAN'}</span>
+                  <span>{isSoloGame ? 'DATOS DEL JUGADOR' : 'DATOS DEL CAPITAN'}</span>
                 </label>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -650,7 +674,7 @@ export default function RegistrationModal({
               </div>
 
               {/* 3. Miembros del Equipo */}
-              {!isFreeAgent && selectedGame !== 'clash_royale' && (
+              {!isSoloGame && (
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
