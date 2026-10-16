@@ -38,6 +38,18 @@ function App() {
 
   const initialPaymentId = getPaymentIdFromLocation();
 
+  // Check if admin panel was requested in URL (/admin, ?page=admin, ?admin=true)
+  const initialIsAdmin = (() => {
+    try {
+      const path = window.location.pathname.toLowerCase();
+      if (path === '/admin' || path.startsWith('/admin/')) return true;
+      const params = new URLSearchParams(window.location.search);
+      return params.get('page') === 'admin' || params.has('admin');
+    } catch {
+      return false;
+    }
+  })();
+
   // Determine initial page from URL (?page=brackets, cronograma, participantes, pago or /pago/:id)
   const initialPage = (() => {
     try {
@@ -63,9 +75,9 @@ function App() {
   });
 
   // State: Has the player entered the portal?
-  // Direct subpage links and payment links skip the Undertale start screen
+  // Direct subpage links, payment links, and admin skip the Undertale start screen
   const [hasEnteredGame, setHasEnteredGame] = useState(() => {
-    return initialPage !== 'inicio' || Boolean(initialPaymentId);
+    return initialPage !== 'inicio' || Boolean(initialPaymentId) || initialIsAdmin;
   });
 
   // Active view and navigation state
@@ -79,7 +91,7 @@ function App() {
 
   // Modal dialog states
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminOpen, setIsAdminOpen] = useState(initialIsAdmin);
   const [selectedGameForModal, setSelectedGameForModal] = useState('valorant');
   const [editingRegistration, setEditingRegistration] = useState(null);
 
@@ -393,6 +405,7 @@ function App() {
       {/* Real Page Footer */}
       <Footer
         onOpenRegister={() => handleOpenRegister('valorant')}
+        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* Official Registration Modal */}

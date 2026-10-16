@@ -145,10 +145,19 @@ export default function Footer({ onOpenAdmin, onOpenRegister }) {
 
         {/* Bottom Bar: Copyright & Back to Top */}
         <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-pixel text-[8px] sm:text-[9px] text-slate-400">
-          <div className="flex items-center gap-2 text-center sm:text-left">
+          <div className="flex items-center gap-2 text-center sm:text-left flex-wrap justify-center sm:justify-start">
             <span>© 2026 COMPU LEAGUE E-SPORTS</span>
             <span>•</span>
             <span className="text-[#FFE600]">CARRERA DE COMPUTACIÓN</span>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={onOpenAdmin}
+              className="text-slate-400 hover:text-[#FFE600] flex items-center gap-1 cursor-pointer transition underline uppercase tracking-wider"
+            >
+              <Shield className="w-3 h-3 text-[#FFE600]" />
+              <span>STAFF ADMIN</span>
+            </button>
           </div>
 
           <button
