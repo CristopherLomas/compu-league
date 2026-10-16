@@ -16,7 +16,12 @@ function calcTimeLeft() {
   };
 }
 
-export default function MainEsportsHero({ playerName = '', onOpenRegister, onScrollToGames }) {
+export default function MainEsportsHero({ 
+  playerName = '', 
+  onOpenRegister, 
+  onScrollToGames,
+  onSelectGameSlot,
+}) {
   const [timeLeft, setTimeLeft] = useState(calcTimeLeft);
 
   const challengerName = (playerName && playerName.trim())
@@ -298,11 +303,23 @@ export default function MainEsportsHero({ playerName = '', onOpenRegister, onScr
                     key={slot.id}
                     type="button"
                     onClick={() => {
-                      if (onScrollToGames) {
-                        onScrollToGames();
+                      if (onSelectGameSlot) {
+                        onSelectGameSlot(slot.id);
                       } else {
-                        const el = document.getElementById('juegos');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        const target = document.getElementById(`game-${slot.id}`) || document.getElementById(`reglas-${slot.id}`);
+                        if (target) {
+                          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          target.classList.add('ring-4', 'ring-[#FFE600]');
+                          const rules = document.getElementById(`reglas-${slot.id}`);
+                          if (rules) rules.classList.add('bg-white/10');
+                          setTimeout(() => {
+                            target.classList.remove('ring-4', 'ring-[#FFE600]');
+                            if (rules) rules.classList.remove('bg-white/10');
+                          }, 1800);
+                        } else {
+                          const el = document.getElementById('juegos');
+                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }
                       }
                     }}
                     className={`btn-arcade-press bg-[#0A0E17] hover:bg-[#141C2E] ${slot.border} border-2 px-3 py-2.5 ${slot.shadow} flex items-center justify-between font-pixel text-[9px] sm:text-[10px] cursor-pointer hover:border-white active:translate-x-1 active:translate-y-1 transition-all group`}

@@ -191,9 +191,10 @@ export default function GameCards({ onSelectGame }) {
             return (
               <div
                 key={game.id}
+                id={`game-${game.id}`}
                 onMouseEnter={() => setActiveSlot(game.id)}
                 onMouseLeave={() => setActiveSlot(null)}
-                className={`bg-[#0B101A] border-4 ${game.bgBorder} ${game.shadowClass} flex flex-col justify-between transition-all duration-150`}
+                className={`bg-[#0B101A] border-4 ${game.bgBorder} ${game.shadowClass} flex flex-col justify-between transition-all duration-300 scroll-mt-24`}
               >
                 {/* 1. Cartridge Header Bar */}
                 <div className="bg-black border-b-2 border-black p-2.5 px-4 flex items-center justify-between font-pixel text-[9px] sm:text-[10px]">
@@ -292,7 +293,10 @@ export default function GameCards({ onSelectGame }) {
                   </div>
 
                   {/* Clean Modern Rules in Chakra Petch (High legibility) */}
-                  <div className="space-y-2 border-l-2 border-white/20 pl-3 py-1">
+                  <div 
+                    id={`reglas-${game.id}`} 
+                    className="space-y-2 border-l-2 border-white/20 pl-3 py-1 transition-colors duration-300 scroll-mt-32"
+                  >
                     <div className="font-pixel text-[8px] text-[#FFE600] uppercase tracking-wider mb-1">
                       // FORMATO OFICIAL DEL TORNEO:
                     </div>

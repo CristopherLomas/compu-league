@@ -226,6 +226,34 @@ function App() {
     setIsRegisterOpen(true);
   };
 
+  const handleScrollToGameSlot = (gameId) => {
+    const scrollToTarget = () => {
+      const target = document.getElementById(`game-${gameId}`) || document.getElementById(`reglas-${gameId}`);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.classList.add('ring-4', 'ring-[#FFE600]');
+        const rules = document.getElementById(`reglas-${gameId}`);
+        if (rules) rules.classList.add('bg-white/10');
+        setTimeout(() => {
+          target.classList.remove('ring-4', 'ring-[#FFE600]');
+          if (rules) rules.classList.remove('bg-white/10');
+        }, 1800);
+      } else {
+        const el = document.getElementById('juegos');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    if (currentView !== 'inicio') {
+      setCurrentView('inicio');
+      setActiveSection('juegos');
+      window.history.pushState({}, '', '/');
+      setTimeout(scrollToTarget, 100);
+    } else {
+      scrollToTarget();
+    }
+  };
+
   // =============================================================
   // SCREEN 1: PURE UNDERTALE TITLE & NAME SCREEN (CERO SCROLL)
   // =============================================================
@@ -274,6 +302,7 @@ function App() {
                 playerName={playerName}
                 onOpenRegister={handleOpenRegister}
                 onSelectGame={handleSelectGame}
+                onSelectGameSlot={handleScrollToGameSlot}
                 onScrollToBrackets={() => navigateTo('brackets')}
                 onScrollToGames={() => navigateTo('juegos')}
               />
