@@ -1,10 +1,11 @@
 import React from 'react';
-import { AlertCircle, ArrowRight, X, Clock, Coins } from 'lucide-react';
+import { AlertCircle, ArrowRight, X, Clock, Coins, Edit } from 'lucide-react';
 
 export default function PendingPaymentBanner({
   pendingPayment,
   onContinue,
-  onDismiss
+  onDismiss,
+  onEdit
 }) {
   if (!pendingPayment) return null;
 
@@ -59,25 +60,36 @@ export default function PendingPaymentBanner({
           </div>
 
           <p className="text-xs text-[#00F0FF] font-cyber">
-            ¿Deseas completar el pago con comprobante bancario ahora?
+            ¿Deseas completar el pago o necesitas corregir algún dato?
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1 relative z-10">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1 relative z-10">
           <button
             type="button"
             onClick={() => onContinue(pendingPayment.id)}
-            className="btn-arcade-press shadow-brutal-pink flex-1 py-3.5 px-4 bg-[#FFE600] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 text-center cursor-pointer"
+            className="btn-arcade-press shadow-brutal-pink flex-1 py-3 px-3.5 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 text-center cursor-pointer"
           >
             <span>[ CONTINUAR CON EL PAGO ]</span>
             <ArrowRight className="w-4 h-4 shrink-0 stroke-[3]" />
           </button>
 
+          {onEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit(pendingPayment)}
+              className="btn-arcade-press shadow-brutal-cyan py-3 px-3.5 border-2 border-black bg-[#00F0FF] hover:bg-white text-black font-pixel font-black text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all text-center cursor-pointer"
+            >
+              <Edit className="w-3.5 h-3.5 stroke-[2.5]" />
+              <span>EDITAR DATOS</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={onDismiss}
-            className="btn-arcade-press shadow-brutal-black py-3 px-4 border-2 border-black bg-black text-slate-300 hover:text-white font-pixel text-[10px] uppercase tracking-wider transition-all text-center cursor-pointer"
+            className="btn-arcade-press shadow-brutal-black py-3 px-3 border-2 border-black bg-black text-slate-300 hover:text-white font-pixel text-[10px] uppercase tracking-wider transition-all text-center cursor-pointer"
           >
             MÁS TARDE
           </button>

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BANK_INFO, GAMES, CONTACT_INFO } from '../data/tournamentData';
-import { saveRegistration, generateUUID } from '../lib/storage';
+import { saveRegistration, updateRegistrationData, generateUUID } from '../lib/storage';
 import { GameLogo } from './GameLogo';
 
 export default function RegistrationModal({ 
@@ -14,7 +14,9 @@ export default function RegistrationModal({
   onClose, 
   preselectedGame = 'valorant', 
   initialGamerTag = '',
-  onNavigateToPayment
+  onNavigateToPayment,
+  editingRegistration = null,
+  onRegistrationUpdated = null,
 }) {
   const [selectedGame, setSelectedGame] = useState(preselectedGame || 'valorant');
   const [isFreeAgent, setIsFreeAgent] = useState(preselectedGame === 'clash_royale');
@@ -37,30 +39,66 @@ export default function RegistrationModal({
     discord: '',
   });
 
+  const [members, setMembers] = useState([
+    { name: '', gameId: '', whatsapp: '', isSubstitute: false }
+  ]);
+
+  const [hasSubstitute, setHasSubstitute] = useState(false);
+  const [receiptPreview, setReceiptPreview] = useState(null);
+  const [receiptFile, setReceiptFile] = useState(null);
+
   useEffect(() => {
-    if (preselectedGame) {
-      setSelectedGame(preselectedGame);
-      if (preselectedGame === 'clash_royale') {
-        setIsFreeAgent(true);
+    if (isOpen && editingRegistration) {
+      setSelectedGame(editingRegistration.game || 'valorant');
+      setIsFreeAgent(editingRegistration.game === 'clash_royale' || Boolean(editingRegistration.is_free_agent));
+      setTeamName(editingRegistration.team_name || '');
+      setCaptain({
+        name: editingRegistration.captain_name || '',
+        gameId: editingRegistration.captain_game_id || '',
+        whatsapp: editingRegistration.captain_whatsapp || '',
+        email: editingRegistration.captain_email || '',
+        discord: editingRegistration.captain_discord || '',
+      });
+      if (Array.isArray(editingRegistration.members) && editingRegistration.members.length > 0) {
+        setMembers(editingRegistration.members.map(m => ({
+          name: m.name || '',
+          gameId: m.game_id || m.gameId || '',
+          whatsapp: m.whatsapp || '',
+          isSubstitute: Boolean(m.is_substitute || m.isSubstitute)
+        })));
+        setHasSubstitute(editingRegistration.members.some(m => m.is_substitute || m.isSubstitute));
+      } else {
+        setMembers([
+          { name: '', gameId: '', whatsapp: '', isSubstitute: false }
+        ]);
+        setHasSubstitute(false);
+      }
+      setPaymentMode(editingRegistration.status === 'payment_pending' ? 'later' : 'now');
+      setReceiptPreview(editingRegistration.receipt_image || editingRegistration.receipt_url || null);
+      setErrorMessage('');
+      setSuccessData(null);
+    } else if (isOpen && !editingRegistration) {
+      if (preselectedGame) {
+        setSelectedGame(preselectedGame);
+        if (preselectedGame === 'clash_royale') {
+          setIsFreeAgent(true);
+        }
+      }
+      if (initialGamerTag) {
+        setCaptain(prev => ({
+          ...prev,
+          name: prev.name || initialGamerTag,
+          gameId: prev.gameId || initialGamerTag
+        }));
       }
     }
-  }, [preselectedGame]);
+  }, [isOpen, editingRegistration]);
 
   useEffect(() => {
     if (selectedGame === 'clash_royale') {
       setIsFreeAgent(true);
     }
   }, [selectedGame]);
-
-  useEffect(() => {
-    if (initialGamerTag) {
-      setCaptain(prev => ({
-        ...prev,
-        name: prev.name || initialGamerTag,
-        gameId: prev.gameId || initialGamerTag
-      }));
-    }
-  }, [initialGamerTag]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -71,14 +109,6 @@ export default function RegistrationModal({
       setSuccessData(null);
     }
   }, [isOpen]);
-
-  const [members, setMembers] = useState([
-    { name: '', gameId: '', whatsapp: '', isSubstitute: false }
-  ]);
-
-  const [hasSubstitute, setHasSubstitute] = useState(false);
-  const [receiptPreview, setReceiptPreview] = useState(null);
-  const [receiptFile, setReceiptFile] = useState(null);
 
   const gameConfig = GAMES.find(g => g.id === selectedGame) || GAMES[0];
   const isSoloGame = selectedGame === 'clash_royale' || isFreeAgent;
@@ -145,7 +175,7 @@ export default function RegistrationModal({
     if (e && e.preventDefault) e.preventDefault();
     setErrorMessage('');
 
-    const targetMode = forcedMode || paymentMode;
+    const targetMode = forcedMode || paymentMode || (editingRegistration ? 'later' : null);
 
     if (!targetMode) {
       setErrorMessage('Por favor selecciona si deseas PAGAR AHORA o PAGAR DESPUÉS para continuar.');
@@ -173,7 +203,7 @@ export default function RegistrationModal({
       }
     }
 
-    if (targetMode === 'now' && !receiptPreview) {
+    if (!editingRegistration && targetMode === 'now' && !receiptPreview) {
       setErrorMessage('Para pagar ahora, por favor adjunta la captura del comprobante bancario. O pulsa en PAGAR DESPUÉS para pre-registrarte sin comprobante en este momento.');
       return;
     }
@@ -183,6 +213,54 @@ export default function RegistrationModal({
 
       const teamMembersToSave = isSoloGame ? [] : members.slice(0, selectedGame === 'valorant' ? (hasSubstitute ? 5 : 4) : selectedGame === 'free_fire' ? 3 : 1);
       const isPayLater = targetMode === 'later';
+
+      if (editingRegistration) {
+        const updatedRecord = {
+          game: selectedGame,
+          game_id: selectedGame,
+          game_name: gameConfig.name,
+          team_name: isSoloGame ? (selectedGame === 'clash_royale' ? captain.name : `Individual (${captain.name})`) : teamName,
+          is_free_agent: isSoloGame,
+          modality: selectedGame === 'clash_royale' ? '1v1' : (isSoloGame ? 'individual' : (selectedGame === 'valorant' ? '5v5' : selectedGame === 'fortnite' ? 'duos' : 'escuadras')),
+          ff_modality: selectedGame === 'free_fire' ? (isSoloGame ? 'individual' : 'escuadras') : null,
+          captain_name: captain.name,
+          captain_game_id: captain.gameId,
+          captain_whatsapp: captain.whatsapp,
+          captain_email: captain.email || '',
+          captain_discord: captain.discord || '',
+          members: teamMembersToSave,
+          total_amount: totalCost,
+          amount_due: totalCost,
+        };
+
+        if (targetMode === 'now' && (receiptFile || receiptPreview)) {
+          if (receiptFile) updatedRecord.receipt_file = receiptFile;
+          if (receiptPreview) {
+            updatedRecord.receipt_image = receiptPreview;
+            updatedRecord.receipt_url = receiptPreview;
+          }
+          updatedRecord.payment_status = 'paid';
+          updatedRecord.status = 'pending';
+        }
+
+        const result = await updateRegistrationData(editingRegistration.id, updatedRecord);
+        const finalData = result || { ...editingRegistration, ...updatedRecord };
+
+        if (onRegistrationUpdated) {
+          onRegistrationUpdated(finalData);
+        }
+
+        confetti({
+          particleCount: 100,
+          spread: 75,
+          origin: { y: 0.6 },
+        });
+
+        setSuccessMode(targetMode);
+        setSuccessData(finalData);
+        return finalData;
+      }
+
       const recordUUID = generateUUID();
 
       const registrationRecord = {
@@ -242,9 +320,11 @@ export default function RegistrationModal({
 
       setSuccessMode(targetMode);
       setSuccessData(registrationRecord);
+      return registrationRecord;
     } catch (err) {
       console.error(err);
       setErrorMessage('Ocurrió un error al guardar tu registro. Por favor intenta de nuevo.');
+      return null;
     } finally {
       setSubmitting(false);
     }
@@ -283,11 +363,11 @@ export default function RegistrationModal({
             />
             <div>
               <div className="font-pixel text-[9px] text-[#FFE600] uppercase tracking-widest flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-[#FF0055] inline-block animate-arcade-blink" />
-                <span>[ TERMINAL // INSCRIPCION OFICIAL ]</span>
+                <span className={`w-2 h-2 inline-block animate-arcade-blink ${editingRegistration ? 'bg-[#00F0FF]' : 'bg-[#FF0055]'}`} />
+                <span>[ TERMINAL // {editingRegistration ? 'EDITAR EQUIPO Y ROSTER' : 'INSCRIPCION OFICIAL'} ]</span>
               </div>
               <h3 className="text-base sm:text-xl font-black uppercase text-white font-display tracking-wider leading-none mt-0.5">
-                COMPU LEAGUE <span className="text-[#FFE600]">2026</span>
+                {editingRegistration ? 'ACTUALIZAR DATOS' : 'COMPU LEAGUE'} <span className="text-[#FFE600]">{editingRegistration ? `#${editingRegistration.id.slice(0, 8).toUpperCase()}` : '2026'}</span>
               </h3>
             </div>
           </div>
@@ -323,13 +403,15 @@ export default function RegistrationModal({
 
                 <div className="space-y-1.5">
                   <div className="inline-block px-3 py-1 bg-black text-[#00F0FF] border-2 border-[#00F0FF] font-pixel text-[9px] uppercase shadow-brutal-black">
-                    ★ PRE-REGISTRO GUARDADO ★
+                    ★ {editingRegistration ? 'DATOS ACTUALIZADOS' : 'PRE-REGISTRO GUARDADO'} ★
                   </div>
                   <h4 className="text-xl sm:text-3xl font-black uppercase text-white font-display tracking-wide drop-shadow-[2px_2px_0px_#000]">
-                    ¡PRE-REGISTRO COMPLETADO!
+                    {editingRegistration ? '¡DATOS ACTUALIZADOS CON ÉXITO!' : '¡PRE-REGISTRO COMPLETADO!'}
                   </h4>
                   <p className="text-slate-300 text-xs sm:text-sm max-w-md mx-auto font-cyber">
-                    Tu cupo para <strong className="text-[#FFE600] font-pixel text-xs">{successData.team_name}</strong> en <strong className="text-white font-pixel text-xs">{gameConfig.name}</strong> ha sido apartado.
+                    {editingRegistration
+                      ? <>Se han actualizado los datos de <strong className="text-[#FFE600] font-pixel text-xs">{successData.team_name}</strong> para <strong className="text-white font-pixel text-xs">{gameConfig.name}</strong>.</>
+                      : <>Tu cupo para <strong className="text-[#FFE600] font-pixel text-xs">{successData.team_name}</strong> en <strong className="text-white font-pixel text-xs">{gameConfig.name}</strong> ha sido apartado.</>}
                   </p>
                 </div>
 
@@ -457,10 +539,12 @@ export default function RegistrationModal({
 
                 <div className="space-y-2">
                   <h4 className="text-xl sm:text-3xl font-black uppercase text-white font-display tracking-wide drop-shadow-[2px_2px_0px_#000]">
-                    ¡INSCRIPCIÓN ENVIADA EXITOSAMENTE!
+                    {editingRegistration ? '¡DATOS ACTUALIZADOS EXITOSAMENTE!' : '¡INSCRIPCIÓN ENVIADA EXITOSAMENTE!'}
                   </h4>
                   <p className="text-slate-300 text-xs sm:text-sm max-w-md mx-auto font-cyber">
-                    Hemos recibido el registro de <strong className="text-[#FFE600] font-pixel text-xs">{successData.team_name}</strong> para <strong className="text-white font-pixel text-xs">{gameConfig.name}</strong> y tu comprobante por <strong className="text-[#FFE600] font-pixel text-xs">${totalCost.toFixed(2)} USD</strong>.
+                    {editingRegistration
+                      ? <>Hemos actualizado los datos de <strong className="text-[#FFE600] font-pixel text-xs">{successData.team_name}</strong> para <strong className="text-white font-pixel text-xs">{gameConfig.name}</strong>.</>
+                      : <>Hemos recibido el registro de <strong className="text-[#FFE600] font-pixel text-xs">{successData.team_name}</strong> para <strong className="text-white font-pixel text-xs">{gameConfig.name}</strong> y tu comprobante por <strong className="text-[#FFE600] font-pixel text-xs">${totalCost.toFixed(2)} USD</strong>.</>}
                   </p>
                 </div>
 
@@ -980,7 +1064,40 @@ export default function RegistrationModal({
 
               {/* Botón de Confirmación según la Opción Elegida */}
               <div className="pt-2">
-                {paymentMode === 'now' ? (
+                {editingRegistration ? (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="btn-arcade-press shadow-brutal-cyan flex-1 py-4 bg-[#00F0FF] hover:bg-white text-black font-pixel font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                    >
+                      {submitting ? (
+                        <span>GUARDANDO CAMBIOS...</span>
+                      ) : (
+                        <>
+                          <Check className="w-4 h-4 stroke-[3]" />
+                          <span>[ GUARDAR CAMBIOS ]</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={submitting}
+                      onClick={async (e) => {
+                        const updated = await handleSubmit(e, paymentMode || 'later');
+                        if (updated && onNavigateToPayment) {
+                          onClose();
+                          onNavigateToPayment(editingRegistration.id);
+                        }
+                      }}
+                      className="btn-arcade-press shadow-brutal-yellow flex-1 py-4 bg-[#FFE600] hover:bg-[#FFF04D] text-black font-pixel font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                    >
+                      <span>[ GUARDAR Y CONTINUAR AL PAGO ]</span>
+                      <ArrowRight className="w-4 h-4 stroke-[3]" />
+                    </button>
+                  </div>
+                ) : paymentMode === 'now' ? (
                   <button
                     type="submit"
                     disabled={submitting}

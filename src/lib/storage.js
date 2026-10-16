@@ -616,6 +616,75 @@ export const updateRegistrationReceipt = async (id, receiptImage, receiptFile = 
   return found;
 };
 
+export const updateRegistrationData = async (id, updatedFields) => {
+  if (!id) return null;
+  const cleanId = String(id).trim();
+
+  // Si es Clash Royale, forzar estrictamente 1v1 individual sin equipo ni miembros
+  if (updatedFields.game === 'clash_royale') {
+    updatedFields = {
+      ...updatedFields,
+      is_free_agent: true,
+      members: [],
+      modality: '1v1',
+      total_amount: 1.00,
+      amount_due: 1.00,
+      team_name: updatedFields.captain_name || updatedFields.team_name || 'Individual',
+    };
+  }
+
+  const updates = {
+    ...updatedFields,
+    updated_at: new Date().toISOString(),
+  };
+
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const dbUpdates = sanitizeRegistrationForSupabase(updates);
+      await supabase
+        .from('registrations')
+        .update(dbUpdates)
+        .eq('id', cleanId);
+    } catch (e) {
+      console.warn('Supabase update registration data failed:', e);
+    }
+  }
+
+  const current = await getRegistrations();
+  let found = null;
+  const updated = current.map((r) => {
+    if (String(r.id).trim().toLowerCase() === cleanId.toLowerCase()) {
+      found = sanitizeRegistrationRecord({ ...r, ...updates });
+      return found;
+    }
+    return r;
+  });
+
+  localStorage.setItem(STORAGE_KEYS.REGISTRATIONS, JSON.stringify(updated));
+
+  // Actualizar también en el recordatorio local de pago pendiente si coincide
+  try {
+    const savedPending = localStorage.getItem('compu_league_pending_payment');
+    if (savedPending) {
+      const parsed = JSON.parse(savedPending);
+      if (parsed && String(parsed.id).trim().toLowerCase() === cleanId.toLowerCase()) {
+        const newPending = {
+          ...parsed,
+          team_name: found.team_name,
+          game: found.game,
+          game_name: found.game_name,
+          captain_name: found.captain_name,
+          amount_due: found.amount_due,
+        };
+        localStorage.setItem('compu_league_pending_payment', JSON.stringify(newPending));
+      }
+    }
+  } catch (e) {}
+
+  return found;
+};
+
 export const updateRegistrationStatus = async (id, status, notes = '') => {
   const supabase = getSupabaseClient();
   if (supabase) {

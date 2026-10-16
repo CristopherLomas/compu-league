@@ -81,6 +81,7 @@ function App() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [selectedGameForModal, setSelectedGameForModal] = useState('valorant');
+  const [editingRegistration, setEditingRegistration] = useState(null);
 
   // Pending Payment on this device state
   const [pendingPayment, setPendingPayment] = useState(null);
@@ -187,6 +188,32 @@ function App() {
     setIsPendingPaymentDismissed(true);
   };
 
+  const handleEditPendingPayment = async (pending) => {
+    try {
+      const fullRecord = await getRegistrationById(pending.id);
+      const recordToEdit = fullRecord || pending;
+      setEditingRegistration(recordToEdit);
+      setSelectedGameForModal(recordToEdit.game || 'valorant');
+    } catch {
+      setEditingRegistration(pending);
+      setSelectedGameForModal(pending.game || 'valorant');
+    }
+    setHasEnteredGame(true);
+    setIsRegisterOpen(true);
+  };
+
+  const handleEditRegistration = (record) => {
+    setEditingRegistration(record);
+    setSelectedGameForModal(record.game || 'valorant');
+    setIsRegisterOpen(true);
+  };
+
+  const handleRegistrationUpdated = (updatedRecord) => {
+    if (pendingPayment && String(pendingPayment.id).toLowerCase() === String(updatedRecord.id).toLowerCase()) {
+      setPendingPayment({ ...pendingPayment, ...updatedRecord });
+    }
+  };
+
   const handleLoadingComplete = () => {
     const next = targetView;
     setIsTransitioning(false);
@@ -217,11 +244,13 @@ function App() {
   };
 
   const handleOpenRegister = (gameId = 'valorant') => {
+    setEditingRegistration(null);
     setSelectedGameForModal(gameId);
     setIsRegisterOpen(true);
   };
 
   const handleSelectGame = (gameId) => {
+    setEditingRegistration(null);
     setSelectedGameForModal(gameId);
     setIsRegisterOpen(true);
   };
@@ -269,6 +298,7 @@ function App() {
             pendingPayment={pendingPayment}
             onContinue={handleContinuePendingPayment}
             onDismiss={handleDismissPendingPayment}
+            onEdit={handleEditPendingPayment}
           />
         )}
       </>
@@ -352,7 +382,8 @@ function App() {
               onGoHome={() => {
                 setActivePaymentId('');
                 navigateTo('inicio');
-              }} 
+              }}
+              onEdit={handleEditRegistration}
             />
           </div>
         )}
@@ -367,10 +398,15 @@ function App() {
       {/* Official Registration Modal */}
       <RegistrationModal
         isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
+        onClose={() => {
+          setIsRegisterOpen(false);
+          setEditingRegistration(null);
+        }}
         preselectedGame={selectedGameForModal}
         initialGamerTag={playerName}
         onNavigateToPayment={navigateToPayment}
+        editingRegistration={editingRegistration}
+        onRegistrationUpdated={handleRegistrationUpdated}
       />
 
       {/* Staff Admin Panel Modal */}
@@ -393,6 +429,7 @@ function App() {
           pendingPayment={pendingPayment}
           onContinue={handleContinuePendingPayment}
           onDismiss={handleDismissPendingPayment}
+          onEdit={handleEditPendingPayment}
         />
       )}
 

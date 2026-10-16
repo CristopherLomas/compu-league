@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { 
   ArrowLeft, Upload, CheckCircle2, Clock, Shield, Flame, 
   Crown, Crosshair, Trophy, Copy, Check, Phone, AlertCircle, 
-  Zap, FileText, CheckCircle, Terminal
+  Zap, FileText, CheckCircle, Terminal, Edit
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getRegistrationById, updateRegistrationReceipt } from '../lib/storage';
 import { BANK_INFO, CONTACT_INFO } from '../data/tournamentData';
 
-export default function PaymentPage({ paymentId, onGoHome }) {
+export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
   const [targetId, setTargetId] = useState('');
   const [loading, setLoading] = useState(true);
   const [registration, setRegistration] = useState(null);
@@ -315,6 +315,19 @@ export default function PaymentPage({ paymentId, onGoHome }) {
                       WhatsApp: <strong className="text-[#FFE600] font-mono">{registration.captain_whatsapp}</strong>
                     </p>
                   </div>
+
+                  {registration.status !== 'approved' && onEdit && (
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => onEdit(registration)}
+                        className="btn-arcade-press font-pixel text-[8px] sm:text-[9px] px-2.5 py-1.5 bg-[#00F0FF] hover:bg-white text-black border-2 border-black font-bold uppercase shadow-brutal-cyan flex items-center gap-1.5 cursor-pointer transition"
+                      >
+                        <Edit className="w-3 h-3 stroke-[2.5]" />
+                        <span>[ CORREGIR DATOS / JUGADORES ]</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Amount Due Pill */}
