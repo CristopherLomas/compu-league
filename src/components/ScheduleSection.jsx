@@ -47,7 +47,7 @@ export default function ScheduleSection() {
                 CRONOGRAMA <span className="text-[#FFE600]">// HORARIOS OFICIALES</span>
               </h2>
               <p className="text-slate-300 text-xs sm:text-sm max-w-xl font-cyber leading-relaxed">
-                Horario oficial para la comunidad universitaria. Transmisión en directo con casters y salas oficiales de partida.
+                Horario oficial para la comunidad universitaria. Salas oficiales y seguimiento en vivo de cada partida.
               </p>
             </div>
 

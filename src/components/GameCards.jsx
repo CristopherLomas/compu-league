@@ -23,8 +23,8 @@ const ARCADE_GAMES = [
     buttonText: '[ REGISTRAR 5V5 ]',
     rules: [
       'Doble eliminación oficial con Winners Bracket y Losers Bracket.',
-      'Servidor Santiago. Mapas oficiales del circuito competitivo.',
-      'Gran Final Bo3 al mejor de 3 mapas con casters y streaming.',
+      'Mapas oficiales del circuito competitivo.',
+      'Gran Final Bo3 al mejor de 3 mapas.',
     ],
   },
   {
