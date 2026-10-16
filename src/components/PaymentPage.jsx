@@ -410,51 +410,41 @@ export default function PaymentPage({ paymentId, onGoHome }) {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-black p-4 border-2 border-black">
+                  {/* 1. NÚMERO DE CUENTA PROTAGONISTA (Lo primero que copian en su app bancaria) */}
+                  <div className="p-3.5 bg-[#0C121D] border-2 border-[#FFE600] flex items-center justify-between gap-3 shadow-brutal-yellow">
+                    <div>
+                      <span className="font-pixel text-[8px] text-[#FFE600] block uppercase tracking-wider">
+                        NUMERO DE CUENTA // PICHINCHA
+                      </span>
+                      <strong className="text-white text-base sm:text-lg font-pixel tracking-widest select-all block mt-0.5">
+                        {BANK_INFO.accountNumber}
+                      </strong>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => copyToClipboard(BANK_INFO.accountNumber, 'account')}
+                      className="btn-arcade-press shadow-brutal-pink px-4 py-2 border-2 border-black bg-[#FFE600] text-black font-pixel text-[9px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer font-black shrink-0"
+                    >
+                      {copiedAccount ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedAccount ? '¡COPIADO!' : 'COPIAR'}</span>
+                    </button>
+                  </div>
+
+                  {/* 2. DATOS DE VERIFICACIÓN (Banco, Tipo de Cuenta, Titular) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-black p-3.5 border-2 border-black">
                     <div>
                       <span className="font-pixel text-[8px] text-slate-500 block uppercase">BANCO</span>
-                      <strong className="text-white text-sm font-cyber">{BANK_INFO.bank}</strong>
-                    </div>
-                    <div>
-                      <span className="font-pixel text-[8px] text-slate-500 block uppercase">TIPO DE CUENTA</span>
-                      <strong className="text-white text-sm font-cyber">{BANK_INFO.accountType}</strong>
+                      <strong className="text-white text-xs block font-bold font-cyber mt-0.5">{BANK_INFO.bank}</strong>
                     </div>
 
-                    <div className="sm:col-span-2 flex items-center justify-between p-3.5 bg-[#0C121D] border-2 border-black shadow-brutal-black">
-                      <div>
-                        <span className="font-pixel text-[8px] text-[#FFE600] block uppercase">NUMERO DE CUENTA</span>
-                        <strong className="text-white text-base sm:text-lg font-pixel tracking-wider">
-                          {BANK_INFO.accountNumber}
-                        </strong>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => copyToClipboard(BANK_INFO.accountNumber, 'account')}
-                        className="btn-arcade-press shadow-brutal-yellow px-3.5 py-2 border-2 border-black bg-[#FFE600] text-black font-pixel text-[9px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer font-black"
-                      >
-                        {copiedAccount ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span>{copiedAccount ? 'COPIADO' : 'COPIAR'}</span>
-                      </button>
+                    <div>
+                      <span className="font-pixel text-[8px] text-slate-500 block uppercase">TIPO DE CUENTA</span>
+                      <strong className="text-white text-xs block font-bold font-cyber mt-0.5">{BANK_INFO.accountType}</strong>
                     </div>
 
                     <div>
                       <span className="font-pixel text-[8px] text-slate-500 block uppercase">TITULAR</span>
-                      <strong className="text-white font-cyber text-sm">{BANK_INFO.holderName}</strong>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="truncate pr-2">
-                        <span className="font-pixel text-[8px] text-slate-500 block uppercase">CORREO</span>
-                        <strong className="text-slate-300 truncate text-xs block font-mono">{BANK_INFO.email}</strong>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => copyToClipboard(BANK_INFO.email, 'email')}
-                        className="btn-arcade-press p-2 border-2 border-black bg-black text-slate-300 hover:text-white transition cursor-pointer shrink-0"
-                        title="Copiar correo"
-                      >
-                        {copiedEmail ? <Check className="w-3.5 h-3.5 text-[#10B981]" /> : <Copy className="w-3.5 h-3.5" />}
-                      </button>
+                      <strong className="text-[#00F0FF] text-xs block font-bold font-cyber mt-0.5">{BANK_INFO.holderName}</strong>
                     </div>
                   </div>
                 </div>
