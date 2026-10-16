@@ -29,7 +29,6 @@ export default function RegistrationModal({
 
   // Form State
   const [teamName, setTeamName] = useState('');
-  const [ffModality, setFfModality] = useState('both'); // 'escuadras', 'solitario', 'both'
   const [captain, setCaptain] = useState({
     name: initialGamerTag || '',
     gameId: initialGamerTag || '',
@@ -70,7 +69,7 @@ export default function RegistrationModal({
     if (selectedGame === 'valorant') {
       totalCost = 5.00;
     } else if (selectedGame === 'free_fire') {
-      totalCost = (ffModality === 'solitario') ? 1.00 : 4.00;
+      totalCost = 4.00;
     } else if (selectedGame === 'fortnite') {
       totalCost = 2.00;
     } else if (selectedGame === 'clash_royale') {
@@ -172,7 +171,7 @@ export default function RegistrationModal({
         team_name: isFreeAgent ? `Individual (${captain.name})` : teamName,
         is_free_agent: isFreeAgent,
         modality: isFreeAgent ? 'individual' : (selectedGame === 'valorant' ? '5v5' : selectedGame === 'fortnite' ? 'duos' : selectedGame === 'clash_royale' ? '1v1' : 'escuadras'),
-        ff_modality: selectedGame === 'free_fire' ? (isFreeAgent ? 'individual' : ffModality) : null,
+        ff_modality: selectedGame === 'free_fire' ? (isFreeAgent ? 'individual' : 'escuadras') : null,
         captain_name: captain.name,
         captain_game_id: captain.gameId,
         captain_whatsapp: captain.whatsapp,
@@ -570,39 +569,6 @@ export default function RegistrationModal({
                     </button>
                   </div>
                 </div>
-
-                {/* Submodalidad Free Fire */}
-                {selectedGame === 'free_fire' && !isFreeAgent && (
-                  <div className="pt-3 border-t-2 border-white/10 space-y-2">
-                    <span className="font-pixel text-[8px] text-[#FFE600] uppercase block">
-                      MODALIDAD FREE FIRE PARA TU EQUIPO:
-                    </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setFfModality('escuadras')}
-                        className={`btn-arcade-press p-2.5 border-2 border-black text-left font-pixel text-[9px] cursor-pointer ${
-                          ffModality === 'escuadras'
-                            ? 'bg-[#FFE600] text-black font-black shadow-brutal-yellow'
-                            : 'bg-[#0E1524] text-slate-300 shadow-brutal-black'
-                        }`}
-                      >
-                        SOLO ESCUADRAS (4P - $4)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFfModality('both')}
-                        className={`btn-arcade-press p-2.5 border-2 border-black text-left font-pixel text-[9px] cursor-pointer ${
-                          ffModality === 'both'
-                            ? 'bg-[#FFE600] text-black font-black shadow-brutal-yellow'
-                            : 'bg-[#0E1524] text-slate-300 shadow-brutal-black'
-                        }`}
-                      >
-                        ESCUADRAS + INDIVIDUAL ($4)
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Nombre de Equipo */}
