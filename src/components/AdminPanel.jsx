@@ -18,8 +18,14 @@ import {
 } from '../lib/storage';
 import { GAMES } from '../data/tournamentData';
 
-export default function AdminPanel({ isOpen, onClose }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+export default function AdminPanel({ isOpen = true, onClose, isStandalone = false, onGoHome }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      return sessionStorage.getItem('compu_admin_authenticated') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
 
@@ -64,13 +70,23 @@ export default function AdminPanel({ isOpen, onClose }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Default master password for Compu League Staff
     if (passwordInput === 'compu2026' || passwordInput === 'admin2026') {
       setIsAuthenticated(true);
+      try {
+        sessionStorage.setItem('compu_admin_authenticated', 'true');
+      } catch {}
       setAuthError('');
     } else {
-      setAuthError('Contraseña incorrecta. (Clave por defecto: compu2026)');
+      setAuthError('Contraseña incorrecta. Inténtalo de nuevo.');
     }
+  };
+
+  const handleLogout = () => {
+    try {
+      sessionStorage.removeItem('compu_admin_authenticated');
+    } catch {}
+    setIsAuthenticated(false);
+    setPasswordInput('');
   };
 
   const handleStatusChange = async (id, newStatus) => {
@@ -205,80 +221,125 @@ export default function AdminPanel({ isOpen, onClose }) {
     return true;
   });
 
-  if (!isOpen) return null;
+  if (!isStandalone && !isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-6xl bg-[#1a2742] border-4 border-[#364e78] shadow-2xl overflow-hidden my-6 max-h-[92vh] flex flex-col font-['Press_Start_2P',monospace] select-none text-slate-100">
-        
-        {/* Top Header */}
-        <div className="px-6 py-4 bg-[#151f33] border-b-2 border-[#2f4469] flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#253961] border-2 border-yellow-400/50 flex items-center justify-center text-yellow-300">
-              <Lock className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base sm:text-lg font-bold uppercase tracking-wide text-white flex items-center gap-2 font-['Silkscreen',monospace]">
-                Panel de Administración Staff
-                <span className="text-[10px] font-mono px-2 py-0.5 bg-[#253961] border border-[#476799] text-yellow-300">
-                  Compu League 2026
-                </span>
-              </h3>
-              <p className="text-[10px] text-[#a5badb] font-mono">
-                Gestión de inscripciones, comprobantes Banco Pichincha, brackets y salas en vivo.
-              </p>
-            </div>
-          </div>
+  const headerBar = (
+    <div className="px-4 sm:px-6 py-4 bg-[#121929] border-b-2 border-[#223252] flex items-center justify-between shrink-0 flex-wrap gap-3">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-[#1D2942] border-2 border-[#FFE600] flex items-center justify-center text-[#FFE600] shadow-[0_0_10px_rgba(255,230,0,0.3)] shrink-0">
+          <Lock className="w-5 h-5" />
+        </div>
+        <div>
+          <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wide text-white flex items-center gap-2">
+            Panel Staff Admin
+            <span className="text-[8px] font-pixel px-1.5 py-0.5 bg-[#FFE600] text-black font-black uppercase">
+              Compu League 2026
+            </span>
+          </h3>
+          <p className="text-[10px] text-slate-400 font-sans hidden sm:block">
+            Gestión de inscripciones, validación de transferencias Banco Pichincha y fixtures.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        {isAuthenticated && (
+          <>
+            <button
+              type="button"
+              onClick={loadAllData}
+              className="px-2.5 py-1.5 bg-[#1B273F] hover:bg-[#28395B] border border-cyan-500/40 text-cyan-300 font-pixel text-[8px] sm:text-[9px] uppercase transition cursor-pointer"
+              title="Recargar datos"
+            >
+              RECARGAR
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="px-2.5 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-pixel text-[8px] sm:text-[9px] uppercase transition cursor-pointer"
+              title="Cerrar sesión"
+            >
+              CERRAR SESIÓN
+            </button>
+          </>
+        )}
+
+        {isStandalone ? (
           <button
+            type="button"
+            onClick={onGoHome || (() => { window.location.href = '/'; })}
+            className="px-3 py-1.5 bg-[#FFE600] hover:bg-white text-black font-pixel font-bold text-[8px] sm:text-[9px] uppercase transition cursor-pointer flex items-center gap-1"
+          >
+            ← IR A LA WEB
+          </button>
+        ) : (
+          <button
+            type="button"
             onClick={onClose}
             className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="w-6 h-6" />
           </button>
+        )}
+      </div>
+    </div>
+  );
+
+  const loginScreen = (
+    <div className={isStandalone ? "flex-1 flex items-center justify-center p-4" : "p-8 sm:p-12 max-w-md mx-auto text-center space-y-6"}>
+      <div className="w-full max-w-md mx-auto text-center space-y-6 bg-[#121929] border-4 border-black p-6 sm:p-8 shadow-brutal-yellow">
+        <div className="w-16 h-16 bg-[#FFE600] text-black border-2 border-black flex items-center justify-center mx-auto shadow-brutal-black">
+          <Lock className="w-8 h-8 stroke-[2.5]" />
+        </div>
+        <div className="space-y-1">
+          <h4 className="text-xl sm:text-2xl font-black text-white uppercase tracking-wide">
+            ACCESO RESTRINGIDO
+          </h4>
+          <p className="text-xs text-slate-300 font-sans">
+            Área reservada para el Staff de Compu League E-Sports.
+          </p>
         </div>
 
-        {/* Content */}
-        {!isAuthenticated ? (
-          /* LOGIN SCREEN */
-          <div className="p-8 sm:p-12 max-w-md mx-auto text-center space-y-6">
-            <div className="w-16 h-16 rounded-none bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center mx-auto text-cyan-300">
-              <Lock className="w-8 h-8" />
+        <form onSubmit={handleLogin} className="space-y-4">
+          {authError && (
+            <div className="p-3 bg-rose-950/80 border-2 border-rose-500 text-rose-300 text-xs font-sans flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>{authError}</span>
             </div>
-            <div>
-              <h4 className="text-2xl font-black text-white uppercase">Acceso Autorizado</h4>
-              <p className="text-xs text-slate-400 mt-1">
-                Ingresa la clave de administrador del torneo para gestionar inscripciones y resultados.
-              </p>
-            </div>
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              {authError && (
-                <div className="p-3 rounded-none bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs">
-                  {authError}
-                </div>
-              )}
-              <input
-                type="password"
-                required
-                placeholder="Contraseña del staff (ej: compu2026)"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-4 py-3 rounded-none bg-slate-900 border border-slate-700 text-white text-center tracking-widest text-base focus:border-cyan-400 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="w-full py-3 rounded-none font-bold text-sm uppercase tracking-wider text-slate-950 bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-yellow-300 hover:to-amber-300 transition shadow-lg shadow-amber-500/20"
-              >
-                Ingresar al Panel
-              </button>
-              <p className="text-[11px] text-slate-500">
-                Clave por defecto: <code className="text-cyan-400">compu2026</code>
-              </p>
-            </form>
+          )}
+          <div>
+            <input
+              type="password"
+              required
+              placeholder="Contraseña del staff..."
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              className="w-full px-4 py-3 bg-black border-2 border-white/20 text-white text-center font-mono text-base focus:border-[#FFE600] focus:outline-none placeholder:text-slate-600"
+            />
           </div>
-        ) : (
-          /* AUTHENTICATED ADMIN DASHBOARD */
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+          <button
+            type="submit"
+            className="w-full py-3.5 font-pixel font-black text-xs uppercase tracking-wider text-black bg-[#FFE600] hover:bg-white transition border-2 border-black shadow-brutal-black cursor-pointer"
+          >
+            [ INGRESAR AL PANEL ]
+          </button>
+        </form>
+
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={onGoHome || onClose || (() => { window.location.href = '/'; })}
+            className="text-slate-400 hover:text-[#FFE600] text-[9px] font-pixel underline uppercase cursor-pointer transition"
+          >
+            ← Volver a la página principal
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  const dashboardContent = (
+    <div className={isStandalone ? "flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6 overflow-y-auto" : "flex-1 overflow-y-auto p-4 sm:p-6 space-y-6"}>
             
             {/* Quick Metrics Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -829,42 +890,56 @@ export default function AdminPanel({ isOpen, onClose }) {
             )}
 
           </div>
-        )}
+  );
 
-      </div>
-
-      {/* FULL RECEIPT ZOOM MODAL */}
-      {selectedReceipt && (
-        <div className="fixed inset-0 z-60 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="relative max-w-lg w-full bg-slate-900 border border-cyan-500/40 rounded-none p-4 shadow-2xl">
-            <button
-              onClick={() => setSelectedReceipt(null)}
-              className="absolute top-4 right-4 p-2 rounded-none bg-slate-800 text-white hover:bg-slate-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <h4 className="text-sm font-bold text-white mb-3">
-              Comprobante de Transferencia Bancaria:
-            </h4>
-            <div className="max-h-[75vh] overflow-auto rounded-none border border-slate-800 flex items-center justify-center bg-black/50 p-2">
-              <img
-                src={selectedReceipt}
-                alt="Comprobante en detalle"
-                className="max-w-full h-auto object-contain rounded-none"
-              />
-            </div>
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setSelectedReceipt(null)}
-                className="px-4 py-2 rounded-none bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white"
-              >
-                Cerrar Visor
-              </button>
-            </div>
-          </div>
+  const receiptModal = selectedReceipt && (
+    <div className="fixed inset-0 z-60 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
+      <div className="relative max-w-lg w-full bg-slate-900 border border-cyan-500/40 rounded-none p-4 shadow-2xl">
+        <button
+          onClick={() => setSelectedReceipt(null)}
+          className="absolute top-4 right-4 p-2 rounded-none bg-slate-800 text-white hover:bg-slate-700 cursor-pointer"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <h4 className="text-sm font-bold text-white mb-3">
+          Comprobante de Transferencia Bancaria:
+        </h4>
+        <div className="max-h-[75vh] overflow-auto rounded-none border border-slate-800 flex items-center justify-center bg-black/50 p-2">
+          <img
+            src={selectedReceipt}
+            alt="Comprobante en detalle"
+            className="max-w-full h-auto object-contain rounded-none"
+          />
         </div>
-      )}
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={() => setSelectedReceipt(null)}
+            className="px-4 py-2 rounded-none bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white cursor-pointer"
+          >
+            Cerrar Visor
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
+  if (isStandalone) {
+    return (
+      <div className="min-h-screen bg-[#0A0E1A] text-slate-100 flex flex-col font-['Press_Start_2P',monospace] select-none">
+        {headerBar}
+        {!isAuthenticated ? loginScreen : dashboardContent}
+        {receiptModal}
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-in fade-in duration-200">
+      <div className="relative w-full max-w-6xl bg-[#1a2742] border-4 border-[#364e78] shadow-2xl overflow-hidden my-6 max-h-[92vh] flex flex-col font-['Press_Start_2P',monospace] select-none text-slate-100">
+        {headerBar}
+        {!isAuthenticated ? loginScreen : dashboardContent}
+      </div>
+      {receiptModal}
     </div>
   );
 }

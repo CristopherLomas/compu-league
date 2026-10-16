@@ -38,25 +38,28 @@ function App() {
 
   const initialPaymentId = getPaymentIdFromLocation();
 
-  // Check if admin panel was requested in URL (/admin, ?page=admin, ?admin=true)
+  // Check if admin panel was requested in URL (/admin, ?page=admin, ?admin=true, #/admin)
   const initialIsAdmin = (() => {
     try {
       const path = window.location.pathname.toLowerCase();
       if (path === '/admin' || path.startsWith('/admin/')) return true;
       const params = new URLSearchParams(window.location.search);
-      return params.get('page') === 'admin' || params.has('admin');
+      if (params.get('page') === 'admin' || params.has('admin')) return true;
+      if (window.location.hash === '#/admin' || window.location.hash === '#admin') return true;
+      return false;
     } catch {
       return false;
     }
   })();
 
-  // Determine initial page from URL (?page=brackets, cronograma, participantes, pago or /pago/:id)
+  // Determine initial page from URL (?page=brackets, cronograma, participantes, pago or /pago/:id or /admin)
   const initialPage = (() => {
     try {
+      if (initialIsAdmin) return 'admin';
       if (initialPaymentId) return 'pago';
       const params = new URLSearchParams(window.location.search);
       const page = params.get('page');
-      if (['brackets', 'cronograma', 'participantes', 'pago'].includes(page)) {
+      if (['brackets', 'cronograma', 'participantes', 'pago', 'admin'].includes(page)) {
         return page;
       }
       return 'inicio';
@@ -91,7 +94,6 @@ function App() {
 
   // Modal dialog states
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(initialIsAdmin);
   const [selectedGameForModal, setSelectedGameForModal] = useState('valorant');
   const [editingRegistration, setEditingRegistration] = useState(null);
 
@@ -139,6 +141,11 @@ function App() {
   useEffect(() => {
     const handlePopState = () => {
       try {
+        const path = window.location.pathname.toLowerCase();
+        if (path === '/admin' || path.startsWith('/admin/')) {
+          setCurrentView('admin');
+          return;
+        }
         const payId = getPaymentIdFromLocation();
         if (payId) {
           setActivePaymentId(payId);
@@ -147,6 +154,10 @@ function App() {
           return;
         }
         const params = new URLSearchParams(window.location.search);
+        if (params.get('page') === 'admin' || params.has('admin')) {
+          setCurrentView('admin');
+          return;
+        }
         const page = params.get('page') || 'inicio';
         setCurrentView(page);
         setActiveSection(page);
@@ -296,6 +307,23 @@ function App() {
   };
 
   // =============================================================
+  // SCREEN 0: STANDALONE ADMIN PAGE (NO PUBLIC ACCESS, DIRECT LINK ONLY)
+  // =============================================================
+  if (currentView === 'admin') {
+    return (
+      <AdminPanel
+        isStandalone={true}
+        isOpen={true}
+        onGoHome={() => {
+          setCurrentView('inicio');
+          setActiveSection('inicio');
+          window.history.pushState({}, '', '/');
+        }}
+      />
+    );
+  }
+
+  // =============================================================
   // SCREEN 1: PURE UNDERTALE TITLE & NAME SCREEN (CERO SCROLL)
   // =============================================================
   if (!hasEnteredGame) {
@@ -405,7 +433,6 @@ function App() {
       {/* Real Page Footer */}
       <Footer
         onOpenRegister={() => handleOpenRegister('valorant')}
-        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* Official Registration Modal */}
@@ -420,12 +447,6 @@ function App() {
         onNavigateToPayment={navigateToPayment}
         editingRegistration={editingRegistration}
         onRegistrationUpdated={handleRegistrationUpdated}
-      />
-
-      {/* Staff Admin Panel Modal */}
-      <AdminPanel
-        isOpen={isAdminOpen}
-        onClose={() => setIsAdminOpen(false)}
       />
 
       {/* Retro Undertale-style Loading Screen on Page Transitions */}

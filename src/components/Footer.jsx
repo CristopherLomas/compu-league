@@ -2,7 +2,7 @@ import React from 'react';
 import { MessageSquare, Phone, ArrowUp, Coins, Zap, Sparkles, Shield, Flame, Crosshair, Crown } from 'lucide-react';
 import { CONTACT_INFO } from '../data/tournamentData';
 
-export default function Footer({ onOpenAdmin, onOpenRegister }) {
+export default function Footer({ onOpenRegister }) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -149,15 +149,6 @@ export default function Footer({ onOpenAdmin, onOpenRegister }) {
             <span>© 2026 COMPU LEAGUE E-SPORTS</span>
             <span>•</span>
             <span className="text-[#FFE600]">CARRERA DE COMPUTACIÓN</span>
-            <span>•</span>
-            <button
-              type="button"
-              onClick={onOpenAdmin}
-              className="text-slate-400 hover:text-[#FFE600] flex items-center gap-1 cursor-pointer transition underline uppercase tracking-wider"
-            >
-              <Shield className="w-3 h-3 text-[#FFE600]" />
-              <span>STAFF ADMIN</span>
-            </button>
           </div>
 
           <button

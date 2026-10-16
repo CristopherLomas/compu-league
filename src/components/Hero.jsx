@@ -188,15 +188,6 @@ export default function Hero({
             <Clock className="w-3.5 h-3.5 text-amber-400" />
             <span>{timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m</span>
           </div>
-
-          {/* Staff Lock Button */}
-          <button
-            onClick={onOpenAdmin}
-            title="Panel de Administración"
-            className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-400 hover:text-white transition cursor-pointer"
-          >
-            <Lock className="w-4 h-4" />
-          </button>
         </div>
 
       </header>
