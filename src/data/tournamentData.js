@@ -26,7 +26,7 @@ export const GAMES = [
   {
     id: 'valorant',
     name: 'VALORANT',
-    badge: '5v5 TACTICO',
+    badge: 'SHOOTER TACTICO',
     color: '#ff4655',
     accentColor: 'from-rose-500 to-red-600',
     borderColor: 'border-rose-500/40',
@@ -46,7 +46,7 @@ export const GAMES = [
   {
     id: 'free_fire',
     name: 'FREE FIRE',
-    badge: 'ESCUADRAS / SOLO',
+    badge: 'BATTLE ROYALE',
     color: '#f59e0b',
     accentColor: 'from-amber-500 to-yellow-600',
     borderColor: 'border-amber-500/40',
@@ -66,7 +66,7 @@ export const GAMES = [
   {
     id: 'fortnite',
     name: 'FORTNITE',
-    badge: 'DUOS',
+    badge: 'BATTLE ROYALE',
     color: '#3b82f6',
     accentColor: 'from-blue-500 to-cyan-600',
     borderColor: 'border-blue-500/40',
@@ -86,7 +86,7 @@ export const GAMES = [
   {
     id: 'clash_royale',
     name: 'CLASH ROYALE',
-    badge: '1v1 ESTRATEGIA',
+    badge: 'ESTRATEGIA 1V1',
     color: '#06b6d4',
     accentColor: 'from-cyan-500 to-teal-600',
     borderColor: 'border-cyan-500/40',

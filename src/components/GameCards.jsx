@@ -5,9 +5,9 @@ import { GameLogo } from './GameLogo';
 const ARCADE_GAMES = [
   {
     id: 'valorant',
-    slot: 'SLOT 01 // 5v5 TACTICO',
+    slot: 'SLOT 01 // 5v5',
     name: 'VALORANT',
-    badge: 'WINNERS & LOSERS',
+    badge: 'SHOOTER TACTICO',
     accentColor: '#FF0055',
     bgBorder: 'border-[#FF0055]',
     shadowClass: 'shadow-brutal-pink',
@@ -29,9 +29,9 @@ const ARCADE_GAMES = [
   },
   {
     id: 'free_fire',
-    slot: 'SLOT 02 // ESCUADRAS',
+    slot: 'SLOT 02 // ESCUADRAS & SOLO',
     name: 'FREE FIRE',
-    badge: 'ESCUADRAS / SOLO',
+    badge: 'BATTLE ROYALE',
     accentColor: '#FFE600',
     bgBorder: 'border-[#FFE600]',
     shadowClass: 'shadow-brutal-yellow',
@@ -53,9 +53,9 @@ const ARCADE_GAMES = [
   },
   {
     id: 'fortnite',
-    slot: 'SLOT 03 // DUOS CROSSPLAY',
+    slot: 'SLOT 03 // DUOS',
     name: 'FORTNITE',
-    badge: 'CROSSPLAY TOTAL',
+    badge: 'BATTLE ROYALE',
     accentColor: '#00F0FF',
     bgBorder: 'border-[#00F0FF]',
     shadowClass: 'shadow-brutal-cyan',
@@ -77,9 +77,9 @@ const ARCADE_GAMES = [
   },
   {
     id: 'clash_royale',
-    slot: 'SLOT 04 // ESTRATEGIA 1v1',
+    slot: 'SLOT 04 // DUELOS BO3',
     name: 'CLASH ROYALE',
-    badge: 'DUELOS BO3',
+    badge: 'ESTRATEGIA 1V1',
     accentColor: '#A855F7',
     bgBorder: 'border-[#A855F7]',
     shadowClass: 'shadow-brutal-purple',
@@ -170,7 +170,7 @@ export default function GameCards({ onSelectGame }) {
                     {game.slot}
                   </span>
                   <span 
-                    className="px-2 py-0.5 border text-black font-black"
+                    className="px-2 py-0.5 border text-black font-black whitespace-nowrap shrink-0"
                     style={{ backgroundColor: game.accentColor, borderColor: '#000' }}
                   >
                     {game.badge}
