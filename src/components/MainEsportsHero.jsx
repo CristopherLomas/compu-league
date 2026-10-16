@@ -145,8 +145,8 @@ export default function MainEsportsHero({
             </p>
 
             {/* Neo-Brutalist Arcade Neon Prize Box (Prende y apaga con estilo retro arcade) */}
-            <div className="w-full bg-[#0D121D] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2 animate-arcade-neon-box">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-wider uppercase leading-none whitespace-nowrap animate-arcade-neon-title">
+            <div className="w-full max-w-full min-w-0 bg-[#0D121D] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2 animate-arcade-neon-box overflow-hidden">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-wider uppercase leading-none whitespace-nowrap animate-arcade-neon-title truncate max-w-full">
                 PREMIOS
               </div>
 
