@@ -93,7 +93,12 @@ CREATE POLICY "Permitir lectura publica de registros" ON public.registrations
 
 DROP POLICY IF EXISTS "Permitir actualizar comprobante por UUID" ON public.registrations;
 CREATE POLICY "Permitir actualizar comprobante por UUID" ON public.registrations
-    FOR UPDATE USING (true) WITH CHECK (true);
+    FOR UPDATE USING (true)
+    WITH CHECK (
+        -- SEGURIDAD: Previene que usuarios anónimos puedan auto-aprobarse a 'approved'
+        -- Solo el staff o peticiones internas pueden cambiar a 'approved'
+        status IS NULL OR status IN ('pending', 'payment_pending', 'rejected', 'unpaid')
+    );
 
 -- TOURNAMENT MATCHES
 DROP POLICY IF EXISTS "Lectura publica de brackets" ON public.tournament_matches;
@@ -129,7 +134,10 @@ ON CONFLICT (id) DO NOTHING;
 
 DROP POLICY IF EXISTS "Permitir subida publica de comprobantes" ON storage.objects;
 CREATE POLICY "Permitir subida publica de comprobantes" ON storage.objects
-    FOR INSERT WITH CHECK (bucket_id = 'receipts');
+    FOR INSERT WITH CHECK (
+        bucket_id = 'receipts'
+        AND (LOWER(storage.extension(name)) IN ('jpg', 'jpeg', 'png', 'webp'))
+    );
 
 DROP POLICY IF EXISTS "Permitir lectura publica de comprobantes" ON storage.objects;
 CREATE POLICY "Permitir lectura publica de comprobantes" ON storage.objects

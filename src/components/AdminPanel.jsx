@@ -1121,14 +1121,16 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
           />
         </div>
         <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-800 shrink-0">
-          <a
-            href={selectedReceipt}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1.5 bg-cyan-950 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-900 transition flex items-center gap-1"
-          >
-            Abrir original ↗
-          </a>
+          {typeof selectedReceipt === 'string' && (selectedReceipt.startsWith('http://') || selectedReceipt.startsWith('https://') || selectedReceipt.startsWith('data:image/') || selectedReceipt.startsWith('/assets/')) && (
+            <a
+              href={selectedReceipt}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 bg-cyan-950 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-900 transition flex items-center gap-1"
+            >
+              Abrir original ↗
+            </a>
+          )}
           <button
             onClick={() => setSelectedReceipt(null)}
             className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white cursor-pointer"

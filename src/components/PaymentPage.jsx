@@ -82,6 +82,11 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
         setErrorMsg('El archivo no debe superar los 5MB.');
         return;
       }
+      const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+      if (!allowedMimes.includes(file.type?.toLowerCase())) {
+        setErrorMsg('Formato de comprobante no válido. Solo se admiten imágenes JPG, PNG o WEBP.');
+        return;
+      }
       setErrorMsg('');
       setReceiptFile(file);
       const reader = new FileReader();

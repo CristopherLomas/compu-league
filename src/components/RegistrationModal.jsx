@@ -141,6 +141,11 @@ export default function RegistrationModal({
         setErrorMessage('La imagen del comprobante no debe superar los 5MB.');
         return;
       }
+      const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+      if (!allowedMimes.includes(file.type?.toLowerCase())) {
+        setErrorMessage('Formato no válido. Solo se admiten fotos o capturas (JPG, PNG, WEBP).');
+        return;
+      }
       setReceiptFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {

@@ -572,14 +572,26 @@ export const uploadReceiptToSupabase = async (file, registrationId) => {
   const supabase = getSupabaseClient();
   if (!supabase || !file) return null;
 
+  // Validación estricta de seguridad: Solo imágenes legítimas (JPG, PNG, WEBP)
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+  const fileType = (file.type || '').toLowerCase();
+  if (fileType && !allowedMimeTypes.includes(fileType)) {
+    console.warn('Seguridad: Formato de archivo rechazado. Solo se permiten imágenes JPG, PNG o WEBP.');
+    return null;
+  }
+
+  // Sanitización de extensión para evitar inyecciones ejecutables o scripts
+  const rawExt = file.name ? file.name.split('.').pop().toLowerCase() : 'png';
+  const safeExt = ['jpg', 'jpeg', 'png', 'webp'].includes(rawExt) ? rawExt : 'png';
+
   try {
-    const fileExt = file.name ? file.name.split('.').pop() : 'png';
-    const fileName = `${registrationId || generateUUID()}-${Date.now()}.${fileExt}`;
+    const fileName = `${registrationId || generateUUID()}-${Date.now()}.${safeExt}`;
     const filePath = `receipts/${fileName}`;
 
     const { data, error } = await supabase.storage
       .from('receipts')
       .upload(filePath, file, {
+        contentType: fileType || 'image/png',
         cacheControl: '3600',
         upsert: true
       });
