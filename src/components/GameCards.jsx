@@ -135,11 +135,11 @@ export default function GameCards({ onSelectGame }) {
               </div>
 
               <h2 className="text-3xl sm:text-5xl font-black font-display uppercase tracking-tight text-white leading-none">
-                SELECCION DE JUEGOS <span className="text-[#FFE600]">// CARTUCHOS ARCADE</span>
+                SELECCION DE <span className="text-[#FFE600]">JUEGOS</span>
               </h2>
 
               <p className="text-slate-300 font-cyber text-xs sm:text-sm max-w-2xl">
-                Cada videojuego cuenta con su propio fixture, reglas y premios. Inscribe a tu equipo en el juego correspondiente.
+                Cada videojuego cuenta con su propio fixture y premios. Inscribe a tu equipo en el juego correspondiente.
               </p>
             </div>
 
