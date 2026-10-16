@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Coins, ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert } from 'lucide-react';
 import { CONTACT_INFO } from '../data/tournamentData';
 import { GameLogo } from './GameLogo';
 
@@ -146,12 +146,7 @@ export default function MainEsportsHero({
 
             {/* Neo-Brutalist Prize Box (Centrado, compacto y equilibrado) */}
             <div className="w-full bg-[#0D121D] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2">
-              <div className="flex items-center justify-center gap-2 font-pixel text-[10px] text-[#FFE600] tracking-wider uppercase">
-                <Coins className="w-4 h-4 text-[#FFE600] shrink-0" />
-                <span>POZO DEL TORNEO</span>
-              </div>
-
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-white tracking-wider uppercase leading-none drop-shadow-[2px_2px_0px_#000] whitespace-nowrap">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-[#FFE600] tracking-wider uppercase leading-none drop-shadow-[2px_2px_0px_#000] whitespace-nowrap">
                 PREMIOS
               </div>
 
