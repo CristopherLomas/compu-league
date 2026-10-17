@@ -17,7 +17,8 @@ export default function ParticipantsSection({ onOpenRegister }) {
     try {
       const data = await getPublicRegistrations();
       if (Array.isArray(data)) {
-        setRegistrations(data);
+        // Excluir terminantemente registros rechazados de la vista pública
+        setRegistrations(data.filter((r) => r.status !== 'rejected'));
       }
     } catch (err) {
       console.error('Error cargando participantes:', err);
@@ -30,18 +31,20 @@ export default function ParticipantsSection({ onOpenRegister }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Filter registrations
-  const filtered = registrations.map((reg) => {
-    if (reg.game === 'clash_royale') {
-      return {
-        ...reg,
-        is_free_agent: true,
-        members: [],
-        modality: '1v1',
-      };
-    }
-    return reg;
-  }).filter((reg) => {
+  // Filter registrations (excluye cualquier inscripción rechazada)
+  const filtered = registrations
+    .filter((r) => r.status !== 'rejected')
+    .map((reg) => {
+      if (reg.game === 'clash_royale') {
+        return {
+          ...reg,
+          is_free_agent: true,
+          members: [],
+          modality: '1v1',
+        };
+      }
+      return reg;
+    }).filter((reg) => {
     // Game filter
     if (selectedGame !== 'all' && reg.game !== selectedGame) {
       return false;
