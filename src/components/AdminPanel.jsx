@@ -77,10 +77,9 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-      // Hashes criptográficos SHA-256 (no almacena texto plano en el cliente)
+      // Hash criptográfico SHA-256 de la nueva contraseña segura (no almacena texto plano)
       if (
-        hashHex === '112e778720ebbe3c308377ad0ece44ba937153c6a224769269b294085b2591fa' || 
-        hashHex === '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6'
+        hashHex === '3514e4509fa0bb3161fe1833aed6966cae355a016144ba3251a0078ed8f233be'
       ) {
         setIsAuthenticated(true);
         try {
