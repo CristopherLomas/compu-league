@@ -75,7 +75,7 @@ export default function MainEsportsHero({
           <span className="tracking-wider">★ 4, 5 Y 6 DE NOVIEMBRE ★</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FORTNITE DUOS</span>
-          <span className="bg-[#FF0055] text-white px-2 py-0.5 animate-arcade-blink">PREMIOS</span>
+          <span className="bg-[#FF0055] text-white px-2 py-0.5 font-bold">PREMIOS</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">CLASH ROYALE 1v1</span>
           <span className="tracking-wider">★ INSCRIPCION: $1 POR JUGADOR ★</span>
@@ -91,7 +91,7 @@ export default function MainEsportsHero({
           <span className="tracking-wider">★ 4, 5 Y 6 DE NOVIEMBRE ★</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FORTNITE DUOS</span>
-          <span className="bg-[#FF0055] text-white px-2 py-0.5 animate-arcade-blink">PREMIOS</span>
+          <span className="bg-[#FF0055] text-white px-2 py-0.5 font-bold">PREMIOS</span>
           
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">CLASH ROYALE 1v1</span>
           <span className="tracking-wider">★ INSCRIPCION: $1 POR JUGADOR ★</span>
@@ -144,14 +144,14 @@ export default function MainEsportsHero({
               El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
             </p>
 
-            {/* Neo-Brutalist Arcade Neon Prize Box (Prende y apaga con estilo retro arcade) */}
-            <div className="w-full max-w-full min-w-0 bg-[#0D121D] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2 animate-arcade-neon-box overflow-hidden">
-              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-wider uppercase leading-none whitespace-nowrap animate-arcade-neon-title truncate max-w-full">
+            {/* Neo-Brutalist Elegant Neon Prize Box with Soft Glow */}
+            <div className="w-full max-w-full min-w-0 bg-[#0D1322] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2 animate-neon-box-glow overflow-hidden">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-wider uppercase leading-none whitespace-nowrap text-[#FFE600] animate-neon-text-glow truncate max-w-full">
                 PREMIOS
               </div>
 
               <p className="text-xs sm:text-sm text-slate-200 font-cyber leading-relaxed max-w-lg">
-                Recompensas para los mejores equipos y jugadores.
+                Premio acumulado de inscripciones. Recompensas para los mejores equipos y jugadores del torneo.
               </p>
             </div>
 

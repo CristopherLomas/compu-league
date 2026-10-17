@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Check, Copy, Upload, AlertCircle, 
   Zap, Phone, Link2, ExternalLink, Send, 
-  CheckCircle2, Clock, ArrowRight, Terminal, Coins, CreditCard, Crown
+  CheckCircle2, Clock, ArrowRight, ArrowLeft, Terminal, Coins, CreditCard, Crown
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BANK_INFO, GAMES, CONTACT_INFO } from '../data/tournamentData';
@@ -20,6 +20,7 @@ export default function RegistrationModal({
 }) {
   const [selectedGame, setSelectedGame] = useState(preselectedGame || 'valorant');
   const [isFreeAgent, setIsFreeAgent] = useState(preselectedGame === 'clash_royale');
+  const [currentStep, setCurrentStep] = useState(1); // 1: Juego & Modalidad, 2: Roster, 3: Pago
   const [paymentMode, setPaymentMode] = useState(null); // null | 'now' | 'later'
   const [copiedAccount, setCopiedAccount] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -29,11 +30,11 @@ export default function RegistrationModal({
   const [successMode, setSuccessMode] = useState('now');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Form State
+  // Form State (Inicia siempre vacío para no arrastrar apodos de prueba)
   const [teamName, setTeamName] = useState('');
   const [captain, setCaptain] = useState({
-    name: initialGamerTag || '',
-    gameId: initialGamerTag || '',
+    name: '',
+    gameId: '',
     whatsapp: '',
     email: '',
     discord: '',
@@ -77,6 +78,7 @@ export default function RegistrationModal({
       setReceiptPreview(editingRegistration.receipt_image || editingRegistration.receipt_url || null);
       setErrorMessage('');
       setSuccessData(null);
+      setCurrentStep(1);
     } else if (isOpen && !editingRegistration) {
       if (preselectedGame) {
         setSelectedGame(preselectedGame);
@@ -84,13 +86,25 @@ export default function RegistrationModal({
           setIsFreeAgent(true);
         }
       }
-      if (initialGamerTag) {
-        setCaptain(prev => ({
-          ...prev,
-          name: prev.name || initialGamerTag,
-          gameId: prev.gameId || initialGamerTag
-        }));
-      }
+      // NUNCA prellenar con el apodo de la primera pantalla
+      setCaptain({
+        name: '',
+        gameId: '',
+        whatsapp: '',
+        email: '',
+        discord: '',
+      });
+      setTeamName('');
+      setMembers([
+        { name: '', gameId: '', whatsapp: '', isSubstitute: false }
+      ]);
+      setHasSubstitute(false);
+      setPaymentMode(null);
+      setReceiptPreview(null);
+      setReceiptFile(null);
+      setErrorMessage('');
+      setSuccessData(null);
+      setCurrentStep(1);
     }
   }, [isOpen, editingRegistration]);
 
@@ -107,6 +121,7 @@ export default function RegistrationModal({
       setReceiptPreview(null);
       setReceiptFile(null);
       setSuccessData(null);
+      setCurrentStep(1);
     }
   }, [isOpen]);
 
@@ -180,36 +195,41 @@ export default function RegistrationModal({
     if (e && e.preventDefault) e.preventDefault();
     setErrorMessage('');
 
-    const targetMode = forcedMode || paymentMode || (editingRegistration ? 'later' : null);
-
-    if (!targetMode) {
-      setErrorMessage('Por favor selecciona si deseas PAGAR AHORA o PAGAR DESPUÉS para continuar.');
+    if (!isSoloGame && !teamName.trim()) {
+      setErrorMessage('Por favor ingresa el nombre de tu equipo para continuar.');
+      setCurrentStep(1);
       return;
     }
 
     if (!captain.name.trim() || !captain.gameId.trim() || !captain.whatsapp.trim()) {
-      setErrorMessage('Por favor completa todos los datos obligatorios del Capitán / Jugador principal.');
+      setErrorMessage('Por favor completa todos los datos obligatorios del Capitán / Jugador principal en el Paso 2.');
+      setCurrentStep(2);
       return;
     }
 
     if (!isSoloGame) {
-      if (!teamName.trim()) {
-        setErrorMessage('Por favor ingresa el nombre de tu equipo.');
-        return;
-      }
-
       const requiredCount = selectedGame === 'valorant' ? 4 : selectedGame === 'free_fire' ? 3 : 1;
       for (let i = 0; i < requiredCount; i++) {
         const m = members[i];
         if (!m || !m.name?.trim() || !m.gameId?.trim() || !m.whatsapp?.trim()) {
-          setErrorMessage(`Por favor completa todos los datos del Jugador #${i + 2}.`);
+          setErrorMessage(`Por favor completa todos los datos del Jugador #${i + 2} en el Paso 2.`);
+          setCurrentStep(2);
           return;
         }
       }
     }
 
+    const targetMode = forcedMode || paymentMode || (editingRegistration ? 'later' : null);
+
+    if (!targetMode) {
+      setErrorMessage('Por favor selecciona si deseas PAGAR AHORA o PAGAR DESPUÉS en el Paso 3.');
+      setCurrentStep(3);
+      return;
+    }
+
     if (!editingRegistration && targetMode === 'now' && !receiptPreview) {
-      setErrorMessage('Para pagar ahora, por favor adjunta la captura del comprobante bancario. O pulsa en PAGAR DESPUÉS para pre-registrarte sin comprobante en este momento.');
+      setErrorMessage('Para pagar ahora, por favor adjunta la captura del comprobante bancario. O pulsa en PAGAR DESPUÉS para apartar tu cupo en este momento.');
+      setCurrentStep(3);
       return;
     }
 
@@ -655,551 +675,736 @@ export default function RegistrationModal({
             /* ======================================================== */
             /* REGISTRATION FORM                                        */
             /* ======================================================== */
-            <form onSubmit={(e) => handleSubmit(e, paymentMode)} className="space-y-6">
+            <form onSubmit={(e) => handleSubmit(e, paymentMode)} className="space-y-5">
               
+              {/* Wizard Step Navigation Tabs */}
+              <div className="grid grid-cols-3 gap-2 p-2 bg-black border-2 border-black">
+                <button
+                  type="button"
+                  onClick={() => { setErrorMessage(''); setCurrentStep(1); }}
+                  className={`p-2.5 border font-pixel text-[8px] sm:text-[9px] uppercase flex items-center justify-center gap-1.5 cursor-pointer transition ${
+                    currentStep === 1
+                      ? 'border-[#FFE600] bg-[#FFE600] text-black font-black shadow-brutal-yellow'
+                      : currentStep > 1
+                      ? 'border-[#10B981] bg-[#10B981]/20 text-[#10B981]'
+                      : 'border-white/10 text-slate-500 bg-transparent'
+                  }`}
+                >
+                  <span>{currentStep > 1 ? '✓' : '1.'}</span>
+                  <span className="truncate">JUEGO</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isSoloGame && !teamName.trim()) {
+                      setErrorMessage('Por favor ingresa el nombre de tu equipo para ir al Paso 2.');
+                      return;
+                    }
+                    setErrorMessage('');
+                    setCurrentStep(2);
+                  }}
+                  className={`p-2.5 border font-pixel text-[8px] sm:text-[9px] uppercase flex items-center justify-center gap-1.5 cursor-pointer transition ${
+                    currentStep === 2
+                      ? 'border-[#FFE600] bg-[#FFE600] text-black font-black shadow-brutal-yellow'
+                      : currentStep > 2
+                      ? 'border-[#10B981] bg-[#10B981]/20 text-[#10B981]'
+                      : 'border-white/10 text-slate-500 bg-transparent'
+                  }`}
+                >
+                  <span>{currentStep > 2 ? '✓' : '2.'}</span>
+                  <span className="truncate">ROSTER</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!isSoloGame && !teamName.trim()) {
+                      setErrorMessage('Completa el nombre de tu equipo en el Paso 1.');
+                      setCurrentStep(1);
+                      return;
+                    }
+                    if (!captain.name.trim() || !captain.gameId.trim() || !captain.whatsapp.trim()) {
+                      setErrorMessage('Completa los datos del capitán / jugador en el Paso 2.');
+                      setCurrentStep(2);
+                      return;
+                    }
+                    if (!isSoloGame) {
+                      const requiredCount = selectedGame === 'valorant' ? 4 : selectedGame === 'free_fire' ? 3 : 1;
+                      for (let i = 0; i < requiredCount; i++) {
+                        const m = members[i];
+                        if (!m || !m.name?.trim() || !m.gameId?.trim() || !m.whatsapp?.trim()) {
+                          setErrorMessage(`Completa los datos del Jugador #${i + 2} en el Paso 2.`);
+                          setCurrentStep(2);
+                          return;
+                        }
+                      }
+                    }
+                    setErrorMessage('');
+                    setCurrentStep(3);
+                  }}
+                  className={`p-2.5 border font-pixel text-[8px] sm:text-[9px] uppercase flex items-center justify-center gap-1.5 cursor-pointer transition ${
+                    currentStep === 3
+                      ? 'border-[#FFE600] bg-[#FFE600] text-black font-black shadow-brutal-yellow'
+                      : 'border-white/10 text-slate-500 bg-transparent'
+                  }`}
+                >
+                  <span>3.</span>
+                  <span className="truncate">PAGO</span>
+                </button>
+              </div>
+
               {errorMessage && (
-                <div className="p-3.5 bg-black border-2 border-[#FF0055] text-[#FF0055] font-pixel text-[10px] flex items-start gap-2.5 shadow-brutal-black">
+                <div className="p-3.5 bg-black border-2 border-[#FF0055] text-[#FF0055] font-pixel text-[10px] flex items-start gap-2.5 shadow-brutal-black animate-fadeIn">
                   <AlertCircle className="w-4 h-4 shrink-0 text-[#FF0055] mt-0.5" />
                   <span>{errorMessage}</span>
                 </div>
               )}
 
-              {/* 1. Selector de Juego (Arcade Cartridges) */}
-              <div className="space-y-2.5">
-                <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">1</span>
-                  <span>SELECCIONA EL VIDEOJUEGO // SLOT</span>
-                </label>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  {GAMES.map((game) => {
-                    const isSelected = selectedGame === game.id;
-                    return (
-                      <button
-                        key={game.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedGame(game.id);
-                          if (game.id === 'clash_royale') {
-                            setIsFreeAgent(true);
-                          }
-                        }}
-                        className={`btn-arcade-press p-3 border-2 border-black text-left transition relative cursor-pointer flex flex-col justify-between ${
-                          isSelected
-                            ? 'bg-[#FFE600] text-black shadow-brutal-yellow font-black'
-                            : 'bg-black text-slate-300 hover:text-white shadow-brutal-black'
-                        }`}
-                      >
-                        <div className="w-6 h-6 mb-2 flex items-center justify-center">
-                          <GameLogo gameId={game.id} color={isSelected ? '#000000' : game.color} />
-                        </div>
-                        <div>
-                          <h4 className="font-display font-black text-sm uppercase leading-tight">
-                            {game.name}
-                          </h4>
-                          <span className={`font-pixel text-[8px] block mt-1 ${isSelected ? 'text-black' : 'text-[#FFE600]'}`}>
-                            {game.badge}
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Tipo de Participación */}
-              <div className="p-4 bg-black border-2 border-black space-y-3 shadow-brutal-black">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <h4 className="font-pixel text-[9px] text-[#FFE600] uppercase">
-                      TIPO DE PARTICIPACION
-                    </h4>
-                    <p className="text-xs text-slate-400 font-cyber mt-0.5">
-                      {selectedGame === 'clash_royale'
-                        ? 'En Clash Royale la modalidad oficial es exclusivamente 1v1 Individual. No existe inscripción por equipos.'
-                        : '¿Participas con tu equipo armado o te inscribes de forma individual?'}
-                    </p>
+              {/* ======================================================== */}
+              {/* PASO 1: JUEGO & MODALIDAD                                */}
+              {/* ======================================================== */}
+              {currentStep === 1 && (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* Selector de Juego */}
+                  <div className="space-y-2.5">
+                    <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
+                      <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">1</span>
+                      <span>SELECCIONA EL VIDEOJUEGO // SLOT</span>
+                    </label>
+                    
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {GAMES.map((game) => {
+                        const isSelected = selectedGame === game.id;
+                        return (
+                          <button
+                            key={game.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedGame(game.id);
+                              if (game.id === 'clash_royale') {
+                                setIsFreeAgent(true);
+                              }
+                            }}
+                            className={`btn-arcade-press p-3 border-2 border-black text-left transition relative cursor-pointer flex flex-col justify-between ${
+                              isSelected
+                                ? 'bg-[#FFE600] text-black shadow-brutal-yellow font-black'
+                                : 'bg-black text-slate-300 hover:text-white shadow-brutal-black'
+                            }`}
+                          >
+                            <div className="w-6 h-6 mb-2 flex items-center justify-center">
+                              <GameLogo gameId={game.id} color={isSelected ? '#000000' : game.color} />
+                            </div>
+                            <div>
+                              <h4 className="font-display font-black text-sm uppercase leading-tight">
+                                {game.name}
+                              </h4>
+                              <span className={`font-pixel text-[8px] block mt-1 ${isSelected ? 'text-black' : 'text-[#FFE600]'}`}>
+                                {game.badge}
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  {selectedGame === 'clash_royale' ? (
-                    <div className="flex items-center gap-2">
-                      <div className="font-pixel text-[9px] px-3.5 py-2 bg-[#A855F7] text-white border-2 border-black font-black uppercase shadow-brutal-purple flex items-center gap-1.5">
-                        <Crown className="w-3.5 h-3.5" />
-                        <span>1v1 INDIVIDUAL ($1.00 USD)</span>
+                  {/* Tipo de Participación */}
+                  <div className="p-4 bg-black border-2 border-black space-y-3 shadow-brutal-black">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <h4 className="font-pixel text-[9px] text-[#FFE600] uppercase">
+                          TIPO DE PARTICIPACION
+                        </h4>
+                        <p className="text-xs text-slate-400 font-cyber mt-0.5">
+                          {selectedGame === 'clash_royale'
+                            ? 'En Clash Royale la modalidad oficial es exclusivamente 1v1 Individual. No existe inscripción por equipos.'
+                            : '¿Participas con tu equipo armado o te inscribes de forma individual?'}
+                        </p>
                       </div>
+
+                      {selectedGame === 'clash_royale' ? (
+                        <div className="flex items-center gap-2">
+                          <div className="font-pixel text-[9px] px-3.5 py-2 bg-[#A855F7] text-white border-2 border-black font-black uppercase shadow-brutal-purple flex items-center gap-1.5">
+                            <Crown className="w-3.5 h-3.5" />
+                            <span>1v1 INDIVIDUAL ($1.00 USD)</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setIsFreeAgent(false)}
+                            className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
+                              !isFreeAgent
+                                ? 'bg-[#FFE600] text-black font-black shadow-brutal-yellow'
+                                : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
+                            }`}
+                          >
+                            CON MI EQUIPO
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setIsFreeAgent(true)}
+                            className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
+                              isFreeAgent
+                                ? 'bg-[#00F0FF] text-black font-black shadow-brutal-cyan'
+                                : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
+                            }`}
+                          >
+                            INDIVIDUAL
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setIsFreeAgent(false)}
-                        className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
-                          !isFreeAgent
-                            ? 'bg-[#FFE600] text-black font-black shadow-brutal-yellow'
-                            : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
-                        }`}
-                      >
-                        CON MI EQUIPO
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsFreeAgent(true)}
-                        className={`btn-arcade-press font-pixel text-[9px] px-3 py-2 border-2 border-black uppercase cursor-pointer ${
-                          isFreeAgent
-                            ? 'bg-[#00F0FF] text-black font-black shadow-brutal-cyan'
-                            : 'bg-[#0E1524] text-slate-400 hover:text-white shadow-brutal-black'
-                        }`}
-                      >
-                        INDIVIDUAL
-                      </button>
+                  </div>
+
+                  {/* Nombre de Equipo */}
+                  {!isSoloGame && (
+                    <div className="space-y-1.5 bg-[#080D17] border-2 border-black p-4 shadow-brutal-black">
+                      <label className="font-pixel text-[9px] uppercase text-[#FFE600] block font-bold">
+                        NOMBRE DEL EQUIPO / CLAN *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Ej. CyberKnights, NullPointers, Dragons..."
+                        value={teamName}
+                        onChange={(e) => setTeamName(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-[#101726] border-2 border-[#00F0FF]/40 text-xs sm:text-sm text-[#00F0FF] placeholder:text-slate-500 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber uppercase shadow-brutal-black transition-colors"
+                      />
                     </div>
                   )}
-                </div>
-              </div>
 
-              {/* Nombre de Equipo */}
-              {!isSoloGame && (
-                <div className="space-y-1.5">
-                  <label className="font-pixel text-[9px] uppercase text-[#FFE600] block font-bold">
-                    NOMBRE DEL EQUIPO / CLAN *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="EJ. CYBERKNIGHTS, NULLPOINTERS, DRAGONS..."
-                    value={teamName}
-                    onChange={(e) => setTeamName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#00F0FF] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-pixel uppercase shadow-brutal-black transition-colors"
-                  />
+                  {/* Step 1 Navigation Bar */}
+                  <div className="pt-3 border-t-2 border-white/10 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!isSoloGame && !teamName.trim()) {
+                          setErrorMessage('Por favor ingresa el nombre de tu equipo para continuar.');
+                          return;
+                        }
+                        setErrorMessage('');
+                        setCurrentStep(2);
+                      }}
+                      className="btn-arcade-press shadow-brutal-yellow w-full sm:w-auto px-6 py-3.5 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel font-black text-xs uppercase flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span>CONTINUAR AL PASO 2: ROSTER</span>
+                      <ArrowRight className="w-4 h-4 stroke-[3]" />
+                    </button>
+                  </div>
                 </div>
               )}
 
-              {/* 2. Datos del Capitán */}
-              <div className="space-y-2.5">
-                <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">2</span>
-                  <span>{isSoloGame ? 'DATOS DEL JUGADOR' : 'DATOS DEL CAPITAN'}</span>
-                </label>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="space-y-1">
-                    <span className="font-pixel text-[8px] text-slate-300 uppercase">NOMBRE COMPLETO *</span>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Ej. Carlos Mendoza"
-                      value={captain.name}
-                      onChange={(e) => setCaptain({ ...captain, name: e.target.value })}
-                      className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-white placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber shadow-brutal-black transition-colors"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <span className="font-pixel text-[8px] text-slate-300 uppercase">ID EN JUEGO (NICK) *</span>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Ej. Shadow#LAN"
-                      value={captain.gameId}
-                      onChange={(e) => setCaptain({ ...captain, gameId: e.target.value })}
-                      className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#00F0FF] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber shadow-brutal-black transition-colors"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <span className="font-pixel text-[8px] text-slate-300 uppercase">WHATSAPP ACTIVO *</span>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="Ej. 0987654321"
-                      value={captain.whatsapp}
-                      onChange={(e) => setCaptain({ ...captain, whatsapp: e.target.value })}
-                      className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#FFE600] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-mono shadow-brutal-black transition-colors"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 3. Miembros del Equipo */}
-              {!isSoloGame && (
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
+              {/* ======================================================== */}
+              {/* PASO 2: ROSTER & JUGADORES                               */}
+              {/* ======================================================== */}
+              {currentStep === 2 && (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* Datos del Capitán */}
+                  <div className="space-y-2.5">
                     <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
-                      <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">3</span>
-                      <span>COMPAÑEROS DE EQUIPO (ROSTER)</span>
+                      <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">2</span>
+                      <span>{isSoloGame ? 'DATOS DEL JUGADOR' : 'DATOS DEL CAPITAN (JUGADOR #1)'}</span>
                     </label>
-                    <span className="font-pixel text-[8px] text-slate-400">
-                      {selectedGame === 'valorant' ? '4 TITULARES (+1 SUPLENTE)' : selectedGame === 'free_fire' ? '3 TITULARES' : '1 PAREJA / DUO'}
-                    </span>
-                  </div>
 
-                  <div className="space-y-2">
-                    {Array.from({ length: selectedGame === 'valorant' ? 4 : selectedGame === 'free_fire' ? 3 : 1 }).map((_, idx) => (
-                      <div key={idx} className="p-3 bg-[#080D17] border-2 border-black grid grid-cols-1 sm:grid-cols-3 gap-2.5 shadow-brutal-black">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-[#080D17] border-2 border-black shadow-brutal-black">
+                      <div className="space-y-1">
+                        <span className="font-pixel text-[8px] text-slate-300 uppercase">NOMBRE COMPLETO *</span>
                         <input
                           type="text"
                           required
-                          placeholder={`Jugador #${idx + 2} - Nombre`}
-                          value={members[idx]?.name || ''}
-                          onChange={(e) => handleMemberChange(idx, 'name', e.target.value)}
-                          className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-white placeholder:text-slate-300 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-cyber transition-colors"
+                          placeholder="Ej. Carlos Mendoza"
+                          value={captain.name}
+                          onChange={(e) => setCaptain({ ...captain, name: e.target.value })}
+                          className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber shadow-brutal-black transition-colors"
                         />
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="font-pixel text-[8px] text-slate-300 uppercase">ID EN JUEGO (NICK) *</span>
                         <input
                           type="text"
                           required
-                          placeholder="ID de Juego / Nick"
-                          value={members[idx]?.gameId || ''}
-                          onChange={(e) => handleMemberChange(idx, 'gameId', e.target.value)}
-                          className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#00F0FF] placeholder:text-slate-300 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-cyber transition-colors"
+                          placeholder="Ej. Shadow#LAN"
+                          value={captain.gameId}
+                          onChange={(e) => setCaptain({ ...captain, gameId: e.target.value })}
+                          className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs sm:text-sm text-[#00F0FF] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-cyber shadow-brutal-black transition-colors"
                         />
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="font-pixel text-[8px] text-slate-300 uppercase">WHATSAPP ACTIVO *</span>
                         <input
                           type="tel"
                           required
-                          placeholder="WhatsApp (+593...)"
-                          value={members[idx]?.whatsapp || ''}
-                          onChange={(e) => handleMemberChange(idx, 'whatsapp', e.target.value)}
-                          className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs text-[#FFE600] placeholder:text-slate-300 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-mono transition-colors"
+                          placeholder="Ej. 0987654321"
+                          value={captain.whatsapp}
+                          onChange={(e) => setCaptain({ ...captain, whatsapp: e.target.value })}
+                          className="w-full px-3 py-2 bg-[#101726] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs sm:text-sm text-[#FFE600] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#152035] focus:outline-none font-mono shadow-brutal-black transition-colors"
                         />
                       </div>
-                    ))}
+                    </div>
+                  </div>
 
-                    {/* Suplente Opcional en Valorant */}
-                    {selectedGame === 'valorant' && (
-                      <div className="pt-1">
-                        {!hasSubstitute ? (
-                          <button
-                            type="button"
-                            onClick={() => setHasSubstitute(true)}
-                            className="btn-arcade-press font-pixel text-[9px] font-bold text-[#FFE600] p-2 bg-black border-2 border-[#FFE600] uppercase cursor-pointer shadow-brutal-black"
-                          >
-                            + AGREGAR SUPLENTE OPCIONAL (GRATIS)
-                          </button>
-                        ) : (
-                          <div className="p-3 bg-[#110B1C] border-2 border-[#A855F7] space-y-2 shadow-brutal-purple">
-                            <div className="flex items-center justify-between font-pixel text-[8px] text-[#A855F7] font-bold uppercase">
-                              <span>SUPLENTE OPCIONAL (JUGADOR #6):</span>
+                  {/* Miembros del Equipo */}
+                  {!isSoloGame && (
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <label className="font-pixel text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
+                          <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">3</span>
+                          <span>COMPAÑEROS DE EQUIPO (ROSTER)</span>
+                        </label>
+                        <span className="font-pixel text-[8px] text-slate-400">
+                          {selectedGame === 'valorant' ? '4 TITULARES (+1 SUPLENTE)' : selectedGame === 'free_fire' ? '3 TITULARES' : '1 PAREJA / DUO'}
+                        </span>
+                      </div>
+
+                      <div className="space-y-2.5">
+                        {Array.from({ length: selectedGame === 'valorant' ? 4 : selectedGame === 'free_fire' ? 3 : 1 }).map((_, idx) => (
+                          <div key={idx} className="p-3 bg-[#080D17] border-2 border-black grid grid-cols-1 sm:grid-cols-3 gap-2.5 shadow-brutal-black">
+                            <input
+                              type="text"
+                              required
+                              placeholder={`Jugador #${idx + 2} - Nombre`}
+                              value={members[idx]?.name || ''}
+                              onChange={(e) => handleMemberChange(idx, 'name', e.target.value)}
+                              className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-cyber transition-colors"
+                            />
+                            <input
+                              type="text"
+                              required
+                              placeholder="ID de Juego / Nick"
+                              value={members[idx]?.gameId || ''}
+                              onChange={(e) => handleMemberChange(idx, 'gameId', e.target.value)}
+                              className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs sm:text-sm text-[#00F0FF] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-cyber transition-colors"
+                            />
+                            <input
+                              type="tel"
+                              required
+                              placeholder="WhatsApp (+593...)"
+                              value={members[idx]?.whatsapp || ''}
+                              onChange={(e) => handleMemberChange(idx, 'whatsapp', e.target.value)}
+                              className="px-3 py-2 bg-[#121929] border-2 border-[#00F0FF]/35 hover:border-[#00F0FF]/70 text-xs sm:text-sm text-[#FFE600] placeholder:text-slate-400 focus:border-[#FFE600] focus:bg-[#162136] focus:outline-none font-mono transition-colors"
+                            />
+                          </div>
+                        ))}
+
+                        {/* Suplente Opcional en Valorant */}
+                        {selectedGame === 'valorant' && (
+                          <div className="pt-1">
+                            {!hasSubstitute ? (
                               <button
                                 type="button"
-                                onClick={() => setHasSubstitute(false)}
-                                className="text-rose-400 hover:text-white cursor-pointer"
+                                onClick={() => setHasSubstitute(true)}
+                                className="btn-arcade-press font-pixel text-[9px] font-bold text-[#FFE600] p-2 bg-black border-2 border-[#FFE600] uppercase cursor-pointer shadow-brutal-black"
                               >
-                                [ QUITAR ]
+                                + AGREGAR SUPLENTE OPCIONAL (GRATIS)
                               </button>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                              <input
-                                type="text"
-                                placeholder="Nombre Suplente"
-                                value={members[4]?.name || ''}
-                                onChange={(e) => handleMemberChange(4, 'name', e.target.value)}
-                                className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs text-white placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-cyber transition-colors"
-                              />
-                              <input
-                                type="text"
-                                placeholder="ID Juego Suplente"
-                                value={members[4]?.gameId || ''}
-                                onChange={(e) => handleMemberChange(4, 'gameId', e.target.value)}
-                                className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs text-[#A855F7] placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-cyber transition-colors"
-                              />
-                              <input
-                                type="tel"
-                                placeholder="WhatsApp Suplente"
-                                value={members[4]?.whatsapp || ''}
-                                onChange={(e) => handleMemberChange(4, 'whatsapp', e.target.value)}
-                                className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs text-white placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-mono transition-colors"
-                              />
-                            </div>
+                            ) : (
+                              <div className="p-3 bg-[#110B1C] border-2 border-[#A855F7] space-y-2 shadow-brutal-purple">
+                                <div className="flex items-center justify-between font-pixel text-[8px] text-[#A855F7] font-bold uppercase">
+                                  <span>SUPLENTE OPCIONAL (JUGADOR #6):</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setHasSubstitute(false)}
+                                    className="text-rose-400 hover:text-white cursor-pointer"
+                                  >
+                                    [ QUITAR ]
+                                  </button>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                                  <input
+                                    type="text"
+                                    placeholder="Nombre Suplente"
+                                    value={members[4]?.name || ''}
+                                    onChange={(e) => handleMemberChange(4, 'name', e.target.value)}
+                                    className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs sm:text-sm text-white placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-cyber transition-colors"
+                                  />
+                                  <input
+                                    type="text"
+                                    placeholder="ID Juego Suplente"
+                                    value={members[4]?.gameId || ''}
+                                    onChange={(e) => handleMemberChange(4, 'gameId', e.target.value)}
+                                    className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs sm:text-sm text-[#A855F7] placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-cyber transition-colors"
+                                  />
+                                  <input
+                                    type="tel"
+                                    placeholder="WhatsApp Suplente"
+                                    value={members[4]?.whatsapp || ''}
+                                    onChange={(e) => handleMemberChange(4, 'whatsapp', e.target.value)}
+                                    className="px-3 py-2 bg-[#1A132E] border-2 border-[#A855F7]/40 hover:border-[#A855F7]/70 text-xs sm:text-sm text-white placeholder:text-purple-200/70 focus:border-[#A855F7] focus:bg-[#231840] focus:outline-none font-mono transition-colors"
+                                  />
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* ======================================================== */}
-              {/* 4. PREGUNTA: ¿PAGAR AHORA O PAGAR DESPUÉS?               */}
-              {/* ======================================================== */}
-              <div className="space-y-4 p-4 sm:p-5 bg-black border-4 border-black shadow-brutal-black">
-                <div className="flex items-center justify-between pb-3 border-b-2 border-white/10 font-pixel">
-                  <label className="text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
-                    <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">4</span>
-                    <span>¿PAGAR AHORA O PAGAR DESPUES?</span>
-                  </label>
-                  <span className="px-2.5 py-1 bg-[#FFE600] text-black font-black text-xs">
-                    TOTAL: ${totalCost.toFixed(2)} USD
-                  </span>
-                </div>
-
-                {/* LOS 2 BOTONES SELECTORES */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMode('now')}
-                    className={`btn-arcade-press p-4 border-2 border-black text-left transition flex flex-col justify-between cursor-pointer ${
-                      paymentMode === 'now'
-                        ? 'bg-[#FFE600] text-black shadow-brutal-yellow font-black'
-                        : 'bg-[#0B101A] text-slate-300 shadow-brutal-black'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between font-pixel text-[10px]">
-                      <span className="flex items-center gap-2">
-                        <Zap className="w-4 h-4 fill-current" />
-                        PAGAR AHORA
-                      </span>
-                      {paymentMode === 'now' && (
-                        <span className="bg-black text-[#FFE600] px-1.5 py-0.5 text-[8px]">
-                          ACTIVE
-                        </span>
-                      )}
                     </div>
-                    <p className={`text-xs mt-2 font-cyber leading-relaxed ${paymentMode === 'now' ? 'text-black font-bold' : 'text-slate-400'}`}>
-                      Ver datos bancarios y subir la foto del comprobante ahora mismo.
-                    </p>
-                  </button>
+                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMode('later')}
-                    className={`btn-arcade-press p-4 border-2 border-black text-left transition flex flex-col justify-between cursor-pointer ${
-                      paymentMode === 'later'
-                        ? 'bg-[#00F0FF] text-black shadow-brutal-cyan font-black'
-                        : 'bg-[#0B101A] text-slate-300 shadow-brutal-black'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between font-pixel text-[10px]">
-                      <span className="flex items-center gap-2">
-                        <Link2 className="w-4 h-4" />
-                        PAGAR DESPUES
-                      </span>
-                      {paymentMode === 'later' && (
-                        <span className="bg-black text-[#00F0FF] px-1.5 py-0.5 text-[8px]">
-                          ACTIVE
-                        </span>
-                      )}
-                    </div>
-                    <p className={`text-xs mt-2 font-cyber leading-relaxed ${paymentMode === 'later' ? 'text-black font-bold' : 'text-slate-400'}`}>
-                      Paga después con el link que se te genera o enviando la captura al WhatsApp 0962074110.
-                    </p>
-                  </button>
-                </div>
-
-                {/* SÓLO SE MUESTRAN LOS DATOS BANCARIOS Y COMPROBANTE SI ELIGIÓ "PAGAR AHORA" */}
-                {paymentMode === 'now' && (
-                  <div className="space-y-4 pt-3 border-t-2 border-white/10 animate-in fade-in duration-150">
-                    
-                    {/* Caja de Datos Bancarios (Ordenada para pagar fácil, sin correo) */}
-                    <div className="p-4 bg-[#090D15] border-2 border-black space-y-3 shadow-brutal-black">
-                      <div className="flex items-center justify-between font-pixel text-[9px] pb-2 border-b-2 border-white/10">
-                        <span className="text-[#FFE600] uppercase font-bold flex items-center gap-2">
-                          <CreditCard className="w-3.5 h-3.5 text-[#FFE600]" />
-                          <span>DATOS DE TRANSFERENCIA</span>
-                        </span>
-                        <span className="bg-[#FFE600] text-black font-pixel text-[9px] px-2 py-0.5 font-black">
-                          VALOR: ${totalCost.toFixed(2)} USD
-                        </span>
-                      </div>
-
-                      {/* 1. NÚMERO DE CUENTA PROTAGONISTA (Lo primero que copian en su app bancaria) */}
-                      <div className="p-3 bg-[#0C121D] border-2 border-[#FFE600] flex items-center justify-between gap-3 shadow-brutal-yellow">
-                        <div>
-                          <span className="font-pixel text-[8px] text-[#FFE600] block uppercase tracking-wider">
-                            NUMERO DE CUENTA // PICHINCHA
-                          </span>
-                          <strong className="text-white font-pixel text-base sm:text-lg tracking-widest select-all block mt-0.5">
-                            {BANK_INFO.accountNumber}
-                          </strong>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => copyToClipboard(BANK_INFO.accountNumber, 'account')}
-                          className="btn-arcade-press shadow-brutal-pink px-4 py-2 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel text-[9px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer font-black shrink-0"
-                        >
-                          {copiedAccount ? <Check className="w-3.5 h-3.5 stroke-[3] text-black" /> : <Copy className="w-3.5 h-3.5" />}
-                          <span>{copiedAccount ? '¡COPIADO!' : 'COPIAR'}</span>
-                        </button>
-                      </div>
-
-                      {/* 2. DATOS DE VERIFICACIÓN (Banco, Tipo de Cuenta, Titular) */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-black p-3.5 border-2 border-black">
-                        <div>
-                          <span className="font-pixel text-[8px] text-slate-500 uppercase block">BANCO</span>
-                          <strong className="text-white font-cyber text-xs block font-bold mt-0.5">{BANK_INFO.bank}</strong>
-                        </div>
-
-                        <div>
-                          <span className="font-pixel text-[8px] text-slate-500 uppercase block">TIPO CUENTA</span>
-                          <strong className="text-white font-cyber text-xs block font-bold mt-0.5">{BANK_INFO.accountType}</strong>
-                        </div>
-
-                        <div>
-                          <span className="font-pixel text-[8px] text-slate-500 uppercase block">TITULAR</span>
-                          <strong className="text-[#00F0FF] font-cyber text-xs block font-bold mt-0.5">{BANK_INFO.holderName}</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Subida de Captura */}
-                    <div className="space-y-2">
-                      <span className="font-pixel text-[9px] uppercase text-[#FFE600] block font-bold">
-                        ADJUNTAR CAPTURA DEL COMPROBANTE *
-                      </span>
-
-                      {!receiptPreview ? (
-                        <label className="crt-monitor-screen border-4 border-dashed border-white/20 hover:border-[#FFE600] bg-black p-6 flex flex-col items-center justify-center cursor-pointer transition group">
-                          <Upload className="w-8 h-8 text-slate-400 mb-2 group-hover:text-[#FFE600] transition-colors" />
-                          <span className="font-pixel text-[10px] font-black text-white mb-1 uppercase tracking-wider text-center group-hover:text-[#FFE600]">
-                            [ CLIC PARA INSERTAR COMPROBANTE O ARRASTRA AQUI ]
-                          </span>
-                          <span className="text-[10px] text-slate-400 font-cyber text-center">
-                            JPG, PNG o captura de pantalla (Max 5MB)
-                          </span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleReceiptChange}
-                            className="hidden"
-                          />
-                        </label>
-                      ) : (
-                        <div className="p-3 bg-black border-2 border-black flex items-center justify-between gap-4 shadow-brutal-black">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={receiptPreview}
-                              alt="Vista previa comprobante"
-                              className="w-14 h-14 object-cover border-2 border-[#FFE600]"
-                            />
-                            <div>
-                              <span className="font-pixel text-[9px] font-black text-white block uppercase">
-                                COMPROBANTE LISTO
-                              </span>
-                              <span className="font-pixel text-[8px] text-[#10B981] flex items-center gap-1 mt-0.5">
-                                <Check className="w-3 h-3 stroke-[3]" /> IMAGEN CARGADA
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => { setReceiptPreview(null); setReceiptFile(null); }}
-                            className="btn-arcade-press shadow-brutal-pink px-3 py-1.5 bg-[#FF0055] text-white border-2 border-black font-pixel text-[8px] uppercase font-black cursor-pointer"
-                          >
-                            CAMBIAR
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                  </div>
-                )}
-
-                {/* SI SELECCIONÓ PAGAR DESPUÉS: EXPLICACIÓN DIRECTA */}
-                {paymentMode === 'later' && (
-                  <div className="p-4 bg-black border-2 border-[#00F0FF] space-y-3 pt-3 animate-in fade-in duration-150 shadow-brutal-cyan">
-                    <div className="flex items-center gap-2 font-pixel text-[9px] text-[#00F0FF]">
-                      <span className="w-2 h-2 bg-[#00F0FF] inline-block animate-arcade-blink" />
-                      <span className="uppercase font-bold">
-                        PAGAR DESPUES (${totalCost.toFixed(2)} USD)
-                      </span>
-                    </div>
-
-                    <p className="text-xs text-slate-300 font-cyber leading-relaxed">
-                      ¡Aparta tu cupo ahora mismo! Paga después con cualquiera de estas opciones:
-                    </p>
-
-                    <div className="space-y-2 text-xs font-cyber text-slate-300">
-                      <div className="p-3 bg-[#0C121D] border-2 border-black flex items-start gap-2.5">
-                        <span className="text-[#00F0FF] font-pixel text-[9px] shrink-0 font-bold">1.</span>
-                        <span>
-                          <strong className="text-white">Con el link que se te genera:</strong> Al registrarte se creará un link exclusivo donde podrás entrar cuando quieras a subir la captura de tu comprobante.
-                        </span>
-                      </div>
-                      <div className="p-3 bg-[#0C121D] border-2 border-black flex items-start gap-2.5">
-                        <span className="text-[#10B981] font-pixel text-[9px] shrink-0 font-bold">2.</span>
-                        <span>
-                          <strong className="text-white">O por WhatsApp:</strong> Envía la captura de transferencia, tu nombre e ID de registro directamente al WhatsApp <strong className="text-[#10B981]">0962074110</strong>.
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-
-              {/* Botón de Confirmación según la Opción Elegida */}
-              <div className="pt-2">
-                {editingRegistration ? (
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Step 2 Navigation Bar */}
+                  <div className="pt-3 border-t-2 border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                     <button
-                      type="submit"
-                      disabled={submitting}
-                      className="btn-arcade-press shadow-brutal-cyan flex-1 py-4 bg-[#00F0FF] hover:bg-white text-black font-pixel font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                      type="button"
+                      onClick={() => { setErrorMessage(''); setCurrentStep(1); }}
+                      className="btn-arcade-press shadow-brutal-black w-full sm:w-auto px-5 py-3 border-2 border-black bg-black text-slate-300 hover:text-white font-pixel text-[10px] uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      {submitting ? (
-                        <span>GUARDANDO CAMBIOS...</span>
-                      ) : (
-                        <>
-                          <Check className="w-4 h-4 stroke-[3]" />
-                          <span>[ GUARDAR CAMBIOS ]</span>
-                        </>
-                      )}
+                      <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>PASO 1: JUEGO</span>
                     </button>
 
                     <button
                       type="button"
-                      disabled={submitting}
-                      onClick={async (e) => {
-                        const updated = await handleSubmit(e, paymentMode || 'later');
-                        if (updated && onNavigateToPayment) {
-                          onClose();
-                          onNavigateToPayment(editingRegistration.id);
+                      onClick={() => {
+                        if (!captain.name.trim() || !captain.gameId.trim() || !captain.whatsapp.trim()) {
+                          setErrorMessage('Por favor completa todos los datos obligatorios del Capitán / Jugador principal.');
+                          return;
                         }
+                        if (!isSoloGame) {
+                          const requiredCount = selectedGame === 'valorant' ? 4 : selectedGame === 'free_fire' ? 3 : 1;
+                          for (let i = 0; i < requiredCount; i++) {
+                            const m = members[i];
+                            if (!m || !m.name?.trim() || !m.gameId?.trim() || !m.whatsapp?.trim()) {
+                              setErrorMessage(`Por favor completa todos los datos del Jugador #${i + 2}.`);
+                              return;
+                            }
+                          }
+                        }
+                        setErrorMessage('');
+                        setCurrentStep(3);
                       }}
-                      className="btn-arcade-press shadow-brutal-yellow flex-1 py-4 bg-[#FFE600] hover:bg-[#FFF04D] text-black font-pixel font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                      className="btn-arcade-press shadow-brutal-yellow w-full sm:w-auto px-6 py-3.5 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel font-black text-xs uppercase flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span>[ GUARDAR Y CONTINUAR AL PAGO ]</span>
+                      <span>CONTINUAR AL PASO 3: PAGO</span>
                       <ArrowRight className="w-4 h-4 stroke-[3]" />
                     </button>
                   </div>
-                ) : paymentMode === 'now' ? (
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-arcade-press shadow-brutal-pink w-full py-4 bg-[#FFE600] hover:bg-[#FFF04D] text-black font-pixel font-black text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
-                  >
-                    {submitting ? (
-                      <span>ENVIANDO REGISTRO Y VOUCHER...</span>
-                    ) : (
-                      <>
-                        <Zap className="w-4 h-4 fill-black" />
-                        <span>[ PAGAR Y ENVIAR REGISTRO (${totalCost.toFixed(2)} USD) ]</span>
-                      </>
+                </div>
+              )}
+
+              {/* ======================================================== */}
+              {/* PASO 3: PAGO & CONFIRMACION                              */}
+              {/* ======================================================== */}
+              {currentStep === 3 && (
+                <div className="space-y-5 animate-fadeIn">
+                  
+                  {/* Resumen del Registro */}
+                  <div className="p-4 bg-black border-2 border-[#FFE600] shadow-brutal-yellow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-cyber">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-pixel text-[8px] bg-[#FFE600] text-black px-2 py-0.5 font-black uppercase">
+                          RESUMEN
+                        </span>
+                        <span className="text-white font-bold text-sm uppercase font-display tracking-wider">
+                          {isSoloGame ? (selectedGame === 'clash_royale' ? 'Clash Royale 1v1' : `Individual (${captain.name || 'Solitario'})`) : teamName}
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-300 mt-1 font-cyber">
+                        Torneo: <strong className="text-white">{gameConfig.name}</strong> • {isSoloGame ? '1 Jugador' : `${selectedGame === 'valorant' ? (hasSubstitute ? '6' : '5') : selectedGame === 'free_fire' ? '4' : '2'} Jugadores`}
+                      </div>
+                    </div>
+
+                    <div className="text-right self-end sm:self-auto">
+                      <span className="font-pixel text-[8px] text-slate-400 block uppercase">VALOR TOTAL:</span>
+                      <span className="text-xl sm:text-2xl font-black text-[#FFE600] font-pixel block">
+                        ${totalCost.toFixed(2)} <span className="text-xs text-slate-400">USD</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Pregunta: Pagar Ahora o Pagar Después */}
+                  <div className="space-y-4 p-4 sm:p-5 bg-black border-4 border-black shadow-brutal-black">
+                    <div className="flex items-center justify-between pb-3 border-b-2 border-white/10 font-pixel">
+                      <label className="text-[10px] text-[#FFE600] uppercase tracking-wider flex items-center gap-2">
+                        <span className="w-5 h-5 bg-[#FFE600] text-black border border-black flex items-center justify-center text-[10px] font-black">3</span>
+                        <span>SELECCIONA: ¿PAGAR AHORA O PAGAR DESPUES?</span>
+                      </label>
+                    </div>
+
+                    {/* Los 2 botones selectores */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMode('now')}
+                        className={`btn-arcade-press p-4 border-2 border-black text-left transition flex flex-col justify-between cursor-pointer ${
+                          paymentMode === 'now'
+                            ? 'bg-[#FFE600] text-black shadow-brutal-yellow font-black'
+                            : 'bg-[#0B101A] text-slate-300 shadow-brutal-black'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between font-pixel text-[10px]">
+                          <span className="flex items-center gap-2">
+                            <Zap className="w-4 h-4 fill-current" />
+                            PAGAR AHORA
+                          </span>
+                          {paymentMode === 'now' && (
+                            <span className="bg-black text-[#FFE600] px-1.5 py-0.5 text-[8px]">
+                              ACTIVE
+                            </span>
+                          )}
+                        </div>
+                        <p className={`text-xs mt-2 font-cyber leading-relaxed ${paymentMode === 'now' ? 'text-black font-bold' : 'text-slate-400'}`}>
+                          Ver datos bancarios y subir la foto del comprobante ahora mismo.
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPaymentMode('later')}
+                        className={`btn-arcade-press p-4 border-2 border-black text-left transition flex flex-col justify-between cursor-pointer ${
+                          paymentMode === 'later'
+                            ? 'bg-[#00F0FF] text-black shadow-brutal-cyan font-black'
+                            : 'bg-[#0B101A] text-slate-300 shadow-brutal-black'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between font-pixel text-[10px]">
+                          <span className="flex items-center gap-2">
+                            <Link2 className="w-4 h-4" />
+                            PAGAR DESPUES
+                          </span>
+                          {paymentMode === 'later' && (
+                            <span className="bg-black text-[#00F0FF] px-1.5 py-0.5 text-[8px]">
+                              ACTIVE
+                            </span>
+                          )}
+                        </div>
+                        <p className={`text-xs mt-2 font-cyber leading-relaxed ${paymentMode === 'later' ? 'text-black font-bold' : 'text-slate-400'}`}>
+                          Paga después con el link que se te genera o enviando la captura al WhatsApp 0962074110.
+                        </p>
+                      </button>
+                    </div>
+
+                    {/* Si eligió PAGAR AHORA */}
+                    {paymentMode === 'now' && (
+                      <div className="space-y-4 pt-3 border-t-2 border-white/10 animate-in fade-in duration-150">
+                        {/* Caja de Datos Bancarios */}
+                        <div className="p-4 bg-[#090D15] border-2 border-black space-y-3 shadow-brutal-black">
+                          <div className="flex items-center justify-between font-pixel text-[9px] pb-2 border-b-2 border-white/10">
+                            <span className="text-[#FFE600] uppercase font-bold flex items-center gap-2">
+                              <CreditCard className="w-3.5 h-3.5 text-[#FFE600]" />
+                              <span>DATOS DE TRANSFERENCIA</span>
+                            </span>
+                            <span className="bg-[#FFE600] text-black font-pixel text-[9px] px-2 py-0.5 font-black">
+                              VALOR: ${totalCost.toFixed(2)} USD
+                            </span>
+                          </div>
+
+                          {/* Número de cuenta */}
+                          <div className="p-3 bg-[#0C121D] border-2 border-[#FFE600] flex items-center justify-between gap-3 shadow-brutal-yellow">
+                            <div>
+                              <span className="font-pixel text-[8px] text-[#FFE600] block uppercase tracking-wider">
+                                NUMERO DE CUENTA // PICHINCHA
+                              </span>
+                              <strong className="text-white font-pixel text-base sm:text-lg tracking-widest select-all block mt-0.5">
+                                {BANK_INFO.accountNumber}
+                              </strong>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => copyToClipboard(BANK_INFO.accountNumber, 'account')}
+                              className="btn-arcade-press shadow-brutal-pink px-4 py-2 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel text-[9px] uppercase tracking-wider flex items-center gap-1.5 cursor-pointer font-black shrink-0"
+                            >
+                              {copiedAccount ? <Check className="w-3.5 h-3.5 stroke-[3] text-black" /> : <Copy className="w-3.5 h-3.5" />}
+                              <span>{copiedAccount ? '¡COPIADO!' : 'COPIAR'}</span>
+                            </button>
+                          </div>
+
+                          {/* Banco, Tipo, Titular */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 bg-black p-3.5 border-2 border-black">
+                            <div>
+                              <span className="font-pixel text-[8px] text-slate-500 uppercase block">BANCO</span>
+                              <strong className="text-white font-cyber text-xs block font-bold mt-0.5">{BANK_INFO.bank}</strong>
+                            </div>
+
+                            <div>
+                              <span className="font-pixel text-[8px] text-slate-500 uppercase block">TIPO CUENTA</span>
+                              <strong className="text-white font-cyber text-xs block font-bold mt-0.5">{BANK_INFO.accountType}</strong>
+                            </div>
+
+                            <div>
+                              <span className="font-pixel text-[8px] text-slate-500 uppercase block">TITULAR</span>
+                              <strong className="text-[#00F0FF] font-cyber text-xs block font-bold mt-0.5">{BANK_INFO.holderName}</strong>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Subida de Captura */}
+                        <div className="space-y-2">
+                          <span className="font-pixel text-[9px] uppercase text-[#FFE600] block font-bold">
+                            ADJUNTAR CAPTURA DEL COMPROBANTE *
+                          </span>
+
+                          {!receiptPreview ? (
+                            <label className="crt-monitor-screen border-4 border-dashed border-white/20 hover:border-[#FFE600] bg-black p-6 flex flex-col items-center justify-center cursor-pointer transition group">
+                              <Upload className="w-8 h-8 text-slate-400 mb-2 group-hover:text-[#FFE600] transition-colors" />
+                              <span className="font-pixel text-[10px] font-black text-white mb-1 uppercase tracking-wider text-center group-hover:text-[#FFE600]">
+                                [ CLIC PARA INSERTAR COMPROBANTE O ARRASTRA AQUI ]
+                              </span>
+                              <span className="text-[10px] text-slate-400 font-cyber text-center">
+                                JPG, PNG o captura de pantalla (Max 5MB)
+                              </span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleReceiptChange}
+                                className="hidden"
+                              />
+                            </label>
+                          ) : (
+                            <div className="p-3 bg-black border-2 border-black flex items-center justify-between gap-4 shadow-brutal-black">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={receiptPreview}
+                                  alt="Vista previa comprobante"
+                                  className="w-14 h-14 object-cover border-2 border-[#FFE600]"
+                                />
+                                <div>
+                                  <span className="font-pixel text-[9px] font-black text-white block uppercase">
+                                    COMPROBANTE LISTO
+                                  </span>
+                                  <span className="font-pixel text-[8px] text-[#10B981] flex items-center gap-1 mt-0.5">
+                                    <Check className="w-3 h-3 stroke-[3]" /> IMAGEN CARGADA
+                                  </span>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => { setReceiptPreview(null); setReceiptFile(null); }}
+                                className="btn-arcade-press shadow-brutal-pink px-3 py-1.5 bg-[#FF0055] text-white border-2 border-black font-pixel text-[8px] uppercase font-black cursor-pointer"
+                              >
+                                CAMBIAR
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     )}
-                  </button>
-                ) : paymentMode === 'later' ? (
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-arcade-press shadow-brutal-cyan w-full py-4 bg-[#00F0FF] hover:bg-[#5CE1E6] text-black font-pixel font-black text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
-                  >
-                    {submitting ? (
-                      <span>GUARDANDO PRE-REGISTRO...</span>
-                    ) : (
-                      <>
-                        <Link2 className="w-4 h-4 stroke-[3]" />
-                        <span>[ PRE-REGISTRARSE // PAGAR DESPUES ]</span>
-                      </>
+
+                    {/* Si eligió PAGAR DESPUÉS */}
+                    {paymentMode === 'later' && (
+                      <div className="p-4 bg-black border-2 border-[#00F0FF] space-y-3 pt-3 animate-in fade-in duration-150 shadow-brutal-cyan">
+                        <div className="flex items-center gap-2 font-pixel text-[9px] text-[#00F0FF]">
+                          <span className="w-2 h-2 bg-[#00F0FF] inline-block animate-arcade-blink" />
+                          <span className="uppercase font-bold">
+                            PAGAR DESPUES (${totalCost.toFixed(2)} USD)
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-300 font-cyber leading-relaxed">
+                          ¡Aparta tu cupo ahora mismo! Paga después con cualquiera de estas opciones:
+                        </p>
+
+                        <div className="space-y-2 text-xs font-cyber text-slate-300">
+                          <div className="p-3 bg-[#0C121D] border-2 border-black flex items-start gap-2.5">
+                            <span className="text-[#00F0FF] font-pixel text-[9px] shrink-0 font-bold">1.</span>
+                            <span>
+                              <strong className="text-white">Con el link que se te genera:</strong> Al registrarte se creará un link exclusivo donde podrás entrar cuando quieras a subir la captura de tu comprobante.
+                            </span>
+                          </div>
+                          <div className="p-3 bg-[#0C121D] border-2 border-black flex items-start gap-2.5">
+                            <span className="text-[#10B981] font-pixel text-[9px] shrink-0 font-bold">2.</span>
+                            <span>
+                              <strong className="text-white">O por WhatsApp:</strong> Envía la captura de transferencia, tu nombre e ID de registro directamente al WhatsApp <strong className="text-[#10B981]">0962074110</strong>.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     )}
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="btn-arcade-press shadow-brutal-black w-full py-4 bg-[#141C2B] hover:bg-[#1E293B] text-slate-300 hover:text-white font-pixel text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-white/20"
-                  >
-                    <ArrowRight className="w-4 h-4 text-[#FFE600]" />
-                    <span>[ SELECCIONA: PAGAR AHORA O PAGAR DESPUES ]</span>
-                  </button>
-                )}
-              </div>
+                  </div>
+
+                  {/* Step 3 Navigation & Submission Bar */}
+                  <div className="pt-3 border-t-2 border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => { setErrorMessage(''); setCurrentStep(2); }}
+                      className="btn-arcade-press shadow-brutal-black w-full sm:w-auto px-5 py-3 border-2 border-black bg-black text-slate-300 hover:text-white font-pixel text-[10px] uppercase flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <span>PASO 2: ROSTER</span>
+                    </button>
+
+                    <div className="w-full sm:w-auto flex-1 sm:max-w-md">
+                      {editingRegistration ? (
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <button
+                            type="submit"
+                            disabled={submitting}
+                            className="btn-arcade-press shadow-brutal-cyan flex-1 py-3.5 bg-[#00F0FF] hover:bg-white text-black font-pixel font-black text-xs uppercase flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                          >
+                            {submitting ? (
+                              <span>GUARDANDO...</span>
+                            ) : (
+                              <>
+                                <Check className="w-4 h-4 stroke-[3]" />
+                                <span>[ GUARDAR CAMBIOS ]</span>
+                              </>
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={submitting}
+                            onClick={async (e) => {
+                              const updated = await handleSubmit(e, paymentMode || 'later');
+                              if (updated && onNavigateToPayment) {
+                                onClose();
+                                onNavigateToPayment(editingRegistration.id);
+                              }
+                            }}
+                            className="btn-arcade-press shadow-brutal-yellow flex-1 py-3.5 bg-[#FFE600] hover:bg-[#FFF04D] text-black font-pixel font-black text-xs uppercase flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                          >
+                            <span>[ CONTINUAR AL PAGO ]</span>
+                            <ArrowRight className="w-4 h-4 stroke-[3]" />
+                          </button>
+                        </div>
+                      ) : paymentMode === 'now' ? (
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="btn-arcade-press shadow-brutal-pink w-full py-4 bg-[#FFE600] hover:bg-[#FFF04D] text-black font-pixel font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                        >
+                          {submitting ? (
+                            <span>ENVIANDO REGISTRO Y VOUCHER...</span>
+                          ) : (
+                            <>
+                              <Zap className="w-4 h-4 fill-black" />
+                              <span>[ PAGAR Y ENVIAR REGISTRO (${totalCost.toFixed(2)} USD) ]</span>
+                            </>
+                          )}
+                        </button>
+                      ) : paymentMode === 'later' ? (
+                        <button
+                          type="submit"
+                          disabled={submitting}
+                          className="btn-arcade-press shadow-brutal-cyan w-full py-4 bg-[#00F0FF] hover:bg-[#5CE1E6] text-black font-pixel font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 border-2 border-black"
+                        >
+                          {submitting ? (
+                            <span>GUARDANDO PRE-REGISTRO...</span>
+                          ) : (
+                            <>
+                              <Link2 className="w-4 h-4 stroke-[3]" />
+                              <span>[ PRE-REGISTRARSE // PAGAR DESPUES ]</span>
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="btn-arcade-press shadow-brutal-black w-full py-4 bg-[#141C2B] hover:bg-[#1E293B] text-slate-300 hover:text-white font-pixel text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-white/20"
+                        >
+                          <ArrowRight className="w-4 h-4 text-[#FFE600]" />
+                          <span>[ SELECCIONA: AHORA O DESPUES ]</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
             </form>
           )}

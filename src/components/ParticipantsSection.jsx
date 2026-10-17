@@ -199,27 +199,27 @@ export default function ParticipantsSection({ onOpenRegister }) {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFE600] uppercase block">TOTAL PLAYERS</span>
-            <span className="font-pixel text-xl sm:text-3xl font-black text-white block">{totalPlayers}</span>
+            <span className="font-display text-2xl sm:text-4xl font-black text-white block leading-none">{totalPlayers}</span>
           </div>
 
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#FF0055] uppercase block">VALORANT</span>
-            <span className="font-pixel text-xl sm:text-3xl font-black text-white block">{valorantCount}</span>
+            <span className="font-display text-2xl sm:text-4xl font-black text-[#FF0055] block leading-none">{valorantCount}</span>
           </div>
 
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFE600] uppercase block">FREE FIRE</span>
-            <span className="font-pixel text-xl sm:text-3xl font-black text-white block">{freeFireCount}</span>
+            <span className="font-display text-2xl sm:text-4xl font-black text-[#FFE600] block leading-none">{freeFireCount}</span>
           </div>
 
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#00F0FF] uppercase block">FORTNITE</span>
-            <span className="font-pixel text-xl sm:text-3xl font-black text-white block">{fortniteCount}</span>
+            <span className="font-display text-2xl sm:text-4xl font-black text-[#00F0FF] block leading-none">{fortniteCount}</span>
           </div>
 
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1 col-span-2 sm:col-span-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#A855F7] uppercase block">CLASH ROYALE</span>
-            <span className="font-pixel text-xl sm:text-3xl font-black text-white block">{clashCount}</span>
+            <span className="font-display text-2xl sm:text-4xl font-black text-[#A855F7] block leading-none">{clashCount}</span>
           </div>
         </div>
 

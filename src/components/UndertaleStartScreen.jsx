@@ -102,29 +102,28 @@ export default function UndertaleStartScreen({ onEnterGame, initialName = '' }) 
   };
 
   const handleConfirm = () => {
-    if (!gamerTag.trim()) {
-      play8BitSound('select');
-      setShakeInput(true);
-      setTimeout(() => setShakeInput(false), 500);
-      return;
-    }
-
     const name = gamerTag.trim();
     play8BitSound('start');
-    setWelcomeName(name);
-    setShowWelcome(true);
 
-    // Save GamerTag to localStorage
-    try {
-      localStorage.setItem('compu_league_gamertag', name);
-    } catch {
-      // Storage unavailable
+    if (name) {
+      setWelcomeName(name);
+      setShowWelcome(true);
+
+      // Save GamerTag to localStorage
+      try {
+        localStorage.setItem('compu_league_gamertag', name);
+      } catch {
+        // Storage unavailable
+      }
+
+      // Show welcome screen briefly, then enter real page
+      setTimeout(() => {
+        onEnterGame(name);
+      }, 1400);
+    } else {
+      // Enter directly without requiring a name!
+      onEnterGame('');
     }
-
-    // Show black welcome screen, then enter real page
-    setTimeout(() => {
-      onEnterGame(name);
-    }, 2000);
   };
 
   const handleExit = () => {
@@ -392,20 +391,17 @@ export default function UndertaleStartScreen({ onEnterGame, initialName = '' }) 
                 value={gamerTag}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="TU NOMBRE"
+                placeholder="TU NOMBRE (OPCIONAL)"
                 maxLength={14}
                 autoComplete="off"
                 spellCheck="false"
-                className="w-full bg-transparent text-center text-zinc-400 px-10 font-['Press_Start_2P',monospace] text-base sm:text-xl tracking-widest uppercase outline-none placeholder:text-zinc-600 focus:placeholder-transparent cursor-text"
+                className="w-full bg-transparent text-center text-zinc-300 px-10 font-['Press_Start_2P',monospace] text-xs sm:text-base tracking-widest uppercase outline-none placeholder:text-zinc-600 focus:placeholder-transparent cursor-text"
               />
             </div>
 
-            {/* Error Message when empty */}
-            {shakeInput && (
-              <p className="text-xs text-red-500 tracking-wider mt-2.5 animate-pulse text-center">
-                * Debes escribir un nombre.
-              </p>
-            )}
+            <p className="text-[9px] sm:text-[10px] text-zinc-500 font-['Press_Start_2P',monospace] tracking-wider mt-2.5 text-center">
+              * Pulsa [ JUGAR ] para ingresar directamente
+            </p>
           </div>
         </div>
 

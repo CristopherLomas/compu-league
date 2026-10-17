@@ -170,7 +170,7 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Smooth in-tab navigation showing the "cargando..." sequence
+  // Instant in-tab navigation with smooth CSS fade-in
   const navigateTo = (target) => {
     if (target === 'juegos') {
       if (currentView === 'inicio') {
@@ -178,19 +178,27 @@ function App() {
         if (el) el.scrollIntoView({ behavior: 'smooth' });
         setActiveSection('juegos');
       } else {
-        setTargetView('juegos');
-        setIsTransitioning(true);
+        setCurrentView('inicio');
+        setActiveSection('juegos');
+        window.history.pushState({}, '', '/');
+        setTimeout(() => {
+          const el = document.getElementById('juegos');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 50);
       }
       return;
     }
 
-    if (currentView === target && !isTransitioning) {
+    if (currentView === target) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    setTargetView(target);
-    setIsTransitioning(true);
+    setCurrentView(target);
+    setActiveSection(target);
+    const url = target === 'inicio' ? '/' : `?page=${target}`;
+    window.history.pushState({}, '', url);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const navigateToPayment = (id) => {
@@ -443,7 +451,7 @@ function App() {
           setEditingRegistration(null);
         }}
         preselectedGame={selectedGameForModal}
-        initialGamerTag={playerName}
+        initialGamerTag=""
         onNavigateToPayment={navigateToPayment}
         editingRegistration={editingRegistration}
         onRegistrationUpdated={handleRegistrationUpdated}

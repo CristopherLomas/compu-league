@@ -227,14 +227,14 @@ export default function GameCards({ onSelectGame }) {
                           <Coins className="w-3 h-3 text-[#FFE600] shrink-0" />
                           <span className="truncate">VALOR FICHA:</span>
                         </div>
-                        <div className="space-y-1 mt-1 font-pixel text-[7px] sm:text-[8px] md:text-[9px]">
+                        <div className="space-y-1 mt-1 font-cyber text-xs">
                           <div className="flex items-center justify-between text-white pr-0.5 gap-1">
-                            <span className="text-slate-400 text-[7px] sm:text-[8px] shrink-0">INDIV:</span>
-                            <span className="text-[#FFE600] font-black text-[10px] sm:text-xs md:text-sm whitespace-nowrap">$1.00 <span className="text-[7px] sm:text-[8px] text-slate-300 font-normal">USD</span></span>
+                            <span className="text-slate-400 text-[8px] sm:text-[9px] font-pixel shrink-0">INDIV:</span>
+                            <span className="text-[#FFE600] font-black text-sm sm:text-base font-display whitespace-nowrap">$1.00 <span className="text-[9px] text-slate-300 font-normal font-sans">USD</span></span>
                           </div>
                           <div className="flex items-center justify-between text-white pr-0.5 gap-1 border-t border-white/10 pt-1">
-                            <span className="text-slate-400 text-[7px] sm:text-[8px] shrink-0">EQUIPO:</span>
-                            <span className="text-[#FFE600] font-black text-[10px] sm:text-xs md:text-sm whitespace-nowrap">$4.00 <span className="text-[7px] sm:text-[8px] text-slate-300 font-normal">USD</span></span>
+                            <span className="text-slate-400 text-[8px] sm:text-[9px] font-pixel shrink-0">EQUIPO:</span>
+                            <span className="text-[#FFE600] font-black text-sm sm:text-base font-display whitespace-nowrap">$4.00 <span className="text-[9px] text-slate-300 font-normal font-sans">USD</span></span>
                           </div>
                         </div>
                       </div>
@@ -244,8 +244,8 @@ export default function GameCards({ onSelectGame }) {
                           <Coins className="w-3 h-3 text-[#FFE600] shrink-0" />
                           <span className="truncate">VALOR FICHA:</span>
                         </div>
-                        <div className="font-pixel text-sm sm:text-lg md:text-xl text-[#FFE600] mt-1 font-black truncate">
-                          {game.coinPrice} <span className="text-[7px] sm:text-[8px] md:text-[9px] text-slate-300 font-normal">USD</span>
+                        <div className="font-display text-xl sm:text-2xl text-[#FFE600] mt-0.5 font-black truncate tracking-wide">
+                          {game.coinPrice} <span className="text-xs text-slate-300 font-normal font-sans">USD</span>
                         </div>
                         <div className="font-cyber text-[9px] sm:text-[10px] text-slate-400 truncate mt-0.5" title={game.coinDetail}>
                           {game.coinDetail}
