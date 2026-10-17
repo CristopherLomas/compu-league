@@ -391,17 +391,13 @@ export default function UndertaleStartScreen({ onEnterGame, initialName = '' }) 
                 value={gamerTag}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="TU NOMBRE (OPCIONAL)"
+                placeholder="TU NOMBRE"
                 maxLength={14}
                 autoComplete="off"
                 spellCheck="false"
                 className="w-full bg-transparent text-center text-zinc-300 px-10 font-['Press_Start_2P',monospace] text-xs sm:text-base tracking-widest uppercase outline-none placeholder:text-zinc-600 focus:placeholder-transparent cursor-text"
               />
             </div>
-
-            <p className="text-[9px] sm:text-[10px] text-zinc-500 font-['Press_Start_2P',monospace] tracking-wider mt-2.5 text-center">
-              * Pulsa [ JUGAR ] para ingresar directamente
-            </p>
           </div>
         </div>
 
