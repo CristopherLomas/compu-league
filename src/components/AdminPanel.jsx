@@ -210,20 +210,22 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   // Calculations
   const totalApproved = registrations.filter(r => r.status === 'approved').length;
   const totalPending = registrations.filter(r => r.status === 'pending' || r.status === 'payment_pending').length;
+  const totalRejected = registrations.filter(r => r.status === 'rejected').length;
+  const totalActive = registrations.filter(r => r.status !== 'rejected').length;
   const totalRevenue = registrations
     .filter(r => r.status === 'approved')
     .reduce((acc, r) => acc + (parseFloat(r.amount_due) || 0), 0);
-  const freeAgentsList = registrations.filter(r => r.is_free_agent);
+  const freeAgentsList = registrations.filter(r => r.is_free_agent && r.status !== 'rejected');
 
-  // Filtered registrations
+  // Filtered registrations (Oculta rechazados por defecto a menos que se filtre explícitamente por 'rejected')
   const filteredRegs = registrations.filter(r => {
     if (filterGame !== 'all' && r.game !== filterGame) return false;
-    if (filterStatus !== 'all') {
-      if (filterStatus === 'pending') {
-        if (r.status !== 'pending' && r.status !== 'payment_pending') return false;
-      } else if (r.status !== filterStatus) {
-        return false;
-      }
+    if (filterStatus === 'all') {
+      if (r.status === 'rejected') return false;
+    } else if (filterStatus === 'pending') {
+      if (r.status !== 'pending' && r.status !== 'payment_pending') return false;
+    } else if (r.status !== filterStatus) {
+      return false;
     }
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
@@ -407,7 +409,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
             {/* Navigation Tabs within Admin */}
             <div className="flex overflow-x-auto gap-2 pb-2 border-b border-slate-800 font-cyber">
               {[
-                { id: 'registrations', label: `Inscripciones (${registrations.length})`, icon: Users },
+                { id: 'registrations', label: `Inscripciones (${totalActive})`, icon: Users },
                 { id: 'free_agents', label: `Individuales (${freeAgentsList.length})`, icon: Users },
                 { id: 'brackets', label: 'Gestor de Brackets', icon: Trophy },
                 { id: 'supabase', label: 'Conexión Supabase', icon: Database },
@@ -470,10 +472,12 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                         onChange={(e) => setFilterStatus(e.target.value)}
                         className="w-full sm:w-auto px-3 py-2 bg-slate-950 border border-slate-700 text-xs sm:text-sm text-slate-200 focus:outline-none font-sans"
                       >
-                        <option value="all">Todos los Estados</option>
-                        <option value="pending">Pendientes de Pago</option>
-                        <option value="approved">Aprobados / Validados</option>
-                        <option value="rejected">Rechazados</option>
+                        <option value="all">Inscritos Activos (Ocultar Rechazados)</option>
+                        <option value="pending">Por Validar / Pendientes ({totalPending})</option>
+                        <option value="approved">Aprobados / Validados ({totalApproved})</option>
+                        {totalRejected > 0 && (
+                          <option value="rejected">Ver Rechazados ({totalRejected})</option>
+                        )}
                       </select>
                     </div>
                   </div>
