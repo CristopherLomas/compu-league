@@ -39,6 +39,7 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [copiedPhones, setCopiedPhones] = useState(false);
+  const [copiedTeamId, setCopiedTeamId] = useState(null);
 
   // Brackets states
   const [valorantMatches, setValorantMatches] = useState([]);
@@ -114,26 +115,42 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
     setRegistrations(updated);
   };
 
-  // Copy all approved WhatsApp numbers to clipboard for creating WhatsApp Groups
-  const handleCopyAllPhones = () => {
-    const phones = registrations
-      .filter(r => r.status === 'approved')
-      .map(r => r.captain_whatsapp)
-      .filter(Boolean);
+  // Phone utilities for WhatsApp and copy
+  const getCleanPhone = (rawPhone) => {
+    if (!rawPhone) return '';
+    return String(rawPhone).replace(/[^0-9]/g, '');
+  };
 
-    // Also include member phones
-    registrations.filter(r => r.status === 'approved').forEach(r => {
-      if (Array.isArray(r.members)) {
-        r.members.forEach(m => {
-          if (m.whatsapp) phones.push(m.whatsapp);
-        });
-      }
-    });
+  const getWhatsAppUrl = (rawPhone, name = '') => {
+    let clean = getCleanPhone(rawPhone);
+    if (!clean) return '';
+    if (clean.startsWith('09') && clean.length === 10) {
+      clean = '593' + clean.slice(1);
+    } else if (!clean.startsWith('593') && clean.length === 9) {
+      clean = '593' + clean;
+    }
+    const msg = name
+      ? `?text=${encodeURIComponent(`Hola ${name}, te contactamos del Staff de Compu League 2026.`)}`
+      : '';
+    return `https://wa.me/${clean}${msg}`;
+  };
 
-    const unique = [...new Set(phones)].join(', ');
-    navigator.clipboard.writeText(unique);
-    setCopiedPhones(true);
-    setTimeout(() => setCopiedPhones(false), 2500);
+  // Copy all phone numbers for a single team (Captain + all registered members)
+  const handleCopyTeamPhones = (reg) => {
+    const phones = [];
+    if (reg.captain_whatsapp) phones.push(reg.captain_whatsapp);
+    if (Array.isArray(reg.members)) {
+      reg.members.forEach(m => {
+        const p = m.whatsapp || m.phone;
+        if (p) phones.push(p);
+      });
+    }
+    const cleanList = [...new Set(phones.map(p => String(p).trim()).filter(Boolean))].join(', ');
+    if (cleanList) {
+      navigator.clipboard.writeText(cleanList);
+      setCopiedTeamId(reg.id);
+      setTimeout(() => setCopiedTeamId(null), 2000);
+    }
   };
 
   // Score match handler for Valorant
@@ -235,12 +252,36 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
       const matchPhone = r.captain_whatsapp?.includes(q);
       const matchMembers = r.members?.some(m => 
         m.name?.toLowerCase().includes(q) || 
-        (m.game_id || m.gameId)?.toLowerCase().includes(q)
+        (m.game_id || m.gameId)?.toLowerCase().includes(q) ||
+        (m.whatsapp || m.phone)?.includes(q)
       );
       return matchName || matchTeam || matchId || matchPhone || matchMembers;
     }
     return true;
   });
+
+  // Copy WhatsApp numbers of all participants (Captains + all team members) in current view
+  const handleCopyAllPhones = () => {
+    const targetRegs = filteredRegs.length > 0 ? filteredRegs : registrations.filter(r => r.status !== 'rejected');
+    const phones = [];
+
+    targetRegs.forEach(r => {
+      if (r.captain_whatsapp) phones.push(r.captain_whatsapp);
+      if (Array.isArray(r.members)) {
+        r.members.forEach(m => {
+          const p = m.whatsapp || m.phone;
+          if (p) phones.push(p);
+        });
+      }
+    });
+
+    const unique = [...new Set(phones.map(p => String(p).trim()).filter(Boolean))].join(', ');
+    if (unique) {
+      navigator.clipboard.writeText(unique);
+      setCopiedPhones(true);
+      setTimeout(() => setCopiedPhones(false), 2500);
+    }
+  };
 
   if (!isStandalone && !isOpen) return null;
 
@@ -573,10 +614,11 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                               <div className="pt-1 flex items-center justify-between">
                                 <span className="text-[10px] text-slate-400">WhatsApp:</span>
                                 <a
-                                  href={`https://wa.me/${reg.captain_whatsapp.replace(/[^0-9]/g, '')}`}
+                                  href={getWhatsAppUrl(reg.captain_whatsapp, reg.captain_name)}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-1.5 px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold transition"
+                                  title={`Abrir chat con ${reg.captain_name}`}
                                 >
                                   <Phone className="w-3 h-3 text-emerald-400" />
                                   <span>{reg.captain_whatsapp}</span>
@@ -585,31 +627,66 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                             )}
                           </div>
 
-                          {/* Integrantes del Equipo con Gamer IDs */}
+                          {/* Integrantes del Equipo con Gamer IDs y Números de Teléfono */}
                           {Array.isArray(reg.members) && reg.members.length > 0 && (
-                            <div className="bg-slate-950/60 p-2.5 border border-slate-800/80 space-y-1.5">
+                            <div className="bg-slate-950/60 p-2.5 border border-slate-800/80 space-y-2">
                               <div className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
                                 <span>Integrantes del Equipo ({reg.members.length}):</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopyTeamPhones(reg)}
+                                  className="text-[10px] text-cyan-400 hover:text-cyan-300 font-mono font-bold flex items-center gap-1 transition cursor-pointer"
+                                  title="Copiar todos los números de este equipo"
+                                >
+                                  <Copy className="w-3 h-3" />
+                                  <span>{copiedTeamId === reg.id ? '¡Copiados!' : 'Copiar números'}</span>
+                                </button>
                               </div>
-                              <div className="space-y-1">
+                              <div className="space-y-1.5">
                                 {reg.members.map((m, idx) => {
                                   const memberId = m.game_id || m.gameId || '';
                                   const isSub = Boolean(m.isSubstitute || m.is_substitute);
+                                  const memberPhone = m.whatsapp || m.phone || '';
+                                  const waUrl = memberPhone ? getWhatsAppUrl(memberPhone, m.name) : null;
                                   return (
                                     <div
                                       key={idx}
-                                      className="flex items-center justify-between text-xs bg-slate-900/60 px-2 py-1 border border-slate-800/60"
+                                      className="bg-slate-900/80 p-2 border border-slate-800/80 space-y-1.5"
                                     >
-                                      <span className="text-slate-300 truncate mr-2 font-medium">
-                                        {idx + 2}P. {m.name} {isSub && <span className="text-amber-400 text-[10px]">(Suplente)</span>}
-                                      </span>
-                                      {memberId ? (
-                                        <span className="text-[#00F0FF] font-mono font-bold text-[11px] shrink-0 bg-cyan-950/60 px-1.5 py-0.5 border border-cyan-500/30">
-                                          ID: {memberId}
+                                      {/* Jugador Nombre y Gamer ID */}
+                                      <div className="flex items-center justify-between text-xs gap-2">
+                                        <span className="text-slate-200 truncate font-semibold flex items-center gap-1">
+                                          <span className="text-cyan-400 font-mono font-bold">{idx + 2}P.</span>
+                                          <span>{m.name || `Jugador #${idx + 2}`}</span>
+                                          {isSub && <span className="text-amber-400 text-[10px] font-semibold">(Suplente)</span>}
                                         </span>
-                                      ) : (
-                                        <span className="text-slate-500 text-[10px] italic">Sin ID</span>
-                                      )}
+                                        {memberId ? (
+                                          <span className="text-[#00F0FF] font-mono font-bold text-[11px] shrink-0 bg-cyan-950/80 px-1.5 py-0.5 border border-cyan-500/30">
+                                            ID: {memberId}
+                                          </span>
+                                        ) : (
+                                          <span className="text-slate-500 text-[10px] italic">Sin ID</span>
+                                        )}
+                                      </div>
+
+                                      {/* WhatsApp del Jugador */}
+                                      <div className="pt-1 flex items-center justify-between border-t border-slate-800/60">
+                                        <span className="text-[10px] text-slate-400 font-mono">WhatsApp:</span>
+                                        {memberPhone ? (
+                                          <a
+                                            href={waUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono font-semibold transition"
+                                            title={`Abrir chat con ${m.name || 'jugador'}`}
+                                          >
+                                            <Phone className="w-3 h-3 text-emerald-400" />
+                                            <span>{memberPhone}</span>
+                                          </a>
+                                        ) : (
+                                          <span className="text-slate-500 text-[10px] italic">No registrado</span>
+                                        )}
+                                      </div>
                                     </div>
                                   );
                                 })}
@@ -717,30 +794,71 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                                   <span className="font-semibold text-slate-200 block">
                                     {reg.captain_name} ({reg.captain_game_id})
                                   </span>
-                                  <a
-                                    href={`https://wa.me/${reg.captain_whatsapp.replace(/[^0-9]/g, '')}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-emerald-400 hover:underline flex items-center gap-1 text-[11px]"
-                                  >
-                                    <Phone className="w-3 h-3" />
-                                    {reg.captain_whatsapp}
-                                  </a>
+                                  {reg.captain_whatsapp && (
+                                    <a
+                                      href={getWhatsAppUrl(reg.captain_whatsapp, reg.captain_name)}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-emerald-400 hover:underline flex items-center gap-1 text-[11px] font-mono"
+                                      title={`Abrir chat con ${reg.captain_name}`}
+                                    >
+                                      <Phone className="w-3 h-3 text-emerald-400" />
+                                      {reg.captain_whatsapp}
+                                    </a>
+                                  )}
                                 </div>
                               </td>
                               <td className="py-3 px-4">
                                 {Array.isArray(reg.members) && reg.members.length > 0 ? (
-                                  <div className="space-y-0.5 max-w-[200px]">
-                                    <span className="text-slate-400 text-[10px] block font-mono">
-                                      {reg.members.length} miembros:
-                                    </span>
+                                  <div className="space-y-1.5 min-w-[200px] max-w-[280px]">
+                                    <div className="flex items-center justify-between text-slate-400 text-[10px] font-mono">
+                                      <span>{reg.members.length} integrantes:</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleCopyTeamPhones(reg)}
+                                        className="text-cyan-400 hover:text-cyan-300 flex items-center gap-0.5 font-bold cursor-pointer transition"
+                                        title="Copiar teléfonos del equipo"
+                                      >
+                                        <Copy className="w-2.5 h-2.5" />
+                                        <span>{copiedTeamId === reg.id ? '¡Copiado!' : 'Copiar'}</span>
+                                      </button>
+                                    </div>
                                     {reg.members.map((m, idx) => {
                                       const memberId = m.game_id || m.gameId || '';
                                       const isSub = Boolean(m.isSubstitute || m.is_substitute);
+                                      const memberPhone = m.whatsapp || m.phone || '';
+                                      const waUrl = memberPhone ? getWhatsAppUrl(memberPhone, m.name) : null;
                                       return (
-                                        <span key={idx} className="block text-[11px] text-slate-300 truncate">
-                                          • {m.name} {memberId ? <span className="text-[#00F0FF] font-mono font-bold">[{memberId}]</span> : ''} {isSub && <em className="text-amber-400"> (Suplente)</em>}
-                                        </span>
+                                        <div key={idx} className="bg-slate-950/70 p-1.5 border border-slate-800/80 text-[11px] space-y-0.5">
+                                          <div className="flex items-center justify-between gap-1">
+                                            <span className="text-slate-200 font-medium truncate">
+                                              <span className="text-cyan-400 font-mono font-bold mr-1">{idx + 2}P.</span>
+                                              {m.name || `Jugador #${idx + 2}`} {isSub && <em className="text-amber-400 text-[10px]">(Suplente)</em>}
+                                            </span>
+                                            {memberId && (
+                                              <span className="text-[#00F0FF] font-mono text-[10px] font-bold shrink-0 bg-cyan-950/40 px-1 border border-cyan-500/20">
+                                                {memberId}
+                                              </span>
+                                            )}
+                                          </div>
+                                          {memberPhone ? (
+                                            <div className="flex items-center justify-between text-[10px] pt-0.5 border-t border-slate-800/40">
+                                              <span className="text-slate-500 font-mono">WhatsApp:</span>
+                                              <a
+                                                href={waUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-emerald-400 hover:underline flex items-center gap-1 font-mono font-medium"
+                                                title={`Abrir chat con ${m.name || 'jugador'}`}
+                                              >
+                                                <Phone className="w-2.5 h-2.5 text-emerald-400" />
+                                                <span>{memberPhone}</span>
+                                              </a>
+                                            </div>
+                                          ) : (
+                                            <span className="text-slate-500 text-[9px] italic block text-right">Sin número</span>
+                                          )}
+                                        </div>
                                       );
                                     })}
                                   </div>
@@ -852,10 +970,10 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                         <div>WhatsApp: <strong className="text-emerald-400">{agent.captain_whatsapp}</strong></div>
                       </div>
                       <a
-                        href={`https://wa.me/${agent.captain_whatsapp.replace(/[^0-9]/g, '')}?text=Hola%20${encodeURIComponent(agent.captain_name)},%20te%20escribimos%20de%20Compu%20League%20para%20asignarte%20equipo%20en%20${agent.game}`}
+                        href={getWhatsAppUrl(agent.captain_whatsapp, agent.captain_name)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2"
+                        className="w-full py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2 cursor-pointer"
                       >
                         <Phone className="w-3.5 h-3.5" />
                         Contactar para Equipo
