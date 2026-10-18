@@ -139,12 +139,12 @@ export default function GameCards({ onSelectGame }) {
               </h2>
 
               <p className="text-slate-300 font-cyber text-xs sm:text-sm max-w-2xl">
-                Cada videojuego cuenta con su propio fixture y premios. Inscribe a tu equipo en el juego correspondiente.
+                Torneo 100% virtual: compite desde casa. Todas las partidas serán transmitidas en vivo con casters oficiales. Inscribe a tu equipo en el juego correspondiente.
               </p>
             </div>
 
             <div className="bg-black border-2 border-[#FFE600] p-3 font-pixel text-[9px] sm:text-[10px] text-[#FFE600] self-start md:self-auto shrink-0 shadow-brutal-yellow">
-              <div className="animate-arcade-blink">★ TORNEO MULTIPLATAFORMA</div>
+              <div className="animate-arcade-blink">★ 100% VIRTUAL • EN VIVO</div>
               <div className="text-slate-400 mt-1">4, 5 Y 6 NOVIEMBRE 2026</div>
             </div>
 

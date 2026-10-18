@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert, Radio, Wifi } from 'lucide-react';
 import { CONTACT_INFO } from '../data/tournamentData';
 import { GameLogo } from './GameLogo';
 
@@ -68,6 +68,12 @@ export default function MainEsportsHero({
       {/* ========================================================= */}
       <div className="w-full bg-[#FFE600] text-black font-pixel py-2.5 text-[10px] sm:text-xs overflow-hidden select-none border-b-2 border-black relative z-20">
         <div className="animate-marquee whitespace-nowrap flex items-center gap-6 font-black">
+          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">TORNEO 100% VIRTUAL</span>
+          <span className="tracking-wider">★ JUEGA DESDE CASA ★</span>
+
+          <span className="bg-[#FF0055] text-white px-2.5 py-0.5 font-bold">TRANSMISION EN VIVO</span>
+          <span className="tracking-wider">★ TODAS LAS PARTIDAS EN DIRECTO ★</span>
+
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT 5v5</span>
           <span className="tracking-wider">★ INSCRIPCIONES ABIERTAS ★</span>
           
@@ -84,6 +90,12 @@ export default function MainEsportsHero({
           <span className="tracking-wider">★ TORNEO ONLINE ★</span>
 
           {/* Duplicated for smooth infinite loop */}
+          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">TORNEO 100% VIRTUAL</span>
+          <span className="tracking-wider">★ JUEGA DESDE CASA ★</span>
+
+          <span className="bg-[#FF0055] text-white px-2.5 py-0.5 font-bold">TRANSMISION EN VIVO</span>
+          <span className="tracking-wider">★ TODAS LAS PARTIDAS EN DIRECTO ★</span>
+
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT 5v5</span>
           <span className="tracking-wider">★ INSCRIPCIONES ABIERTAS ★</span>
           
@@ -141,8 +153,21 @@ export default function MainEsportsHero({
 
             {/* Clean readable description in Chakra Petch (Floats cleanly over grid, no blockquote border) */}
             <p className="text-slate-300 font-cyber text-sm sm:text-base leading-relaxed max-w-xl">
-              El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
+              El torneo oficial <strong className="text-[#00F0FF] font-bold">100% virtual</strong> de la carrera de Computación. Todas las partidas se transmitirán en vivo con casters oficiales. Compite individualmente o con tu equipo desde tu casa, domina la partida y demuestra quién es el mejor.
             </p>
+
+            {/* Badges Destacados: Modalidad 100% Virtual & Transmisión en Vivo */}
+            <div className="flex flex-wrap items-center gap-2.5 w-full">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#00F0FF]/15 border-2 border-[#00F0FF] text-[#00F0FF] font-pixel text-[8px] sm:text-[9px] uppercase font-bold shadow-brutal-cyan">
+                <Wifi className="w-3.5 h-3.5 text-[#00F0FF] animate-pulse" />
+                <span>TORNEO 100% VIRTUAL</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FF0055]/15 border-2 border-[#FF0055] text-white font-pixel text-[8px] sm:text-[9px] uppercase font-bold shadow-brutal-pink">
+                <span className="w-2 h-2 rounded-full bg-[#FF0055] animate-ping inline-block" />
+                <Radio className="w-3.5 h-3.5 text-[#FF0055]" />
+                <span>PARTIDAS TRANSMITIDAS EN VIVO</span>
+              </div>
+            </div>
 
             {/* Neo-Brutalist Elegant Neon Prize Box with Soft Glow */}
             <div className="w-full max-w-full min-w-0 bg-[#0D1322] border-2 border-[#FFE600] p-4 sm:p-5 shadow-brutal-yellow flex flex-col items-center text-center space-y-2 animate-neon-box-glow overflow-hidden">
@@ -255,10 +280,11 @@ export default function MainEsportsHero({
                 {/* HUD Overlay inside CRT (Insignias de alto contraste legibles) */}
                 <div className="absolute top-2.5 left-3 right-3 flex justify-between font-pixel text-[8px] sm:text-[9px] z-20 pointer-events-none">
                   <span className="bg-black/90 border border-[#00F0FF] text-[#00F0FF] px-2 py-0.5 shadow-brutal-black">
-                    ESCUDO: 100%
+                    MODO: 100% VIRTUAL
                   </span>
-                  <span className="bg-black/90 border border-[#FFE600] text-[#FFE600] px-2 py-0.5 shadow-brutal-black">
-                    MODO: COMPETITIVO
+                  <span className="bg-black/90 border border-[#FF0055] text-white px-2 py-0.5 shadow-brutal-black flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF0055] animate-ping inline-block" />
+                    <span>EN VIVO</span>
                   </span>
                 </div>
 
