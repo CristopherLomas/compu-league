@@ -133,7 +133,7 @@ export default function ComingSoonPage({ type = 'brackets', onGoHome, hideHeader
               onClick={() => setIsRegisterOpen(true)}
               className="btn-arcade-press shadow-brutal-pink w-full sm:w-auto px-7 py-4 border-2 border-black bg-[#FFE600] text-black font-pixel font-black text-xs uppercase cursor-pointer"
             >
-              <span>[ INSCRIBIR A MI EQUIPO ]</span>
+              <span>INSCRIBIR A MI EQUIPO</span>
             </button>
 
             <button

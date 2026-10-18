@@ -567,7 +567,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
             onClick={onOpenRegister}
             className="btn-arcade-press shadow-brutal-pink w-full sm:w-auto px-8 py-4 bg-[#FFE600] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider text-center transition-all shrink-0 cursor-pointer"
           >
-            [ INSERT COIN // INSCRIBIR A MI EQUIPO ]
+            INSCRIBIR A MI EQUIPO
           </button>
         </div>
 
