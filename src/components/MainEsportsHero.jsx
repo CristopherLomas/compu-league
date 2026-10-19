@@ -141,7 +141,7 @@ export default function MainEsportsHero({
 
             {/* Clean readable description in Chakra Petch (Floats cleanly over grid, no blockquote border) */}
             <p className="text-slate-300 font-cyber text-sm sm:text-base leading-relaxed max-w-xl">
-              El torneo oficial de la carrera de Computación, Todas las partidas se realizaran de forma virtual y transmitiran en vivo. Compite individualmente o con tu equipo desde tu casa, domina la partida y demuestra quién es el mejor.
+              El torneo oficial de la carrera de Computación, Todas las partidas se realizaran de forma <span className="text-[#00F0FF] font-bold">virtual</span> y <span className="text-[#FF0055] font-bold">transmitiran en vivo</span>. Compite individualmente o con tu equipo desde tu casa, domina la partida y demuestra quién es el mejor.
             </p>
 
             {/* Neo-Brutalist Elegant Neon Prize Box with Soft Glow */}
