@@ -45,18 +45,12 @@ export default function Footer({ onOpenRegister }) {
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed font-cyber">
-              El torneo oficial 100% virtual de la carrera de Computación. Todas las partidas se transmitirán en vivo. Compite individualmente o con tu equipo, domina la partida y demuestra quién es el mejor.
+              El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
             </p>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#10B981] text-black border-2 border-black font-pixel text-[8px] font-black uppercase">
-                <span className="w-2 h-2 bg-black animate-arcade-blink" />
-                <span>INSCRIPCIONES ABIERTAS</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FF0055] text-white border-2 border-black font-pixel text-[8px] font-black uppercase shadow-brutal-pink">
-                <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping inline-block" />
-                <span>100% VIRTUAL • EN VIVO</span>
-              </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#10B981] text-black border-2 border-black font-pixel text-[8px] font-black uppercase">
+              <span className="w-2 h-2 bg-black animate-arcade-blink" />
+              <span>INSCRIPCIONES ABIERTAS</span>
             </div>
           </div>
 

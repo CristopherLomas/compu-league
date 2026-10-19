@@ -810,19 +810,6 @@ export default function RegistrationModal({
                     </div>
                   </div>
 
-                  {/* Aviso de Torneo Virtual y Transmisiones en Vivo */}
-                  <div className="p-3 bg-black border-2 border-[#00F0FF] flex items-center justify-between gap-3 text-xs font-cyber shadow-brutal-cyan">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#FF0055] animate-ping shrink-0 inline-block" />
-                      <span className="text-slate-200">
-                        Torneo <strong className="text-[#00F0FF]">100% virtual</strong> (compite desde casa) • Todas las partidas se transmitirán en vivo.
-                      </span>
-                    </div>
-                    <span className="font-pixel text-[8px] bg-[#00F0FF] text-black px-2 py-0.5 font-bold uppercase shrink-0 hidden sm:inline-block">
-                      LIVE STREAM
-                    </span>
-                  </div>
-
                   {/* Tipo de Participación */}
                   <div className="p-4 bg-black border-2 border-black space-y-3 shadow-brutal-black">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
