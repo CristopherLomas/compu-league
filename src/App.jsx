@@ -11,7 +11,7 @@ import RegistrationModal from './components/RegistrationModal';
 import AdminPanel from './components/AdminPanel';
 import PaymentPage from './components/PaymentPage';
 import PendingPaymentBanner from './components/PendingPaymentBanner';
-import { getRegistrationById } from './lib/storage';
+import { getRegistrationById, getPendingPaymentsList, removePendingPayment } from './lib/storage';
 
 function App() {
   // Helper to extract Payment UUID from pathname (/pago/:id) or query params
@@ -97,45 +97,50 @@ function App() {
   const [selectedGameForModal, setSelectedGameForModal] = useState('valorant');
   const [editingRegistration, setEditingRegistration] = useState(null);
 
-  // Pending Payment on this device state
-  const [pendingPayment, setPendingPayment] = useState(null);
+  // Pending Payments on this device state (soporta múltiples juegos/tickets)
+  const [pendingPayments, setPendingPayments] = useState([]);
   const [isPendingPaymentDismissed, setIsPendingPaymentDismissed] = useState(false);
 
-  // Check if there is an unpaid registration on this device
+  // Check if there are unpaid registrations on this device
   useEffect(() => {
     let isMounted = true;
-    const checkPendingPayment = async () => {
+    const checkPendingPayments = async () => {
       if (currentView === 'pago') return;
 
       try {
-        const saved = localStorage.getItem('compu_league_pending_payment');
-        if (!saved) return;
-        const parsed = JSON.parse(saved);
-        if (!parsed || !parsed.id) return;
+        const savedList = getPendingPaymentsList();
+        if (!savedList || savedList.length === 0) {
+          if (isMounted) setPendingPayments([]);
+          return;
+        }
 
-        // Verify status from database or local storage
-        const reg = await getRegistrationById(parsed.id);
-        if (reg) {
-          if (reg.payment_status === 'paid' || reg.status === 'approved') {
-            // Already paid, clear reminder
-            localStorage.removeItem('compu_league_pending_payment');
-            if (isMounted) setPendingPayment(null);
-            return;
+        const validUnpaid = [];
+        for (const item of savedList) {
+          if (!item || !item.id) continue;
+          const reg = await getRegistrationById(item.id);
+          if (reg) {
+            if (reg.payment_status === 'paid' || reg.status === 'approved') {
+              // Ya fue pagado o aprobado por el staff, limpiar del dispositivo
+              removePendingPayment(item.id);
+            } else {
+              validUnpaid.push({ ...item, ...reg });
+            }
+          } else {
+            validUnpaid.push(item);
           }
-          if (isMounted) {
-            setPendingPayment({ ...parsed, ...reg });
-          }
-        } else {
-          if (isMounted) setPendingPayment(parsed);
+        }
+
+        if (isMounted) {
+          setPendingPayments(validUnpaid);
         }
       } catch (err) {
-        console.warn('Error checking pending payment on device:', err);
+        console.warn('Error checking pending payments on device:', err);
       }
     };
 
-    checkPendingPayment();
+    checkPendingPayments();
     return () => { isMounted = false; };
-  }, [currentView]);
+  }, [currentView, isRegisterOpen]);
 
   // Handle browser back and forward history buttons
   useEffect(() => {
@@ -210,7 +215,6 @@ function App() {
   };
 
   const handleContinuePendingPayment = (id) => {
-    setPendingPayment(null);
     setHasEnteredGame(true);
     navigateToPayment(id);
   };
@@ -240,9 +244,11 @@ function App() {
   };
 
   const handleRegistrationUpdated = (updatedRecord) => {
-    if (pendingPayment && String(pendingPayment.id).toLowerCase() === String(updatedRecord.id).toLowerCase()) {
-      setPendingPayment({ ...pendingPayment, ...updatedRecord });
-    }
+    setPendingPayments(prev => prev.map(p => 
+      String(p.id).toLowerCase() === String(updatedRecord.id).toLowerCase()
+        ? { ...p, ...updatedRecord }
+        : p
+    ));
   };
 
   const handleLoadingComplete = () => {
@@ -465,10 +471,10 @@ function App() {
         />
       )}
 
-      {/* Pending Payment Reminder Banner for returning users */}
-      {!isPendingPaymentDismissed && pendingPayment && currentView !== 'pago' && (
+      {/* Pending Payment Reminder Banner for returning users (soporta múltiples juegos) */}
+      {!isPendingPaymentDismissed && pendingPayments.length > 0 && currentView !== 'pago' && (
         <PendingPaymentBanner
-          pendingPayment={pendingPayment}
+          pendingPayments={pendingPayments}
           onContinue={handleContinuePendingPayment}
           onDismiss={handleDismissPendingPayment}
           onEdit={handleEditPendingPayment}

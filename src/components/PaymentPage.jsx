@@ -5,7 +5,7 @@ import {
   Zap, FileText, CheckCircle, Terminal, Edit
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { getRegistrationById, updateRegistrationReceipt } from '../lib/storage';
+import { getRegistrationById, updateRegistrationReceipt, removePendingPayment, getPendingPaymentsList } from '../lib/storage';
 import { BANK_INFO, CONTACT_INFO } from '../data/tournamentData';
 
 export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
@@ -125,13 +125,7 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
       if (updated) {
         setRegistration(updated);
         try {
-          const savedPending = localStorage.getItem('compu_league_pending_payment');
-          if (savedPending) {
-            const parsed = JSON.parse(savedPending);
-            if (parsed.id === targetId) {
-              localStorage.removeItem('compu_league_pending_payment');
-            }
-          }
+          removePendingPayment(targetId);
         } catch (e) {}
       }
 
@@ -430,6 +424,47 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
                     [ VOLVER AL INICIO ]
                   </button>
                 </div>
+
+                {/* Si tiene otros juegos pendientes en este dispositivo, mostrar acceso directo para pagarlos uno a uno */}
+                {(() => {
+                  const others = getPendingPaymentsList().filter(p => p.id !== targetId);
+                  if (others.length === 0) return null;
+                  return (
+                    <div className="p-4 bg-black border-2 border-[#00F0FF] text-left space-y-3 mt-4 shadow-brutal-cyan">
+                      <div className="flex items-center justify-between font-pixel text-[9px] text-[#00F0FF]">
+                        <span className="flex items-center gap-1.5 uppercase font-bold">
+                          <Clock className="w-3.5 h-3.5" />
+                          Tienes {others.length} pre-inscripción{others.length > 1 ? 'es' : ''} más por pagar:
+                        </span>
+                        <span className="text-slate-400">PAGO INDIVIDUAL</span>
+                      </div>
+
+                      <div className="space-y-2">
+                        {others.map((p) => (
+                          <div
+                            key={p.id}
+                            className="p-3 bg-[#0C121D] border border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs font-cyber"
+                          >
+                            <div>
+                              <span className="text-white font-bold block">{p.team_name}</span>
+                              <span className="text-[#FFE600] text-[10px] font-pixel block mt-0.5">
+                                {p.game_name || p.game} • ${Number(p.amount_due || 1).toFixed(2)} USD
+                              </span>
+                            </div>
+
+                            <a
+                              href={`/pago/${p.id}`}
+                              className="btn-arcade-press shadow-brutal-pink px-4 py-2 bg-[#FFE600] text-black font-pixel text-[9px] uppercase font-black shrink-0 cursor-pointer flex items-center justify-center gap-1.5"
+                            >
+                              <span>[ SUBIR PAGO DE ESTE JUEGO ]</span>
+                              <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             )}
 

@@ -884,3 +884,58 @@ export const saveSchedule = (scheduleList) => {
   localStorage.setItem(STORAGE_KEYS.SCHEDULE, JSON.stringify(scheduleList));
   return scheduleList;
 };
+
+// -------------------------------------------------------------
+// PENDING PAYMENTS (DISPOSITIVO LOCAL MULTI-JUEGOS)
+// -------------------------------------------------------------
+export const getPendingPaymentsList = () => {
+  try {
+    const listRaw = localStorage.getItem('compu_league_pending_payments');
+    if (listRaw) {
+      const parsed = JSON.parse(listRaw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+    const singleRaw = localStorage.getItem('compu_league_pending_payment');
+    if (singleRaw) {
+      const parsed = JSON.parse(singleRaw);
+      if (parsed && parsed.id) return [parsed];
+    }
+    return [];
+  } catch {
+    return [];
+  }
+};
+
+export const addPendingPayment = (ticket) => {
+  if (!ticket || !ticket.id) return [];
+  try {
+    const current = getPendingPaymentsList();
+    const filtered = current.filter(item => item.id !== ticket.id);
+    const updated = [ticket, ...filtered];
+    localStorage.setItem('compu_league_pending_payments', JSON.stringify(updated));
+    localStorage.setItem('compu_league_pending_payment', JSON.stringify(ticket));
+    return updated;
+  } catch (e) {
+    console.warn('Error guardando ticket pendiente:', e);
+    return [];
+  }
+};
+
+export const removePendingPayment = (ticketId) => {
+  if (!ticketId) return [];
+  try {
+    const current = getPendingPaymentsList();
+    const updated = current.filter(item => item.id !== ticketId);
+    if (updated.length > 0) {
+      localStorage.setItem('compu_league_pending_payments', JSON.stringify(updated));
+      localStorage.setItem('compu_league_pending_payment', JSON.stringify(updated[0]));
+    } else {
+      localStorage.removeItem('compu_league_pending_payments');
+      localStorage.removeItem('compu_league_pending_payment');
+    }
+    return updated;
+  } catch (e) {
+    console.warn('Error eliminando ticket pendiente:', e);
+    return [];
+  }
+};
