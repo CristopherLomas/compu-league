@@ -42,7 +42,7 @@ export const GAMES = [
     formatDetail: 'Doble Eliminación (Winners Bracket, Loser Bracket y Gran Final). Partidas al mejor de 1 (Bo1), Finales al mejor de 3 (Bo3).',
     platform: 'PC',
     icon: 'target',
-    whatsappGroupUrl: 'https://chat.whatsapp.com/VALORANT_COMPU_LEAGUE', // Reemplazar con el enlace del grupo oficial
+    whatsappGroupUrl: 'https://chat.whatsapp.com/EluwoOy9WVHKtoUfUJigko?s=cl&p=a&mlu=4&ilr=4',
   },
   {
     id: 'free_fire',
@@ -63,7 +63,7 @@ export const GAMES = [
     formatDetail: 'Partida Battle Royale por modalidad (1 sala Escuadras y 1 sala Individual). Gana quien se lleve el BOOYAH o victoria total.',
     platform: 'Móvil / Emulador oficial',
     icon: 'flame',
-    whatsappGroupUrl: 'https://chat.whatsapp.com/FREEFIRE_COMPU_LEAGUE', // Reemplazar con el enlace del grupo oficial
+    whatsappGroupUrl: 'https://chat.whatsapp.com/HeGmvTRIc6xLiHz2QHR2B5?s=cl&p=a&mlu=4&ilr=4',
   },
   {
     id: 'fortnite',
@@ -84,7 +84,7 @@ export const GAMES = [
     formatDetail: 'Partida de Battle Royale. Gana el último dúo sobreviviente en pie (Top 1).',
     platform: ' ',
     icon: 'crosshair',
-    whatsappGroupUrl: 'https://chat.whatsapp.com/FORTNITE_COMPU_LEAGUE', // Reemplazar con el enlace del grupo oficial
+    whatsappGroupUrl: 'https://chat.whatsapp.com/JYxfM883obE8iXgW8Svo7M?s=cl&p=a&mlu=4&ilr=4',
   },
   {
     id: 'clash_royale',
@@ -105,7 +105,7 @@ export const GAMES = [
     formatDetail: 'Llave de Torneo eliminatoria directa. Duelos al mejor de 3 partidas (Bo3). Nivel de cartas estándar de torneo.',
     platform: 'Móvil (Android / iOS)',
     icon: 'crown',
-    whatsappGroupUrl: 'https://chat.whatsapp.com/CLASHROYALE_COMPU_LEAGUE', // Reemplazar con el enlace del grupo oficial
+    whatsappGroupUrl: 'https://chat.whatsapp.com/FJWPs4wm2kv65Jfeg4Sp1J?s=cl&p=a&mlu=4&ilr=4',
   },
 ];
 
