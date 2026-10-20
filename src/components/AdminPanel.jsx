@@ -174,6 +174,45 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
     return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
   };
 
+  // Pre-formatted WhatsApp group invitation message for any player/member of a team
+  const getMemberInviteWhatsAppUrl = (memberPhone, memberName, reg) => {
+    let clean = getCleanPhone(memberPhone);
+    if (!clean) return '';
+    if (clean.startsWith('09') && clean.length === 10) {
+      clean = '593' + clean.slice(1);
+    } else if (!clean.startsWith('593') && clean.length === 9) {
+      clean = '593' + clean;
+    }
+
+    // Match game config & group url
+    let gameKey = reg.game || 'valorant';
+    const cleanKey = String(gameKey).toLowerCase().replace(/[^a-z0-9]/g, '');
+    let matchedGame = GAMES.find(g => g.id === gameKey);
+    if (!matchedGame) {
+      if (cleanKey.includes('val')) matchedGame = GAMES.find(g => g.id === 'valorant');
+      else if (cleanKey.includes('free') || cleanKey.includes('fire')) matchedGame = GAMES.find(g => g.id === 'free_fire');
+      else if (cleanKey.includes('fort')) matchedGame = GAMES.find(g => g.id === 'fortnite');
+      else if (cleanKey.includes('clash') || cleanKey.includes('royale')) matchedGame = GAMES.find(g => g.id === 'clash_royale');
+    }
+
+    const gameName = matchedGame ? matchedGame.name : (reg.game || 'Torneo').toUpperCase();
+    const groupUrl = matchedGame?.whatsappGroupUrl || '';
+    const teamName = reg.team_name || reg.captain_name || 'tu equipo';
+    const playerName = memberName || 'Compañero';
+
+    const message = 
+`¡Hola ${playerName}! 👋 Te saluda el Staff de Compu League E-Sports 2026. 🏆
+
+Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. 🎮
+
+👉 Únete al grupo oficial de WhatsApp de ${gameName} donde coordinaremos las salas de juego, horarios y llaves:
+🔗 ${groupUrl}
+
+¡Muchos éxitos en la competencia! 🔥`;
+
+    return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  };
+
   // Copy all phone numbers for a single team (Captain + all registered members)
   const handleCopyTeamPhones = (reg) => {
     const phones = [];
@@ -650,17 +689,17 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                               {reg.captain_name}
                             </div>
                             {reg.captain_whatsapp && (
-                              <div className="pt-1 flex items-center justify-between">
-                                <span className="text-[10px] text-slate-400">WhatsApp:</span>
+                              <div className="pt-1.5 flex items-center justify-between border-t border-slate-800/60">
+                                <span className="text-[10px] text-slate-400 font-mono">WhatsApp:</span>
                                 <a
-                                  href={getWhatsAppUrl(reg.captain_whatsapp, reg.captain_name)}
+                                  href={getConfirmationWhatsAppUrl(reg)}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 px-2 py-1 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold transition"
-                                  title={`Abrir chat con ${reg.captain_name}`}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 text-[11px] font-mono font-bold transition shadow-sm"
+                                  title={`Enviar invitación al grupo al Capitán (${reg.captain_name})`}
                                 >
                                   <Phone className="w-3 h-3 text-emerald-400" />
-                                  <span>{reg.captain_whatsapp}</span>
+                                  <span>📲 Invitar Capitán ({reg.captain_whatsapp})</span>
                                 </a>
                               </div>
                             )}
@@ -686,11 +725,11 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                                   const memberId = m.game_id || m.gameId || '';
                                   const isSub = Boolean(m.isSubstitute || m.is_substitute);
                                   const memberPhone = m.whatsapp || m.phone || '';
-                                  const waUrl = memberPhone ? getWhatsAppUrl(memberPhone, m.name) : null;
+                                  const inviteUrl = memberPhone ? getMemberInviteWhatsAppUrl(memberPhone, m.name, reg) : null;
                                   return (
                                     <div
                                       key={idx}
-                                      className="bg-slate-900/80 p-2 border border-slate-800/80 space-y-1.5"
+                                      className="bg-slate-900/80 p-2.5 border border-slate-800/80 space-y-2"
                                     >
                                       {/* Jugador Nombre y Gamer ID */}
                                       <div className="flex items-center justify-between text-xs gap-2">
@@ -708,19 +747,21 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                                         )}
                                       </div>
 
-                                      {/* WhatsApp del Jugador */}
-                                      <div className="pt-1 flex items-center justify-between border-t border-slate-800/60">
-                                        <span className="text-[10px] text-slate-400 font-mono">WhatsApp:</span>
+                                      {/* WhatsApp del Jugador + Botón Individual para Invitar al Grupo */}
+                                      <div className="pt-1.5 flex items-center justify-between gap-2 border-t border-slate-800/60">
+                                        <span className="text-[10px] text-slate-400 font-mono">
+                                          {memberPhone || 'Sin número'}
+                                        </span>
                                         {memberPhone ? (
                                           <a
-                                            href={waUrl}
+                                            href={inviteUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono font-semibold transition"
-                                            title={`Abrir chat con ${m.name || 'jugador'}`}
+                                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 text-emerald-300 text-[11px] font-mono font-bold transition shadow-sm"
+                                            title={`Enviar invitación al grupo de WhatsApp a ${m.name || 'jugador'}`}
                                           >
                                             <Phone className="w-3 h-3 text-emerald-400" />
-                                            <span>{memberPhone}</span>
+                                            <span>📲 Invitar al Grupo</span>
                                           </a>
                                         ) : (
                                           <span className="text-slate-500 text-[10px] italic">No registrado</span>
@@ -843,21 +884,24 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                                 )}
                               </td>
                               <td className="py-3 px-4">
-                                <div className="space-y-0.5">
+                                <div className="space-y-1">
                                   <span className="font-semibold text-slate-200 block">
                                     {reg.captain_name} ({reg.captain_game_id})
                                   </span>
                                   {reg.captain_whatsapp && (
-                                    <a
-                                      href={getWhatsAppUrl(reg.captain_whatsapp, reg.captain_name)}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-emerald-400 hover:underline flex items-center gap-1 text-[11px] font-mono"
-                                      title={`Abrir chat con ${reg.captain_name}`}
-                                    >
-                                      <Phone className="w-3 h-3 text-emerald-400" />
-                                      {reg.captain_whatsapp}
-                                    </a>
+                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                      <a
+                                        href={getConfirmationWhatsAppUrl(reg)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 text-[10px] bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-mono font-bold px-1.5 py-0.5 transition shadow-sm"
+                                        title={`Enviar confirmación e invitación al grupo al Capitán ${reg.captain_name}`}
+                                      >
+                                        <Phone className="w-2.5 h-2.5 text-emerald-400" />
+                                        <span>Invitar Capitán</span>
+                                      </a>
+                                      <span className="text-slate-400 text-[10px] font-mono">{reg.captain_whatsapp}</span>
+                                    </div>
                                   )}
                                 </div>
                               </td>
@@ -880,9 +924,9 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                                       const memberId = m.game_id || m.gameId || '';
                                       const isSub = Boolean(m.isSubstitute || m.is_substitute);
                                       const memberPhone = m.whatsapp || m.phone || '';
-                                      const waUrl = memberPhone ? getWhatsAppUrl(memberPhone, m.name) : null;
+                                      const inviteUrl = memberPhone ? getMemberInviteWhatsAppUrl(memberPhone, m.name, reg) : null;
                                       return (
-                                        <div key={idx} className="bg-slate-950/70 p-1.5 border border-slate-800/80 text-[11px] space-y-0.5">
+                                        <div key={idx} className="bg-slate-950/70 p-1.5 border border-slate-800/80 text-[11px] space-y-1">
                                           <div className="flex items-center justify-between gap-1">
                                             <span className="text-slate-200 font-medium truncate">
                                               <span className="text-cyan-400 font-mono font-bold mr-1">{idx + 2}P.</span>
@@ -895,17 +939,17 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                                             )}
                                           </div>
                                           {memberPhone ? (
-                                            <div className="flex items-center justify-between text-[10px] pt-0.5 border-t border-slate-800/40">
-                                              <span className="text-slate-500 font-mono">WhatsApp:</span>
+                                            <div className="flex items-center justify-between text-[10px] pt-1 border-t border-slate-800/40">
+                                              <span className="text-slate-400 font-mono">{memberPhone}</span>
                                               <a
-                                                href={waUrl}
+                                                href={inviteUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-emerald-400 hover:underline flex items-center gap-1 font-mono font-medium"
-                                                title={`Abrir chat con ${m.name || 'jugador'}`}
+                                                className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-500/30 px-1.5 py-0.5 font-mono font-bold transition"
+                                                title={`Enviar invitación al grupo a ${m.name || 'jugador'}`}
                                               >
                                                 <Phone className="w-2.5 h-2.5 text-emerald-400" />
-                                                <span>{memberPhone}</span>
+                                                <span>Invitar Grupo</span>
                                               </a>
                                             </div>
                                           ) : (
@@ -1035,13 +1079,14 @@ Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxit
                         <div>WhatsApp: <strong className="text-emerald-400">{agent.captain_whatsapp}</strong></div>
                       </div>
                       <a
-                        href={getWhatsAppUrl(agent.captain_whatsapp, agent.captain_name)}
+                        href={getConfirmationWhatsAppUrl(agent)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2 cursor-pointer"
+                        className="w-full py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2 cursor-pointer font-mono"
+                        title="Enviar confirmación y link del grupo de WhatsApp"
                       >
-                        <Phone className="w-3.5 h-3.5" />
-                        Contactar para Equipo
+                        <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>📲 Invitar al Grupo ({agent.game.replace('_', ' ')})</span>
                       </a>
                     </div>
                   ))}
