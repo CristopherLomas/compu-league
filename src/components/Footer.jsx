@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Phone, ArrowUp, Coins, Zap, Sparkles, Shield, Flame, Crosshair, Crown } from 'lucide-react';
+import { MessageSquare, Phone, ArrowUp, Coins, Zap, Sparkles } from 'lucide-react';
 import { CONTACT_INFO } from '../data/tournamentData';
 
 export default function Footer({ onOpenRegister }) {
@@ -54,29 +54,23 @@ export default function Footer({ onOpenRegister }) {
             </div>
           </div>
 
-          {/* Col 2: Videojuegos Oficiales */}
+          {/* Col 2: Patrocinadores */}
           <div className="space-y-3">
             <h4 className="font-pixel text-[10px] uppercase text-[#FFE600] tracking-wider">
-              [ 4 SLOTS OFICIALES ]
+              [ PATROCINADORES ]
             </h4>
-            <ul className="space-y-2 text-xs font-cyber text-slate-300">
-              <li className="flex items-center gap-2 hover:text-[#FF0055] transition">
-                <Shield className="w-3.5 h-3.5 text-[#FF0055] shrink-0" />
-                <span>Valorant (5v5 • Doble Eliminación)</span>
-              </li>
-              <li className="flex items-center gap-2 hover:text-[#FFE600] transition">
-                <Flame className="w-3.5 h-3.5 text-[#FFE600] shrink-0" />
-                <span>Free Fire (Escuadras 4v4 + Solo)</span>
-              </li>
-              <li className="flex items-center gap-2 hover:text-[#00F0FF] transition">
-                <Crosshair className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
-                <span>Fortnite (Dúos Battle Royale)</span>
-              </li>
-              <li className="flex items-center gap-2 hover:text-[#A855F7] transition">
-                <Crown className="w-3.5 h-3.5 text-[#A855F7] shrink-0" />
-                <span>Clash Royale (1v1 Duelos Bo3)</span>
-              </li>
-            </ul>
+            <div className="p-4 bg-[#0B101A] border-2 border-dashed border-white/20 space-y-2.5 font-cyber text-xs shadow-brutal-black">
+              <div className="flex items-center gap-1.5 font-pixel text-[9px] text-[#00F0FF] uppercase font-bold">
+                <Sparkles className="w-3.5 h-3.5 text-[#00F0FF] shrink-0" />
+                <span>PRÓXIMAMENTE</span>
+              </div>
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                Próximamente se anunciarán los patrocinadores oficiales del torneo.
+              </p>
+              <div className="pt-1.5 border-t border-white/10 text-[9px] text-slate-500 font-pixel uppercase tracking-wider">
+                // ESPACIO DISPONIBLE
+              </div>
+            </div>
           </div>
 
           {/* Col 3: Torneo Info & Premios */}
