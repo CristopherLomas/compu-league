@@ -72,7 +72,7 @@ export default function Footer({ onOpenRegister }) {
                 <img 
                   src="/assets/koa_sponsor.png" 
                   alt="KOA - Desarrollo inteligente, soluciones naturales" 
-                  className="h-14 sm:h-16 w-auto object-contain transition-transform duration-200 group-hover:scale-105 drop-shadow-[0_0_1px_rgba(255,255,255,0.85)] drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                  className="h-11 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.25)]"
                 />
               </a>
 
