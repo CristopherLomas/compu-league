@@ -347,9 +347,9 @@ function App() {
           onEnterGame={handleEnterGame} 
           initialName={playerName} 
         />
-        {!isPendingPaymentDismissed && pendingPayment && (
+        {!isPendingPaymentDismissed && pendingPayments.length > 0 && (
           <PendingPaymentBanner
-            pendingPayment={pendingPayment}
+            pendingPayments={pendingPayments}
             onContinue={handleContinuePendingPayment}
             onDismiss={handleDismissPendingPayment}
             onEdit={handleEditPendingPayment}
