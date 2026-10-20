@@ -5,7 +5,7 @@ import {
   CheckCircle2, Clock, ArrowRight, ArrowLeft, Terminal, Coins, CreditCard, Crown
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { BANK_INFO, GAMES, CONTACT_INFO } from '../data/tournamentData';
+import { BANK_INFO, GAMES, CONTACT_INFO, getGameWhatsAppGroupUrl } from '../data/tournamentData';
 import { saveRegistration, updateRegistrationData, generateUUID, addPendingPayment, removePendingPayment } from '../lib/storage';
 import { GameLogo } from './GameLogo';
 
@@ -643,16 +643,41 @@ export default function RegistrationModal({
                     </div>
                   )}
                   <div className="pt-2 text-[10px] text-slate-400 leading-relaxed border-t border-white/10 font-cyber">
-                    ⚠️ El staff de Compu League E-Sports validará tu comprobante de Banco Pichincha. Una vez verificado, te agregaremos al grupo oficial de WhatsApp y coordinaremos tus partidas.
+                    ⚠️ El staff de Compu League E-Sports validará tu comprobante de Banco Pichincha. Una vez verificado, tu cupo quedará 100% CONFIRMADO.
                   </div>
                 </div>
+
+                {/* BOTÓN DESTACADO: UNIRSE AL GRUPO OFICIAL DE WHATSAPP DEL JUEGO */}
+                {(() => {
+                  const gameGroupUrl = getGameWhatsAppGroupUrl(selectedGame);
+                  return (
+                    <div className="p-4 sm:p-5 bg-[#052e16] border-2 border-[#10B981] text-center space-y-3 max-w-lg mx-auto shadow-brutal-black">
+                      <div className="flex items-center justify-center gap-2 text-[#10B981] font-pixel text-[10px] sm:text-xs font-black uppercase">
+                        <Phone className="w-4 h-4" />
+                        <span>PASO 2 OBLIGATORIO: GRUPO OFICIAL</span>
+                      </div>
+                      <p className="text-xs text-slate-200 font-cyber leading-relaxed">
+                        ¡Únete ahora al grupo oficial de WhatsApp de <strong className="text-white font-bold">{gameConfig.name}</strong>! Por este medio coordinaremos los enlaces de las salas, horarios y llaves oficiales.
+                      </p>
+                      <a
+                        href={gameGroupUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-arcade-press shadow-brutal-black inline-flex items-center justify-center gap-2 w-full py-3.5 bg-[#10B981] hover:bg-[#34D399] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider transition"
+                      >
+                        <Phone className="w-4 h-4 stroke-[2.5]" />
+                        <span>[ UNIRSE AL GRUPO DE WHATSAPP ({gameConfig.name}) ]</span>
+                      </a>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                   <a
                     href={CONTACT_INFO.whatsappDirectUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-arcade-press shadow-brutal-black w-full sm:w-auto px-6 py-3.5 font-pixel font-black text-[10px] uppercase tracking-wider text-black bg-[#10B981] hover:bg-white transition flex items-center justify-center gap-2 border-2 border-black"
+                    className="btn-arcade-press shadow-brutal-black w-full sm:w-auto px-6 py-3.5 font-pixel font-black text-[10px] uppercase tracking-wider text-black bg-[#FFE600] hover:bg-white transition flex items-center justify-center gap-2 border-2 border-black"
                   >
                     <Phone className="w-4 h-4" />
                     <span>[ ESCRIBIR A WHATSAPP STAFF ]</span>

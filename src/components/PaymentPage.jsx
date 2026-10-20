@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getRegistrationById, updateRegistrationReceipt, removePendingPayment, getPendingPaymentsList } from '../lib/storage';
-import { BANK_INFO, CONTACT_INFO } from '../data/tournamentData';
+import { BANK_INFO, CONTACT_INFO, GAMES, getGameWhatsAppGroupUrl } from '../data/tournamentData';
 
 export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
   const [targetId, setTargetId] = useState('');
@@ -376,8 +376,36 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
                   ¡PAGO VALIDADO Y CUPO CONFIRMADO!
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-cyber max-w-md mx-auto leading-relaxed">
-                  Tu equipo ya está oficialmente acreditado en el fixture de Compu League 2026. Te contactaremos al WhatsApp del Capitán para la coordinación de salas.
+                  Tu equipo ya está oficialmente acreditado en el fixture de Compu League 2026.
                 </p>
+
+                {/* Enlace directo al grupo oficial de WhatsApp del juego */}
+                {(() => {
+                  const gameGroupUrl = getGameWhatsAppGroupUrl(registration.game);
+                  const gameInfo = GAMES.find(g => g.id === registration.game);
+                  const gameName = gameInfo?.name || (registration.game || '').toUpperCase();
+                  return (
+                    <div className="p-4 bg-[#052e16] border-2 border-[#10B981] text-center space-y-3 shadow-brutal-black max-w-md mx-auto">
+                      <div className="flex items-center justify-center gap-2 text-[#10B981] font-pixel text-[10px] font-black uppercase">
+                        <Phone className="w-4 h-4" />
+                        <span>GRUPO OFICIAL DE {gameName}</span>
+                      </div>
+                      <p className="text-xs text-slate-200 font-cyber">
+                        Únete para coordinar las salas de juego, horarios y llaves oficiales:
+                      </p>
+                      <a
+                        href={gameGroupUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-arcade-press shadow-brutal-black inline-flex items-center justify-center gap-2 w-full py-3 bg-[#10B981] hover:bg-[#34D399] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider transition"
+                      >
+                        <Phone className="w-4 h-4 stroke-[2.5]" />
+                        <span>[ UNIRSE AL GRUPO DE WHATSAPP ]</span>
+                      </a>
+                    </div>
+                  );
+                })()}
+
                 <div className="pt-2">
                   <button
                     type="button"
@@ -394,7 +422,7 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
             {/* STATE B: JUST SUBMITTED OR UNDER VERIFICATION           */}
             {/* ======================================================= */}
             {successSubmitted && (
-              <div className="p-6 sm:p-8 border-4 border-black bg-[#0B101A] text-center space-y-4 shadow-brutal-yellow">
+              <div className="p-6 sm:p-8 border-4 border-black bg-[#0B101A] text-center space-y-5 shadow-brutal-yellow">
                 <div className="w-14 h-14 bg-[#FFE600] text-black border-2 border-black mx-auto flex items-center justify-center shadow-brutal-black">
                   <CheckCircle2 className="w-8 h-8 stroke-[3]" />
                 </div>
@@ -405,12 +433,39 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
                   El comprobante ha sido registrado. El staff de Compu League E-Sports validará la transferencia en Banco Pichincha y actualizará tu cupo a CONFIRMADO.
                 </p>
 
-                <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+                {/* BOTÓN DESTACADO: UNIRSE AL GRUPO OFICIAL DE WHATSAPP DEL JUEGO */}
+                {(() => {
+                  const gameGroupUrl = getGameWhatsAppGroupUrl(registration.game);
+                  const gameInfo = GAMES.find(g => g.id === registration.game);
+                  const gameName = gameInfo?.name || (registration.game || '').toUpperCase();
+                  return (
+                    <div className="p-4 sm:p-5 bg-[#052e16] border-2 border-[#10B981] text-center space-y-3 shadow-brutal-black max-w-lg mx-auto">
+                      <div className="flex items-center justify-center gap-2 text-[#10B981] font-pixel text-[10px] sm:text-xs font-black uppercase">
+                        <Phone className="w-4 h-4" />
+                        <span>PASO 2 OBLIGATORIO: GRUPO OFICIAL</span>
+                      </div>
+                      <p className="text-xs text-slate-200 font-cyber leading-relaxed">
+                        ¡Únete ahora al grupo oficial de WhatsApp de <strong className="text-white font-bold">{gameName}</strong>! Por este medio coordinaremos los enlaces de las salas, horarios y llaves oficiales.
+                      </p>
+                      <a
+                        href={gameGroupUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-arcade-press shadow-brutal-black inline-flex items-center justify-center gap-2 w-full py-3.5 bg-[#10B981] hover:bg-[#34D399] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider transition"
+                      >
+                        <Phone className="w-4 h-4 stroke-[2.5]" />
+                        <span>[ UNIRSE AL GRUPO DE WHATSAPP ({gameName}) ]</span>
+                      </a>
+                    </div>
+                  );
+                })()}
+
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <a
                     href={whatsappNotifyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn-arcade-press shadow-brutal-black w-full sm:w-auto px-6 py-3.5 bg-[#10B981] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2"
+                    className="btn-arcade-press shadow-brutal-black w-full sm:w-auto px-6 py-3.5 bg-[#FFE600] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2"
                   >
                     <Phone className="w-4 h-4" />
                     <span>[ NOTIFICAR STAFF POR WHATSAPP ]</span>

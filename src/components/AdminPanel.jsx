@@ -135,6 +135,45 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
     return `https://wa.me/${clean}${msg}`;
   };
 
+  // Pre-formatted WhatsApp confirmation message with game-specific group invite link
+  const getConfirmationWhatsAppUrl = (reg) => {
+    let clean = getCleanPhone(reg.captain_whatsapp);
+    if (!clean) return '';
+    if (clean.startsWith('09') && clean.length === 10) {
+      clean = '593' + clean.slice(1);
+    } else if (!clean.startsWith('593') && clean.length === 9) {
+      clean = '593' + clean;
+    }
+
+    // Match game config & group url
+    let gameKey = reg.game || 'valorant';
+    const cleanKey = String(gameKey).toLowerCase().replace(/[^a-z0-9]/g, '');
+    let matchedGame = GAMES.find(g => g.id === gameKey);
+    if (!matchedGame) {
+      if (cleanKey.includes('val')) matchedGame = GAMES.find(g => g.id === 'valorant');
+      else if (cleanKey.includes('free') || cleanKey.includes('fire')) matchedGame = GAMES.find(g => g.id === 'free_fire');
+      else if (cleanKey.includes('fort')) matchedGame = GAMES.find(g => g.id === 'fortnite');
+      else if (cleanKey.includes('clash') || cleanKey.includes('royale')) matchedGame = GAMES.find(g => g.id === 'clash_royale');
+    }
+
+    const gameName = matchedGame ? matchedGame.name : (reg.game || 'Torneo').toUpperCase();
+    const groupUrl = matchedGame?.whatsappGroupUrl || '';
+    const teamName = reg.team_name || reg.captain_name || 'tu equipo';
+    const captainName = reg.captain_name || 'Capitán';
+
+    const message = 
+`¡Hola ${captainName}! 👋 Te saluda el Staff de Compu League E-Sports 2026. 🏆
+
+Tu inscripción para *${teamName}* en *${gameName}* ha sido CONFIRMADA con éxito. ✅
+
+👉 Únete al grupo oficial de WhatsApp de ${gameName} donde coordinaremos las salas de juego, horarios y llaves:
+🔗 ${groupUrl}
+
+¡Muchos éxitos en la competencia! 🎮`;
+
+    return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  };
+
   // Copy all phone numbers for a single team (Captain + all registered members)
   const handleCopyTeamPhones = (reg) => {
     const phones = [];
@@ -739,6 +778,20 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                               </div>
                             )}
                           </div>
+
+                          {/* Botón 1-Click: Enviar Confirmación + Link de Grupo por WhatsApp */}
+                          {reg.captain_whatsapp && (
+                            <a
+                              href={getConfirmationWhatsAppUrl(reg)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer shadow-sm mt-1.5 border border-black font-mono"
+                              title="Enviar confirmación y link del grupo de WhatsApp al capitán"
+                            >
+                              <Phone className="w-4 h-4 stroke-[2.5]" />
+                              <span>📲 Enviar Confirmación + Grupo</span>
+                            </a>
+                          )}
                         </div>
                       );
                     })
@@ -903,6 +956,18 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
                               </td>
                               <td className="py-3 px-4 text-right">
                                 <div className="flex items-center justify-end gap-1.5">
+                                  {reg.captain_whatsapp && (
+                                    <a
+                                      href={getConfirmationWhatsAppUrl(reg)}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      title={`Enviar Confirmación y Link de Grupo a ${reg.captain_name}`}
+                                      className="px-2.5 py-1 rounded-none bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-mono text-[11px] font-bold flex items-center gap-1 transition"
+                                    >
+                                      <Phone className="w-3 h-3 text-emerald-400" />
+                                      <span>Confirmar + Grupo</span>
+                                    </a>
+                                  )}
                                   {reg.status !== 'approved' && (
                                     <button
                                       onClick={() => handleStatusChange(reg.id, 'approved')}
