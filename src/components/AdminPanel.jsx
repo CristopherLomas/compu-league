@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Lock, CheckCircle, XCircle, Eye, Phone, Copy, Check, 
-  Users, DollarSign, Database, Trophy, AlertCircle, Search 
+  Users, DollarSign, Database, Trophy, AlertCircle, Search, Bell 
 } from 'lucide-react';
 import { 
   getRegistrations, 
@@ -16,7 +16,7 @@ import {
   getSupabaseCredentials,
   saveSupabaseCredentials
 } from '../lib/storage';
-import { GAMES } from '../data/tournamentData';
+import { GAMES, BANK_INFO } from '../data/tournamentData';
 
 export default function AdminPanel({ isOpen = true, onClose, isStandalone = false, onGoHome }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -213,6 +213,102 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
     return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
   };
 
+  // Pre-formatted WhatsApp payment reminder message for pre-registered captains/players (Pagar después)
+  const getPaymentReminderWhatsAppUrl = (reg) => {
+    let clean = getCleanPhone(reg.captain_whatsapp);
+    if (!clean) return '';
+    if (clean.startsWith('09') && clean.length === 10) {
+      clean = '593' + clean.slice(1);
+    } else if (!clean.startsWith('593') && clean.length === 9) {
+      clean = '593' + clean;
+    }
+
+    // Match game config & name
+    let gameKey = reg.game || 'valorant';
+    const cleanKey = String(gameKey).toLowerCase().replace(/[^a-z0-9]/g, '');
+    let matchedGame = GAMES.find(g => g.id === gameKey);
+    if (!matchedGame) {
+      if (cleanKey.includes('val')) matchedGame = GAMES.find(g => g.id === 'valorant');
+      else if (cleanKey.includes('free') || cleanKey.includes('fire')) matchedGame = GAMES.find(g => g.id === 'free_fire');
+      else if (cleanKey.includes('fort')) matchedGame = GAMES.find(g => g.id === 'fortnite');
+      else if (cleanKey.includes('clash') || cleanKey.includes('royale')) matchedGame = GAMES.find(g => g.id === 'clash_royale');
+    }
+
+    const gameName = matchedGame ? matchedGame.name : (reg.game || 'Torneo').toUpperCase();
+    const teamName = reg.team_name || reg.captain_name || 'tu equipo';
+    const captainName = reg.captain_name || 'Capitán';
+    const amount = (parseFloat(reg.amount_due) || 1).toFixed(2);
+
+    const origin = (typeof window !== 'undefined' && window.location.origin && !window.location.origin.includes('localhost'))
+      ? window.location.origin
+      : 'https://compuleague.app';
+    const paymentLink = `${origin}/pago/${reg.id}`;
+
+    const message = 
+`¡Hola ${captainName}! 👋 Te saluda el Staff de Compu League E-Sports 2026. 🏆
+
+Notamos que realizaste el *pre-registro* para *${teamName}* en el torneo de *${gameName}*, pero aún tienes pendiente completar el pago para confirmar tu cupo oficial. ⏳
+
+💵 *Total a pagar:* $${amount} USD
+
+🏦 *Datos para transferencia:*
+• *Banco:* ${BANK_INFO.bank}
+• *Tipo de Cuenta:* ${BANK_INFO.accountType}
+• *N° de Cuenta:* ${BANK_INFO.accountNumber}
+• *Titular:* ${BANK_INFO.holderName}
+
+👉 *Sube tu comprobante directamente en tu enlace de pago:*
+🔗 ${paymentLink}
+
+⚠️ _Recuerda que los cupos son limitados y se asignan por orden de pago confirmado. ¡Asegura tu cupo antes del cierre de inscripciones!_ 🎮🔥`;
+
+    return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  };
+
+  // Pre-formatted WhatsApp payment reminder message for team members
+  const getMemberPaymentReminderWhatsAppUrl = (memberPhone, memberName, reg) => {
+    let clean = getCleanPhone(memberPhone);
+    if (!clean) return '';
+    if (clean.startsWith('09') && clean.length === 10) {
+      clean = '593' + clean.slice(1);
+    } else if (!clean.startsWith('593') && clean.length === 9) {
+      clean = '593' + clean;
+    }
+
+    let gameKey = reg.game || 'valorant';
+    const cleanKey = String(gameKey).toLowerCase().replace(/[^a-z0-9]/g, '');
+    let matchedGame = GAMES.find(g => g.id === gameKey);
+    if (!matchedGame) {
+      if (cleanKey.includes('val')) matchedGame = GAMES.find(g => g.id === 'valorant');
+      else if (cleanKey.includes('free') || cleanKey.includes('fire')) matchedGame = GAMES.find(g => g.id === 'free_fire');
+      else if (cleanKey.includes('fort')) matchedGame = GAMES.find(g => g.id === 'fortnite');
+      else if (cleanKey.includes('clash') || cleanKey.includes('royale')) matchedGame = GAMES.find(g => g.id === 'clash_royale');
+    }
+
+    const gameName = matchedGame ? matchedGame.name : (reg.game || 'Torneo').toUpperCase();
+    const teamName = reg.team_name || reg.captain_name || 'tu equipo';
+    const playerName = memberName || 'Compañero';
+
+    const origin = (typeof window !== 'undefined' && window.location.origin && !window.location.origin.includes('localhost'))
+      ? window.location.origin
+      : 'https://compuleague.app';
+    const paymentLink = `${origin}/pago/${reg.id}`;
+
+    const message = 
+`¡Hola ${playerName}! 👋 Te saluda el Staff de Compu League E-Sports 2026. 🏆
+
+Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. 🎮
+
+El equipo se encuentra actualmente en *pre-registro* y está pendiente subir el comprobante de pago para asegurar el cupo oficial en las llaves del torneo. ⏳
+
+👉 *Pueden completar el pago y subir el comprobante aquí:*
+🔗 ${paymentLink}
+
+¡Aseguren su cupo para no quedarse fuera! 🔥`;
+
+    return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  };
+
   // Copy all phone numbers for a single team (Captain + all registered members)
   const handleCopyTeamPhones = (reg) => {
     const phones = [];
@@ -304,6 +400,8 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
 
   // Calculations
   const totalApproved = registrations.filter(r => r.status === 'approved').length;
+  const totalPaymentPending = registrations.filter(r => r.status === 'payment_pending').length;
+  const totalPendingValidation = registrations.filter(r => r.status === 'pending').length;
   const totalPending = registrations.filter(r => r.status === 'pending' || r.status === 'payment_pending').length;
   const totalRejected = registrations.filter(r => r.status === 'rejected').length;
   const totalActive = registrations.filter(r => r.status !== 'rejected').length;
@@ -317,8 +415,10 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
     if (filterGame !== 'all' && r.game !== filterGame) return false;
     if (filterStatus === 'all') {
       if (r.status === 'rejected') return false;
+    } else if (filterStatus === 'payment_pending') {
+      if (r.status !== 'payment_pending') return false;
     } else if (filterStatus === 'pending') {
-      if (r.status !== 'pending' && r.status !== 'payment_pending') return false;
+      if (r.status !== 'pending') return false;
     } else if (r.status !== filterStatus) {
       return false;
     }
@@ -483,44 +583,78 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
             
             {/* Quick Metrics Bar */}
             {/* Quick Metrics Bar */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
-              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
-                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
-                </div>
-                <div className="min-w-0">
-                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Inscritos Totales</span>
-                  <strong className="text-lg sm:text-xl font-mono text-white font-bold block">{registrations.length}</strong>
-                </div>
-              </div>
-
-              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                </div>
-                <div className="min-w-0">
-                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Por Validar</span>
-                  <strong className="text-lg sm:text-xl font-mono text-amber-400 font-bold block">{totalPending}</strong>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
+              <div 
+                onClick={() => setFilterStatus('all')}
+                className={`p-3 sm:p-4 bg-slate-900/90 border transition cursor-pointer shadow-sm ${filterStatus === 'all' ? 'border-cyan-400 bg-slate-800/80 ring-1 ring-cyan-400/50' : 'border-slate-800 hover:border-slate-700'}`}
+                title="Filtrar todas las inscripciones activas"
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3.5">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                    <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Inscritos Totales</span>
+                    <strong className="text-lg sm:text-xl font-mono text-white font-bold block">{registrations.length}</strong>
+                  </div>
                 </div>
               </div>
 
-              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                </div>
-                <div className="min-w-0">
-                  <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Validados / Pagados</span>
-                  <strong className="text-lg sm:text-xl font-mono text-emerald-400 font-bold block">{totalApproved}</strong>
+              <div 
+                onClick={() => setFilterStatus('payment_pending')}
+                className={`p-3 sm:p-4 bg-slate-900/90 border transition cursor-pointer shadow-sm ${filterStatus === 'payment_pending' ? 'border-[#FFE600] bg-yellow-950/30 ring-1 ring-[#FFE600]/50' : 'border-yellow-500/30 hover:border-yellow-400/60'}`}
+                title="Filtrar solo pre-registros pendientes de pago para enviar recordatorios"
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3.5">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-400/20 text-yellow-300 flex items-center justify-center shrink-0">
+                    <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] sm:text-xs text-yellow-300/80 block font-medium truncate font-cyber">Pre-Registros</span>
+                    <strong className="text-lg sm:text-xl font-mono text-[#FFE600] font-bold block">{totalPaymentPending}</strong>
+                  </div>
                 </div>
               </div>
 
-              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0">
+              <div 
+                onClick={() => setFilterStatus('pending')}
+                className={`p-3 sm:p-4 bg-slate-900/90 border transition cursor-pointer shadow-sm ${filterStatus === 'pending' ? 'border-amber-400 bg-amber-950/30 ring-1 ring-amber-400/50' : 'border-slate-800 hover:border-slate-700'}`}
+                title="Filtrar comprobantes subidos por validar"
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3.5">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                    <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Por Validar</span>
+                    <strong className="text-lg sm:text-xl font-mono text-amber-400 font-bold block">{totalPendingValidation}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div 
+                onClick={() => setFilterStatus('approved')}
+                className={`p-3 sm:p-4 bg-slate-900/90 border transition cursor-pointer shadow-sm ${filterStatus === 'approved' ? 'border-emerald-400 bg-emerald-950/30 ring-1 ring-emerald-400/50' : 'border-slate-800 hover:border-slate-700'}`}
+                title="Filtrar inscripciones aprobadas"
+              >
+                <div className="flex items-center gap-2.5 sm:gap-3.5">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Validados / Pagados</span>
+                    <strong className="text-lg sm:text-xl font-mono text-emerald-400 font-bold block">{totalApproved}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 sm:p-4 bg-slate-900/90 border border-slate-800 flex items-center gap-2.5 sm:gap-3.5 shadow-sm col-span-2 sm:col-span-1">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-500/10 text-emerald-300 flex items-center justify-center shrink-0">
                   <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div className="min-w-0">
                   <span className="text-[10px] sm:text-xs text-slate-400 block font-medium truncate font-cyber">Recaudación Validada</span>
-                  <strong className="text-base sm:text-xl font-mono text-yellow-400 font-bold block">${totalRevenue.toFixed(2)} USD</strong>
+                  <strong className="text-base sm:text-xl font-mono text-emerald-300 font-bold block">${totalRevenue.toFixed(2)} USD</strong>
                 </div>
               </div>
             </div>
@@ -592,10 +726,11 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                         className="w-full sm:w-auto px-3 py-2 bg-slate-950 border border-slate-700 text-xs sm:text-sm text-slate-200 focus:outline-none font-sans"
                       >
                         <option value="all">Inscritos Activos (Ocultar Rechazados)</option>
-                        <option value="pending">Por Validar / Pendientes ({totalPending})</option>
-                        <option value="approved">Aprobados / Validados ({totalApproved})</option>
+                        <option value="payment_pending">⏰ Pre-Registros (Pendientes de Pago) ({totalPaymentPending})</option>
+                        <option value="pending">📄 Comprobantes por Validar ({totalPendingValidation})</option>
+                        <option value="approved">✅ Aprobados / Validados ({totalApproved})</option>
                         {totalRejected > 0 && (
-                          <option value="rejected">Ver Rechazados ({totalRejected})</option>
+                          <option value="rejected">❌ Ver Rechazados ({totalRejected})</option>
                         )}
                       </select>
                     </div>
@@ -611,6 +746,47 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                     <span>{copiedPhones ? '¡Números Copiados!' : 'Copiar WhatsApps para Grupos'}</span>
                   </button>
                 </div>
+
+                {/* Banner de Recordatorio de Pre-Registros */}
+                {totalPaymentPending > 0 && filterStatus !== 'payment_pending' && (
+                  <div className="bg-yellow-500/10 border-2 border-[#FFE600]/40 p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 bg-[#FFE600] text-black flex items-center justify-center shrink-0 border border-black shadow-sm">
+                        <Bell className="w-4 h-4 stroke-[2.5]" />
+                      </div>
+                      <span className="text-xs text-yellow-200 font-cyber">
+                        Hay <strong className="text-[#FFE600]">{totalPaymentPending}</strong> pre-registro(s) con pago pendiente. Puedes enviarles un recordatorio directo a su WhatsApp con su link de pago.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFilterStatus('payment_pending')}
+                      className="btn-arcade-press text-[11px] font-pixel py-1.5 px-3 bg-[#FFE600] hover:bg-[#FFF04D] text-black border border-black font-bold uppercase tracking-wider shadow-sm shrink-0 cursor-pointer"
+                    >
+                      [ Ver Pre-Registros ({totalPaymentPending}) ]
+                    </button>
+                  </div>
+                )}
+
+                {filterStatus === 'payment_pending' && (
+                  <div className="bg-[#FFE600]/15 border-2 border-[#FFE600] p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 shadow-sm">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 bg-[#FFE600] text-black flex items-center justify-center shrink-0 border border-black">
+                        <Bell className="w-4 h-4 stroke-[2.5]" />
+                      </div>
+                      <span className="text-xs text-[#FFE600] font-cyber">
+                        Mostrando <strong>{filteredRegs.length}</strong> pre-registros pendientes de pago. Usa el botón amarillo <strong>⏰ Recordar Pago</strong> en cada registro para abrir WhatsApp con el mensaje oficial y datos de transferencia listos.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setFilterStatus('all')}
+                      className="text-xs font-mono py-1 px-3 bg-black hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700 transition cursor-pointer shrink-0"
+                    >
+                      Ver Todos los Inscritos
+                    </button>
+                  </div>
+                )}
 
                 {/* 1. VISTA MÓVIL EN TARJETAS (Visible solo en smartphones/pantallas pequeñas < md) */}
                 <div className="block md:hidden space-y-3.5 font-sans">
@@ -747,21 +923,25 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                                         )}
                                       </div>
 
-                                      {/* WhatsApp del Jugador + Botón Individual para Invitar al Grupo */}
+                                      {/* WhatsApp del Jugador + Botón Individual para Invitar o Recordar Pago */}
                                       <div className="pt-1.5 flex items-center justify-between gap-2 border-t border-slate-800/60">
                                         <span className="text-[10px] text-slate-400 font-mono">
                                           {memberPhone || 'Sin número'}
                                         </span>
                                         {memberPhone ? (
                                           <a
-                                            href={inviteUrl}
+                                            href={reg.status === 'payment_pending' ? getMemberPaymentReminderWhatsAppUrl(memberPhone, m.name, reg) : inviteUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 text-emerald-300 text-[11px] font-mono font-bold transition shadow-sm"
-                                            title={`Enviar invitación al grupo de WhatsApp a ${m.name || 'jugador'}`}
+                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono font-bold transition shadow-sm border ${
+                                              reg.status === 'payment_pending'
+                                                ? 'bg-yellow-400/20 hover:bg-yellow-400/35 border-yellow-400/50 text-yellow-300'
+                                                : 'bg-emerald-600/25 hover:bg-emerald-600/40 border-emerald-500/50 text-emerald-300'
+                                            }`}
+                                            title={reg.status === 'payment_pending' ? `Enviar recordatorio de pago a ${m.name || 'jugador'}` : `Enviar invitación al grupo de WhatsApp a ${m.name || 'jugador'}`}
                                           >
-                                            <Phone className="w-3 h-3 text-emerald-400" />
-                                            <span>📲 Invitar al Grupo</span>
+                                            {reg.status === 'payment_pending' ? <Bell className="w-3 h-3 text-yellow-400" /> : <Phone className="w-3 h-3 text-emerald-400" />}
+                                            <span>{reg.status === 'payment_pending' ? '⏰ Recordar Pago' : '📲 Invitar al Grupo'}</span>
                                           </a>
                                         ) : (
                                           <span className="text-slate-500 text-[10px] italic">No registrado</span>
@@ -820,18 +1000,43 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                             )}
                           </div>
 
-                          {/* Botón 1-Click: Enviar Confirmación + Link de Grupo por WhatsApp */}
+                          {/* Botón 1-Click: Recordar Pago (Pre-registros) o Confirmación + Grupo (Validados / En revisión) */}
                           {reg.captain_whatsapp && (
-                            <a
-                              href={getConfirmationWhatsAppUrl(reg)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="w-full py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer shadow-sm mt-1.5 border border-black font-mono"
-                              title="Enviar confirmación y link del grupo de WhatsApp al capitán"
-                            >
-                              <Phone className="w-4 h-4 stroke-[2.5]" />
-                              <span>📲 Enviar Confirmación + Grupo</span>
-                            </a>
+                            reg.status === 'payment_pending' ? (
+                              <div className="space-y-1.5 mt-1.5">
+                                <a
+                                  href={getPaymentReminderWhatsAppUrl(reg)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full py-2.5 bg-[#FFE600] hover:bg-[#FFF04D] active:bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer shadow-brutal-yellow border-2 border-black font-mono"
+                                  title="Enviar recordatorio de pago con enlace mágico y datos bancarios al capitán"
+                                >
+                                  <Bell className="w-4 h-4 stroke-[2.5]" />
+                                  <span>⏰ Recordar Pago por WhatsApp</span>
+                                </a>
+                                <a
+                                  href={getConfirmationWhatsAppUrl(reg)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full py-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-mono text-[11px] flex items-center justify-center gap-1.5 border border-slate-700 transition"
+                                  title="Enviar link del grupo de WhatsApp"
+                                >
+                                  <Phone className="w-3 h-3 text-slate-400" />
+                                  <span>Enviar solo grupo de WhatsApp</span>
+                                </a>
+                              </div>
+                            ) : (
+                              <a
+                                href={getConfirmationWhatsAppUrl(reg)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full py-2.5 bg-[#10B981] hover:bg-[#059669] text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer shadow-sm mt-1.5 border border-black font-mono"
+                                title="Enviar confirmación y link del grupo de WhatsApp al capitán"
+                              >
+                                <Phone className="w-4 h-4 stroke-[2.5]" />
+                                <span>📲 Enviar Confirmación + Grupo</span>
+                              </a>
+                            )
                           )}
                         </div>
                       );
@@ -891,14 +1096,18 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                                   {reg.captain_whatsapp && (
                                     <div className="flex items-center gap-1.5 flex-wrap">
                                       <a
-                                        href={getConfirmationWhatsAppUrl(reg)}
+                                        href={reg.status === 'payment_pending' ? getPaymentReminderWhatsAppUrl(reg) : getConfirmationWhatsAppUrl(reg)}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-[10px] bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-mono font-bold px-1.5 py-0.5 transition shadow-sm"
-                                        title={`Enviar confirmación e invitación al grupo al Capitán ${reg.captain_name}`}
+                                        className={`inline-flex items-center gap-1 text-[10px] font-mono font-bold px-1.5 py-0.5 transition shadow-sm border ${
+                                          reg.status === 'payment_pending'
+                                            ? 'bg-yellow-400/20 hover:bg-yellow-400/35 border-yellow-400/50 text-yellow-300'
+                                            : 'bg-emerald-500/20 hover:bg-emerald-500/35 border-emerald-500/40 text-emerald-300'
+                                        }`}
+                                        title={reg.status === 'payment_pending' ? `Enviar recordatorio de pago al Capitán ${reg.captain_name}` : `Enviar confirmación e invitación al grupo al Capitán ${reg.captain_name}`}
                                       >
-                                        <Phone className="w-2.5 h-2.5 text-emerald-400" />
-                                        <span>Invitar Capitán</span>
+                                        {reg.status === 'payment_pending' ? <Bell className="w-2.5 h-2.5 text-yellow-400" /> : <Phone className="w-2.5 h-2.5 text-emerald-400" />}
+                                        <span>{reg.status === 'payment_pending' ? 'Recordar Pago' : 'Invitar Capitán'}</span>
                                       </a>
                                       <span className="text-slate-400 text-[10px] font-mono">{reg.captain_whatsapp}</span>
                                     </div>
@@ -942,14 +1151,18 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                                             <div className="flex items-center justify-between text-[10px] pt-1 border-t border-slate-800/40">
                                               <span className="text-slate-400 font-mono">{memberPhone}</span>
                                               <a
-                                                href={inviteUrl}
+                                                href={reg.status === 'payment_pending' ? getMemberPaymentReminderWhatsAppUrl(memberPhone, m.name, reg) : inviteUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/30 border border-emerald-500/30 px-1.5 py-0.5 font-mono font-bold transition"
-                                                title={`Enviar invitación al grupo a ${m.name || 'jugador'}`}
+                                                className={`inline-flex items-center gap-1 text-[10px] font-mono font-bold px-1.5 py-0.5 transition shadow-sm border ${
+                                                  reg.status === 'payment_pending'
+                                                    ? 'bg-yellow-400/20 hover:bg-yellow-400/35 border-yellow-400/50 text-yellow-300'
+                                                    : 'bg-emerald-500/15 hover:bg-emerald-500/30 border-emerald-500/30 text-emerald-400 hover:text-emerald-300'
+                                                }`}
+                                                title={reg.status === 'payment_pending' ? `Enviar recordatorio de pago a ${m.name || 'jugador'}` : `Enviar invitación al grupo a ${m.name || 'jugador'}`}
                                               >
-                                                <Phone className="w-2.5 h-2.5 text-emerald-400" />
-                                                <span>Invitar Grupo</span>
+                                                {reg.status === 'payment_pending' ? <Bell className="w-2.5 h-2.5 text-yellow-400" /> : <Phone className="w-2.5 h-2.5 text-emerald-400" />}
+                                                <span>{reg.status === 'payment_pending' ? 'Recordar Pago' : 'Invitar Grupo'}</span>
                                               </a>
                                             </div>
                                           ) : (
@@ -1001,16 +1214,29 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                               <td className="py-3 px-4 text-right">
                                 <div className="flex items-center justify-end gap-1.5">
                                   {reg.captain_whatsapp && (
-                                    <a
-                                      href={getConfirmationWhatsAppUrl(reg)}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      title={`Enviar Confirmación y Link de Grupo a ${reg.captain_name}`}
-                                      className="px-2.5 py-1 rounded-none bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-mono text-[11px] font-bold flex items-center gap-1 transition"
-                                    >
-                                      <Phone className="w-3 h-3 text-emerald-400" />
-                                      <span>Confirmar + Grupo</span>
-                                    </a>
+                                    reg.status === 'payment_pending' ? (
+                                      <a
+                                        href={getPaymentReminderWhatsAppUrl(reg)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={`Enviar Recordatorio de Pago con enlace mágico a ${reg.captain_name}`}
+                                        className="px-2.5 py-1 rounded-none bg-[#FFE600] hover:bg-[#FFF04D] text-black border border-black font-mono text-[11px] font-bold flex items-center gap-1 transition shadow-sm"
+                                      >
+                                        <Bell className="w-3.5 h-3.5 text-black stroke-[2.5]" />
+                                        <span>Recordar Pago</span>
+                                      </a>
+                                    ) : (
+                                      <a
+                                        href={getConfirmationWhatsAppUrl(reg)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={`Enviar Confirmación y Link de Grupo a ${reg.captain_name}`}
+                                        className="px-2.5 py-1 rounded-none bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-mono text-[11px] font-bold flex items-center gap-1 transition"
+                                      >
+                                        <Phone className="w-3 h-3 text-emerald-400" />
+                                        <span>Confirmar + Grupo</span>
+                                      </a>
+                                    )
                                   )}
                                   {reg.status !== 'approved' && (
                                     <button
@@ -1078,16 +1304,31 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
                         <div>ID: <strong className="text-slate-200">{agent.captain_game_id}</strong></div>
                         <div>WhatsApp: <strong className="text-emerald-400">{agent.captain_whatsapp}</strong></div>
                       </div>
-                      <a
-                        href={getConfirmationWhatsAppUrl(agent)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2 cursor-pointer font-mono"
-                        title="Enviar confirmación y link del grupo de WhatsApp"
-                      >
-                        <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>📲 Invitar al Grupo ({agent.game.replace('_', ' ')})</span>
-                      </a>
+                      {agent.captain_whatsapp && (
+                        agent.status === 'payment_pending' ? (
+                          <a
+                            href={getPaymentReminderWhatsAppUrl(agent)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2 rounded-none bg-[#FFE600] hover:bg-[#FFF04D] border border-black text-black font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2 cursor-pointer font-mono shadow-sm"
+                            title="Enviar recordatorio de pago con enlace mágico y datos bancarios"
+                          >
+                            <Bell className="w-3.5 h-3.5 text-black stroke-[2.5]" />
+                            <span>⏰ Recordar Pago ({agent.game.replace('_', ' ')})</span>
+                          </a>
+                        ) : (
+                          <a
+                            href={getConfirmationWhatsAppUrl(agent)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full py-2 rounded-none bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition mt-2 cursor-pointer font-mono"
+                            title="Enviar confirmación y link del grupo de WhatsApp"
+                          >
+                            <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>📲 Invitar al Grupo ({agent.game.replace('_', ' ')})</span>
+                          </a>
+                        )
+                      )}
                     </div>
                   ))}
                 </div>

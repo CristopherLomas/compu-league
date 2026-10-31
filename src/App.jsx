@@ -14,7 +14,7 @@ import PendingPaymentBanner from './components/PendingPaymentBanner';
 import { getRegistrationById, getPendingPaymentsList, removePendingPayment } from './lib/storage';
 
 function App() {
-  // Helper to extract Payment UUID from pathname (/pago/:id) or query params
+  // Helper to extract Payment UUID from pathname (/pago/:id or /pagar/:id) or query params
   const getPaymentIdFromLocation = () => {
     try {
       const path = window.location.pathname;
@@ -23,12 +23,17 @@ function App() {
         const id = parts[1]?.split('/')[0]?.split('?')[0];
         if (id) return id;
       }
+      if (path.includes('/pagar/')) {
+        const parts = path.split('/pagar/');
+        const id = parts[1]?.split('/')[0]?.split('?')[0];
+        if (id) return id;
+      }
       const params = new URLSearchParams(window.location.search);
-      if (params.get('page') === 'pago') {
+      if (params.get('page') === 'pago' || params.get('page') === 'pagar') {
         return params.get('id') || '';
       }
-      if (params.get('pago')) {
-        return params.get('pago') || '';
+      if (params.get('pago') || params.get('pagar')) {
+        return params.get('pago') || params.get('pagar') || '';
       }
       return '';
     } catch {
