@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Users, User, Shield, Flame, Crosshair, Crown, 
-  Search, Check, Clock, Sparkles, Terminal, ArrowRight, Zap
+  Search, Check, Clock, Sparkles, Terminal, ArrowRight, Zap, Lock
 } from 'lucide-react';
 import { getPublicRegistrations } from '../lib/storage';
 import { GameLogo } from './GameLogo';

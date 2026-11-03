@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import UndertaleStartScreen from './components/UndertaleStartScreen';
 import Navbar from './components/Navbar';
 import MainEsportsHero from './components/MainEsportsHero';
 import GameCards from './components/GameCards';
@@ -82,11 +81,6 @@ function App() {
     }
   });
 
-  // State: Has the player entered the portal?
-  // Direct subpage links, payment links, and admin skip the Undertale start screen
-  const [hasEnteredGame, setHasEnteredGame] = useState(() => {
-    return initialPage !== 'inicio' || Boolean(initialPaymentId) || initialIsAdmin;
-  });
 
   // Active view and navigation state
   const [currentView, setCurrentView] = useState(initialPage);
@@ -220,7 +214,6 @@ function App() {
   };
 
   const handleContinuePendingPayment = (id) => {
-    setHasEnteredGame(true);
     navigateToPayment(id);
   };
 
@@ -238,7 +231,6 @@ function App() {
       setEditingRegistration(pending);
       setSelectedGameForModal(pending.game || 'valorant');
     }
-    setHasEnteredGame(true);
     setIsRegisterOpen(true);
   };
 
@@ -278,12 +270,6 @@ function App() {
     }
   };
 
-  // Triggered when clicking [ JUGAR ] from the Undertale screen
-  const handleEnterGame = (name) => {
-    setPlayerName(name);
-    setHasEnteredGame(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   const handleOpenRegister = (gameId = 'valorant') => {
     setEditingRegistration(null);
@@ -342,27 +328,6 @@ function App() {
     );
   }
 
-  // =============================================================
-  // SCREEN 1: PURE UNDERTALE TITLE & NAME SCREEN (CERO SCROLL)
-  // =============================================================
-  if (!hasEnteredGame) {
-    return (
-      <>
-        <UndertaleStartScreen 
-          onEnterGame={handleEnterGame} 
-          initialName={playerName} 
-        />
-        {!isPendingPaymentDismissed && pendingPayments.length > 0 && (
-          <PendingPaymentBanner
-            pendingPayments={pendingPayments}
-            onContinue={handleContinuePendingPayment}
-            onDismiss={handleDismissPendingPayment}
-            onEdit={handleEditPendingPayment}
-          />
-        )}
-      </>
-    );
-  }
 
   // =============================================================
   // SCREEN 2: "LA PÁGINA REAL" (PORTAL COMPLETO DE E-SPORTS CARRERA DE COMPUTACIÓN)
@@ -376,7 +341,7 @@ function App() {
         activeSection={activeSection}
         setActiveSection={setActiveSection}
         playerName={playerName}
-        onReturnToMenu={() => setHasEnteredGame(false)}
+        onReturnToMenu={() => navigateTo('inicio')}
         onNavigate={navigateTo}
       />
 

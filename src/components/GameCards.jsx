@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Check, Monitor, Smartphone, Gamepad2, Coins } from 'lucide-react';
+import { ArrowRight, Check, Monitor, Smartphone, Gamepad2, Coins, Lock } from 'lucide-react';
 import { GameLogo } from './GameLogo';
 
 const ARCADE_GAMES = [

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  ArrowLeft, Upload, CheckCircle2, Clock, Shield, Flame, 
+  ArrowLeft, ArrowRight, Upload, CheckCircle2, Clock, Shield, Flame, 
   Crown, Crosshair, Trophy, Copy, Check, Phone, AlertCircle, 
   Zap, FileText, CheckCircle, Terminal, Edit
 } from 'lucide-react';
