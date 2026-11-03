@@ -529,6 +529,21 @@ export default function PaymentPage({ paymentId, onGoHome, onEdit }) {
             {registration.status !== 'approved' && !successSubmitted && (
               <div className="space-y-6">
                 
+                {/* Banner de Aviso de Último Día de Pago para Pre-Registros */}
+                <div className="p-3.5 bg-black border-2 border-[#FF0055] shadow-brutal-pink flex items-center gap-3">
+                  <div className="w-8 h-8 bg-[#FF0055] text-white flex items-center justify-center shrink-0 border border-black font-pixel text-xs font-bold">
+                    !
+                  </div>
+                  <div className="space-y-0.5 text-xs font-cyber">
+                    <span className="font-pixel text-[9px] text-[#FF0055] block uppercase font-bold">
+                      ★ ÚLTIMO PLAZO DE PAGO: HASTA HOY (MARTES 3 DE NOVIEMBRE) ★
+                    </span>
+                    <p className="text-slate-200 leading-relaxed">
+                      Las inscripciones generales ya han cerrado. Como realizaste pre-registro, tu cupo apartado puede ser confirmado subiendo tu comprobante <strong>únicamente hasta el día de hoy antes de la medianoche (23:59)</strong> para ingresar a las llaves del torneo que inicia mañana miércoles a las 9:00 PM.
+                    </p>
+                  </div>
+                </div>
+                
                 {/* 1. Datos Bancarios */}
                 <div className="p-5 sm:p-6 border-4 border-black bg-[#0B101A] space-y-4 shadow-brutal-black">
                   <div className="flex items-center justify-between pb-3 border-b-2 border-black">

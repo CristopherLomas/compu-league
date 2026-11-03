@@ -39,7 +39,7 @@ export default function PendingPaymentBanner({
           <div className="flex items-center gap-2 mb-3 pb-2 border-b-2 border-black font-pixel text-[9px] sm:text-[10px]">
             <span className="w-2.5 h-2.5 bg-[#FF0055] inline-block animate-arcade-blink" />
             <span className="text-[#FFE600] uppercase font-bold tracking-wider">
-              [ ! ] PENDING COIN // PRE-REGISTRO DETECTADO
+              [ ! ] PRE-REGISTRO DETECTADO // PLAZO HASTA HOY
             </span>
           </div>
 
@@ -67,9 +67,14 @@ export default function PendingPaymentBanner({
               </div>
             </div>
 
-            <p className="text-xs text-[#00F0FF] font-cyber">
-              ¿Deseas completar el pago o necesitas corregir algún dato?
-            </p>
+            <div className="p-2.5 bg-[#FF0055]/15 border border-[#FF0055] text-[11px] text-white font-cyber space-y-0.5">
+              <span className="text-[#FF0055] font-pixel text-[8px] block uppercase font-bold">
+                ⚠️ PLAZO DE PAGO: HASTA HOY (MARTES 3 DE NOVIEMBRE)
+              </span>
+              <p className="text-slate-200 leading-tight">
+                Las inscripciones generales han cerrado. Puedes subir tu comprobante <strong>hasta hoy antes de la medianoche</strong> para asegurar tu cupo en las llaves del torneo.
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}
@@ -126,7 +131,7 @@ export default function PendingPaymentBanner({
         <div className="flex items-center gap-2 mb-3 pb-2 border-b-2 border-black font-pixel text-[9px] sm:text-[10px]">
           <span className="w-2.5 h-2.5 bg-[#FF0055] inline-block animate-arcade-blink" />
           <span className="text-[#FFE600] uppercase font-bold tracking-wider">
-            [ ! ] PENDING COINS // {items.length} PRE-REGISTROS PENDIENTES
+            [ ! ] PRE-REGISTROS PENDIENTES // PLAZO HASTA HOY
           </span>
         </div>
 

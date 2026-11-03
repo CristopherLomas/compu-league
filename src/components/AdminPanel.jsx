@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Lock, CheckCircle, XCircle, Eye, Phone, Copy, Check, 
-  Users, DollarSign, Database, Trophy, AlertCircle, Search, Bell 
+  Users, DollarSign, Database, Trophy, AlertCircle, Search, Bell, 
+  FileText, Download, Printer 
 } from 'lucide-react';
 import { 
   getRegistrations, 
@@ -247,7 +248,8 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. �
     const message = 
 `¡Hola ${captainName}! 👋 Te saluda el Staff de Compu League E-Sports 2026. 🏆
 
-Notamos que realizaste el *pre-registro* para *${teamName}* en el torneo de *${gameName}*, pero aún tienes pendiente completar el pago para confirmar tu cupo oficial. ⏳
+⚠️ *AVISO URGENTE - ÚLTIMO PLAZO DE PAGO:*
+Notamos que realizaste el *pre-registro* para *${teamName}* en el torneo de *${gameName}*. Las inscripciones generales ya han cerrado, pero tu cupo apartado puede ser confirmado completando el pago *ÚNICAMENTE HASTA EL DÍA DE HOY (Martes 3 de Noviembre)*. ⏳
 
 💵 *Total a pagar:* $${amount} USD
 
@@ -260,7 +262,7 @@ Notamos que realizaste el *pre-registro* para *${teamName}* en el torneo de *${g
 👉 *Sube tu comprobante directamente en tu enlace de pago:*
 🔗 ${paymentLink}
 
-⚠️ _Recuerda que los cupos son limitados y se asignan por orden de pago confirmado. ¡Asegura tu cupo antes del cierre de inscripciones!_ 🎮🔥`;
+🚨 *Tienes plazo hasta hoy a la medianoche (23:59)* para subir tu comprobante. Pasado este plazo, los cupos no confirmados serán cancelados para armar las llaves oficiales del torneo que inicia mañana miércoles a las 9:00 PM. ¡Aseguren su cupo para no quedarse fuera! 🎮🔥`;
 
     return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
   };
@@ -297,16 +299,138 @@ Notamos que realizaste el *pre-registro* para *${teamName}* en el torneo de *${g
     const message = 
 `¡Hola ${playerName}! 👋 Te saluda el Staff de Compu League E-Sports 2026. 🏆
 
-Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. 🎮
-
-El equipo se encuentra actualmente en *pre-registro* y está pendiente subir el comprobante de pago para asegurar el cupo oficial en las llaves del torneo. ⏳
+⚠️ *AVISO URGENTE - ÚLTIMO PLAZO DE PAGO:*
+Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El equipo se encuentra en *pre-registro* y tienen plazo para completar el pago y subir su comprobante *ÚNICAMENTE HASTA EL DÍA DE HOY (Martes 3 de Noviembre)*. ⏳
 
 👉 *Pueden completar el pago y subir el comprobante aquí:*
 🔗 ${paymentLink}
 
-¡Aseguren su cupo para no quedarse fuera! 🔥`;
+🚨 Pasado hoy a la medianoche (23:59), los cupos no confirmados serán cancelados para armar las llaves del torneo que inicia mañana miércoles a las 9:00 PM. ¡Avisa a tu capitán para asegurar su lugar! 🔥`;
 
     return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  };
+
+
+  // Descargar PDF Oficial generado previamente
+  const handleDownloadOfficialPdf = () => {
+    const a = document.createElement('a');
+    a.href = '/roster_participantes_confirmados.pdf';
+    a.download = `CompuLeague_Roster_Confirmados_${new Date().toISOString().slice(0, 10)}.pdf`;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Generar ventana de impresión / PDF interactivo con datos en vivo
+  const handlePrintLiveRoster = () => {
+    const confirmed = registrations.filter(r => r.status === 'approved' || r.payment_status === 'paid');
+    
+    const gamesList = [
+      { key: 'valorant', title: 'VALORANT (5v5)', color: '#FF0055' },
+      { key: 'free_fire', title: 'FREE FIRE (Escuadras)', color: '#D97706' },
+      { key: 'fortnite', title: 'FORTNITE (Dúos)', color: '#0284C7' },
+      { key: 'clash_royale', title: 'CLASH ROYALE (1v1)', color: '#7C3AED' },
+    ];
+
+    let sectionsHtml = '';
+
+    gamesList.forEach(g => {
+      const gRegs = confirmed.filter(r => r.game === g.key);
+      sectionsHtml += `
+        <div style="margin-top: 20px; page-break-inside: avoid;">
+          <div style="background: #0F172A; color: #FFF; padding: 8px 12px; font-family: monospace; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid ${g.color};">
+            <span>${g.title}</span>
+            <span style="color: #FFE600;">${gRegs.length} CONFIRMADOS</span>
+          </div>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 11px; font-family: sans-serif;">
+            <thead>
+              <tr style="background: #F1F5F9; border-bottom: 2px solid #CBD5E1; text-align: left;">
+                <th style="padding: 6px 8px; width: 30px;">#</th>
+                <th style="padding: 6px 8px; width: 140px;">Equipo / Nick</th>
+                <th style="padding: 6px 8px; width: 150px;">Capitán & Contacto</th>
+                <th style="padding: 6px 8px;">Integrantes / Roster</th>
+                <th style="padding: 6px 8px; width: 80px;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${gRegs.length === 0 ? '<tr><td colspan="5" style="padding: 10px; text-align: center; color: #64748B;">Sin participantes confirmados</td></tr>' : gRegs.map((r, i) => {
+                const teamName = r.team_name || r.captain_name || `Equipo #${i + 1}`;
+                const capName = r.captain_name || 'N/A';
+                const capPhone = r.captain_whatsapp || 'N/A';
+                const capId = r.captain_game_id || 'N/A';
+                const members = Array.isArray(r.members) ? r.members : [];
+                const membersHtml = members.length === 0 
+                  ? '<span style="color: #64748B; font-style: italic;">Titular único (1v1)</span>'
+                  : members.map((m, mi) => `• <b>${m.name}</b> (ID: ${m.gameId || m.game_id || 'N/A'})${m.isSubstitute || m.is_substitute ? ' <span style="color: #DC2626;">[SUB]</span>' : ''} ${m.whatsapp ? `- <span style="color: #475569;">${m.whatsapp}</span>` : ''}`).join('<br/>');
+
+                return `
+                  <tr style="border-bottom: 1px solid #E2E8F0; background: ${i % 2 === 0 ? '#FFFFFF' : '#F8FAFC'};">
+                    <td style="padding: 6px 8px; font-weight: bold;">${i + 1}</td>
+                    <td style="padding: 6px 8px; font-weight: bold; color: #0F172A;">${teamName}</td>
+                    <td style="padding: 6px 8px;">
+                      <b>${capName}</b><br/>
+                      <span style="color: #0D9488;">ID:</span> ${capId}<br/>
+                      <span style="color: #2563EB;">WA:</span> ${capPhone}
+                    </td>
+                    <td style="padding: 6px 8px; line-height: 1.4;">${membersHtml}</td>
+                    <td style="padding: 6px 8px; font-weight: bold; color: #059669;">CONFIRMADO</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    });
+
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      alert('Por favor habilita las ventanas emergentes en tu navegador para ver el roster oficial.');
+      return;
+    }
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Roster Oficial de Participantes - Compu League 2026</title>
+        <style>
+          @page { size: letter; margin: 10mm 10mm; }
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1E293B; margin: 0; padding: 12px; }
+          .header { border-bottom: 2px solid #0F172A; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 20px; font-weight: 900; letter-spacing: 1px; color: #0F172A; margin: 0; }
+          .sub { font-size: 11px; font-weight: 600; color: #D97706; margin-top: 3px; }
+          .meta { font-size: 9px; color: #64748B; margin-top: 4px; }
+          @media print {
+            .no-print { display: none !important; }
+            body { padding: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="background: #FFE600; padding: 10px 16px; margin-bottom: 16px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #000;">
+          <span>📄 ROSTER OFICIAL DE PARTICIPANTES CONFIRMADOS (${confirmed.length} REGISTROS)</span>
+          <button onclick="window.print()" style="background: #000; color: #FFF; border: none; padding: 6px 14px; font-weight: bold; cursor: pointer; border-radius: 3px;">🖨️ IMPRIMIR / GUARDAR COMO PDF</button>
+        </div>
+        <div class="header">
+          <div>
+            <h1 class="title">COMPU LEAGUE E-SPORTS 2026</h1>
+            <div class="sub">ROSTER OFICIAL DE PARTICIPANTES CONFIRMADOS // CARRERA DE COMPUTACIÓN</div>
+            <div class="meta">Emisión: ${new Date().toLocaleString()} | Estado: INSCRIPCIONES CERRADAS | Inicio: Miércoles 4 Nov (21:00)</div>
+          </div>
+          <div style="text-align: right; font-size: 11px; font-weight: bold;">
+            <span style="background: #0F172A; color: #FFE600; padding: 4px 8px;">TOTAL: ${confirmed.length} EQUIPOS</span>
+          </div>
+        </div>
+        ${sectionsHtml}
+        <script>
+          setTimeout(() => { window.print(); }, 400);
+        </script>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
   };
 
   // Copy all phone numbers for a single team (Captain + all registered members)
@@ -736,15 +860,38 @@ El equipo se encuentra actualmente en *pre-registro* y está pendiente subir el 
                     </div>
                   </div>
 
-                  {/* Super Button: Copy WhatsApp Numbers */}
-                  <button
-                    type="button"
-                    onClick={handleCopyAllPhones}
-                    className="w-full lg:w-auto px-4 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
-                  >
-                    {copiedPhones ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    <span>{copiedPhones ? '¡Números Copiados!' : 'Copiar WhatsApps para Grupos'}</span>
-                  </button>
+                  {/* Action Buttons: Copy WhatsApp & Export PDF Roster */}
+                  <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <button
+                      type="button"
+                      onClick={handleCopyAllPhones}
+                      className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                      title="Copiar lista de números telefónicos para añadir a grupos de WhatsApp"
+                    >
+                      {copiedPhones ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      <span>{copiedPhones ? '¡Copiados!' : 'Copiar WhatsApps'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadOfficialPdf}
+                      className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-[#FF0055]/20 hover:bg-[#FF0055]/30 border border-[#FF0055]/50 text-[#FF0055] hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                      title="Descargar archivo PDF con todos los participantes confirmados divididos por juego"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Descargar PDF</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handlePrintLiveRoster}
+                      className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-[#00F0FF]/20 hover:bg-[#00F0FF]/30 border border-[#00F0FF]/50 text-[#00F0FF] hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                      title="Abrir vista de impresión y exportación en vivo con datos actualizados en tiempo real"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>Imprimir Roster</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Banner de Recordatorio de Pre-Registros */}
@@ -755,7 +902,7 @@ El equipo se encuentra actualmente en *pre-registro* y está pendiente subir el 
                         <Bell className="w-4 h-4 stroke-[2.5]" />
                       </div>
                       <span className="text-xs text-yellow-200 font-cyber">
-                        Hay <strong className="text-[#FFE600]">{totalPaymentPending}</strong> pre-registro(s) con pago pendiente. Puedes enviarles un recordatorio directo a su WhatsApp con su link de pago.
+                        Hay <strong className="text-[#FFE600]">{totalPaymentPending}</strong> pre-registro(s) con pago pendiente. Recuerda que pueden pagar únicamente hasta el día de hoy (medianoche). Puedes enviarles un recordatorio a su WhatsApp con su link de pago.
                       </span>
                     </div>
                     <button
