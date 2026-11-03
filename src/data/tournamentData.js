@@ -17,9 +17,12 @@ export const CONTACT_INFO = {
   whatsappDirectUrl: 'https://wa.me/593962074110?text=Hola,%20tengo%20una%20consulta%20sobre%20el%20torneo%20Compu%20League%202026',
   discordUrl: 'https://discord.gg/ynfD8aHHmP',
   streamFacebook: 'https://facebook.com', // Enlace o transmisión de la carrera
-  deadlineIso: '2026-11-01T23:59:59-05:00',
-  deadlineLabel: '1 de Noviembre de 2026',
-  tournamentDatesLabel: '4, 5 y 6 de Noviembre de 2026 (Noches)',
+  deadlineIso: '2026-11-04T21:00:00-05:00',
+  deadlineLabel: 'Miércoles 4 de Noviembre - 9:00 PM',
+  tournamentStartIso: '2026-11-04T21:00:00-05:00',
+  tournamentStartLabel: 'Miércoles 4 de Noviembre - 9:00 PM (21:00)',
+  tournamentDatesLabel: '4, 5 y 6 de Noviembre de 2026 (Noches - 9:00 PM)',
+  isRegistrationClosed: true,
 };
 
 export const GAMES = [

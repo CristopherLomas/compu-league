@@ -126,11 +126,11 @@ export default function GameCards({ onSelectGame }) {
             
             <div className="space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="bg-[#FFE600] text-black font-pixel text-[9px] sm:text-[10px] px-2.5 py-1 border border-black font-black uppercase">
-                  [ 4 JUEGOS OFICIALES ]
+                <span className="bg-[#FF0055] text-white font-pixel text-[9px] sm:text-[10px] px-2.5 py-1 border border-black font-black uppercase">
+                  [ INSCRIPCIONES CERRADAS ]
                 </span>
-                <span className="bg-black text-[#00F0FF] font-pixel text-[9px] sm:text-[10px] px-2.5 py-1 border border-[#00F0FF]">
-                  ELIGE TU JUEGO
+                <span className="bg-black text-[#FFE600] font-pixel text-[9px] sm:text-[10px] px-2.5 py-1 border border-[#FFE600]">
+                  INICIO: MIÉRCOLES 4 // 9:00 PM
                 </span>
               </div>
 
@@ -292,19 +292,26 @@ export default function GameCards({ onSelectGame }) {
 
                 </div>
 
-                {/* 4. Physical Arcade Button (Sinks on click) */}
+                {/* 4. Physical Arcade Button (Inscripciones Cerradas - Ver Reglas) */}
                 <div className="p-3.5 sm:p-5 pt-0 bg-[#090D15]">
                   <button
                     type="button"
-                    onClick={() => onSelectGame(game.id)}
+                    onClick={() => {
+                      const target = document.getElementById(`reglas-${game.id}`);
+                      if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        target.classList.add('bg-white/10');
+                        setTimeout(() => target.classList.remove('bg-white/10'), 1500);
+                      }
+                    }}
                     className={`btn-arcade-press w-full py-3 sm:py-3.5 px-3 sm:px-4 font-pixel text-[10px] sm:text-xs md:text-sm uppercase font-black border-2 border-black cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap min-w-0 ${game.shadowClass}`}
                     style={{
                       backgroundColor: game.accentColor,
                       color: game.id === 'free_fire' ? '#000' : (game.id === 'fortnite' ? '#000' : '#FFF'),
                     }}
                   >
-                    <span className="truncate">{game.buttonText}</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3] shrink-0" />
+                    <Lock className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">[ CERRADAS // VER REGLAS ]</span>
                   </button>
                 </div>
 

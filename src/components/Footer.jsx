@@ -91,11 +91,11 @@ export default function Footer({ onOpenRegister }) {
             <div className="text-xs text-slate-300 space-y-2 font-cyber">
               <p className="flex items-center justify-between border-b border-white/5 pb-1">
                 <span className="text-slate-400">Estado:</span>
-                <strong className="text-[#10B981] font-pixel text-[9px]">FASE DE REGISTRO</strong>
+                <strong className="text-[#FF0055] font-pixel text-[9px]">INSCRIPCIONES CERRADAS</strong>
               </p>
               <p className="flex items-center justify-between border-b border-white/5 pb-1">
-                <span className="text-slate-400">Fechas:</span>
-                <strong className="text-white font-bold">4, 5 y 6 Noviembre</strong>
+                <span className="text-slate-400">Inicio:</span>
+                <strong className="text-[#FFE600] font-bold">Miércoles 4 Nov (9:00 PM)</strong>
               </p>
               <p className="flex items-center justify-between border-b border-white/5 pb-1">
                 <span className="text-slate-400">Modalidad:</span>

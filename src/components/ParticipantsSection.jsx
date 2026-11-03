@@ -179,15 +179,11 @@ export default function ParticipantsSection({ onOpenRegister }) {
               </p>
             </div>
 
-            <div className="shrink-0 self-start sm:self-auto">
-              <button
-                type="button"
-                onClick={onOpenRegister}
-                className="btn-arcade-press shadow-brutal-yellow bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel text-xs px-5 py-3 font-black uppercase flex items-center gap-2 cursor-pointer"
-              >
-                <Zap className="w-3.5 h-3.5 fill-black" />
-                <span>INSCRIBIRSE</span>
-              </button>
+            <div className="shrink-0 self-start sm:self-auto flex items-center gap-2">
+              <div className="bg-[#101726] border-2 border-[#FF0055] text-[#FF0055] font-pixel text-[11px] px-3 py-2 flex items-center gap-1.5 shadow-sm">
+                <Lock className="w-3 h-3" />
+                <span>INSCRIPCIONES CERRADAS</span>
+              </div>
             </div>
 
           </div>
@@ -551,24 +547,21 @@ export default function ParticipantsSection({ onOpenRegister }) {
         {/* ======================================================= */}
         <div className="mt-12 p-6 sm:p-8 border-4 border-black bg-[#0C121D] shadow-brutal-yellow flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center sm:text-left">
-            <div className="font-pixel text-[9px] text-[#FFE600] uppercase tracking-wider">
-              ★ REGISTRATION IS LIVE ★
+            <div className="font-pixel text-[9px] text-[#FF0055] uppercase tracking-wider font-bold flex items-center gap-2">
+              <span className="w-2 h-2 bg-[#FF0055] inline-block animate-arcade-blink" />
+              <span>★ INSCRIPCIONES CERRADAS ★</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-black text-white uppercase font-display tracking-wide drop-shadow-[2px_2px_0px_#000]">
-              ¿QUIERES VER TU NOMBRE O ESCUADRA EN ESTA LISTA?
+              ¡EL ROSTER OFICIAL ESTÁ COMPLETO!
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 font-cyber leading-relaxed">
-              Inscribe a tu equipo o regístrate en solitario antes del cierre de inscripciones.
+              Las inscripciones han finalizado con éxito. El torneo iniciará este Miércoles 4 de Noviembre a las 9:00 PM (21:00).
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onOpenRegister}
-            className="btn-arcade-press shadow-brutal-pink w-full sm:w-auto px-8 py-4 bg-[#FFE600] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider text-center transition-all shrink-0 cursor-pointer"
-          >
-            INSCRIBIR A MI EQUIPO
-          </button>
+          <div className="px-6 py-3.5 bg-black border-2 border-[#00F0FF] text-[#00F0FF] font-pixel text-xs uppercase font-bold text-center shadow-brutal-cyan shrink-0">
+            INICIO: MIÉRCOLES 4 // 9:00 PM
+          </div>
         </div>
 
       </div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Clock, Swords, Zap, Terminal, ShieldAlert, Users, Trophy, Lock } from 'lucide-react';
 import { CONTACT_INFO } from '../data/tournamentData';
 import { GameLogo } from './GameLogo';
 
 // ─── Countdown calculation ───────────────────────────────────────────────────
 function calcTimeLeft() {
-  const deadline = new Date(CONTACT_INFO.deadlineIso).getTime();
-  const diff = deadline - Date.now();
+  const targetTime = new Date(CONTACT_INFO.tournamentStartIso || CONTACT_INFO.deadlineIso).getTime();
+  const diff = targetTime - Date.now();
   if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true };
   return {
     days:    Math.floor(diff / 86400000),
@@ -21,6 +21,8 @@ export default function MainEsportsHero({
   playerName = '', 
   onOpenRegister, 
   onScrollToGames,
+  onScrollToBrackets,
+  onScrollToParticipants,
   onSelectGameSlot,
 }) {
   const [timeLeft, setTimeLeft] = useState(calcTimeLeft);
@@ -64,40 +66,34 @@ export default function MainEsportsHero({
       />
 
       {/* ========================================================= */}
-      {/* 1. TOP ARCADE MARQUEE TICKER (80s CONSOLE STYLE)          */}
+      {/* 1. TOP ARCADE MARQUEE TICKER (INSCRIPCIONES CERRADAS)      */}
       {/* ========================================================= */}
-      <div className="w-full bg-[#FFE600] text-black font-pixel py-2.5 text-[10px] sm:text-xs overflow-hidden select-none border-b-2 border-black relative z-20">
+      <div className="w-full bg-[#FF0055] text-white font-pixel py-2.5 text-[10px] sm:text-xs overflow-hidden select-none border-b-2 border-black relative z-20">
         <div className="animate-marquee whitespace-nowrap flex items-center gap-6 font-black">
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT 5v5</span>
-          <span className="tracking-wider">★ INSCRIPCIONES ABIERTAS ★</span>
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">ESTADO</span>
+          <span className="tracking-wider text-white">★ INSCRIPCIONES CERRADAS ★</span>
           
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FREE FIRE ESCUADRAS</span>
-          <span className="tracking-wider">★ 4, 5 Y 6 DE NOVIEMBRE ★</span>
+          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">INICIO DEL TORNEO</span>
+          <span className="tracking-wider text-[#FFE600]">★ MIÉRCOLES 4 DE NOVIEMBRE - 9:00 PM (21:00) ★</span>
           
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FORTNITE DUOS</span>
-          <span className="bg-[#FF0055] text-white px-2 py-0.5 font-bold">PREMIOS</span>
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT • FREE FIRE • FORTNITE • CLASH ROYALE</span>
+          <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold">PREMIOS LISTOS</span>
           
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">CLASH ROYALE 1v1</span>
-          <span className="tracking-wider">★ INSCRIPCION: $1 POR JUGADOR ★</span>
-
           <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">CARRERA DE COMPUTACION</span>
-          <span className="tracking-wider">★ TORNEO ONLINE ★</span>
+          <span className="tracking-wider">★ TRANSMISION EN VIVO ★</span>
 
           {/* Duplicated for smooth infinite loop */}
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT 5v5</span>
-          <span className="tracking-wider">★ INSCRIPCIONES ABIERTAS ★</span>
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">ESTADO</span>
+          <span className="tracking-wider text-white">★ INSCRIPCIONES CERRADAS ★</span>
           
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FREE FIRE ESCUADRAS</span>
-          <span className="tracking-wider">★ 4, 5 Y 6 DE NOVIEMBRE ★</span>
+          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">INICIO DEL TORNEO</span>
+          <span className="tracking-wider text-[#FFE600]">★ MIÉRCOLES 4 DE NOVIEMBRE - 9:00 PM (21:00) ★</span>
           
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">FORTNITE DUOS</span>
-          <span className="bg-[#FF0055] text-white px-2 py-0.5 font-bold">PREMIOS</span>
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT • FREE FIRE • FORTNITE • CLASH ROYALE</span>
+          <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold">PREMIOS LISTOS</span>
           
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">CLASH ROYALE 1v1</span>
-          <span className="tracking-wider">★ INSCRIPCION: $1 POR JUGADOR ★</span>
-
           <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">CARRERA DE COMPUTACION</span>
-          <span className="tracking-wider">★ TORNEO ONLINE ★</span>
+          <span className="tracking-wider">★ TRANSMISION EN VIVO ★</span>
         </div>
       </div>
 
@@ -115,9 +111,9 @@ export default function MainEsportsHero({
             {/* Title Block: Neo-Brutalist Cyber-Arcade Style */}
             <div className="relative w-full">
               <div className="relative z-10 space-y-0.5">
-                <div className="font-pixel text-[11px] sm:text-xs text-[#FFE600] tracking-widest uppercase flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-[#FFE600]" />
-                  <span>// ESTADO: INSCRIPCIONES ABIERTAS</span>
+                <div className="font-pixel text-[11px] sm:text-xs text-[#FF0055] tracking-widest uppercase flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 bg-[#FF0055] inline-block animate-arcade-blink" />
+                  <span>// ESTADO: INSCRIPCIONES CERRADAS // PREPARANDO INICIO</span>
                 </div>
                 
                 <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black font-display uppercase tracking-tight text-white leading-[0.9] drop-shadow-[4px_4px_0px_#000]">
@@ -155,78 +151,109 @@ export default function MainEsportsHero({
               </p>
             </div>
 
-            {/* Mechanical Arcade Physical Buttons (Cero esquinas redondeadas + botón que se hunde) */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full pt-0.5">
-              {/* Primary: INSCRIBIRSE */}
+            {/* Mechanical Arcade Physical Buttons (Inscripciones Cerradas + Acciones) */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full pt-0.5">
+              {/* Badge: INSCRIPCIONES CERRADAS */}
+              <div className="bg-[#101726] border-2 border-[#FF0055] text-white font-pixel text-xs sm:text-sm px-4 py-3.5 flex items-center justify-center gap-2 shadow-brutal-pink shrink-0">
+                <ShieldAlert className="w-4 h-4 text-[#FF0055] stroke-[2.5]" />
+                <span className="text-[#FF0055] font-black">[ INSCRIPCIONES CERRADAS ]</span>
+              </div>
+
+              {/* Primary: VER ROSTER DE PARTICIPANTES */}
               <button
                 type="button"
-                onClick={() => onOpenRegister('valorant')}
-                className="btn-arcade-press shadow-brutal-pink bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel text-xs sm:text-sm px-6 py-3.5 flex items-center justify-center gap-3 cursor-pointer uppercase font-black"
+                onClick={onScrollToParticipants || onScrollToGames}
+                className="btn-arcade-press shadow-brutal-yellow bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel text-xs sm:text-sm px-5 py-3.5 flex items-center justify-center gap-2 cursor-pointer uppercase font-black flex-1 sm:flex-initial"
               >
-                <span className="w-2.5 h-2.5 bg-[#FF0055] inline-block animate-arcade-blink" />
-                <span>INSCRIBIRSE</span>
+                <Users className="w-4 h-4 stroke-[2.5]" />
+                <span>VER JUGADORES Y EQUIPOS</span>
                 <ArrowRight className="w-4 h-4 stroke-[3]" />
               </button>
 
-              {/* Secondary: HOW TO PLAY */}
+              {/* Secondary: VER FORMATOS / REGLAS */}
               <button
                 type="button"
                 onClick={onScrollToGames}
-                className="btn-arcade-press shadow-brutal-cyan bg-[#09101C] hover:bg-[#121D30] text-[#00F0FF] border-2 border-[#00F0FF] font-pixel text-xs sm:text-sm px-5 py-3.5 flex items-center justify-center gap-2.5 cursor-pointer uppercase"
+                className="btn-arcade-press shadow-brutal-cyan bg-[#09101C] hover:bg-[#121D30] text-[#00F0FF] border-2 border-[#00F0FF] font-pixel text-xs sm:text-sm px-4 py-3.5 flex items-center justify-center gap-2 cursor-pointer uppercase"
               >
                 <Swords className="w-4 h-4 text-[#00F0FF]" />
-                <span>[ REGLAS Y FORMATOS ]</span>
+                <span>[ REGLAS Y JUEGOS ]</span>
               </button>
             </div>
 
-            {/* Arcade Countdown Screen (CIERRE DE INSCRIPCIONES EN ESPAÑOL, DIAS SIN TILDE) */}
-            <div className="w-full bg-[#05070B] border-2 border-black p-3.5 sm:p-4 shadow-brutal-black">
-              <div className="flex items-center justify-between pb-2 mb-3 border-b-2 border-white/10 font-pixel text-[9px] sm:text-[10px]">
-                <span className="text-[#FFE600] flex items-center gap-1.5 uppercase">
-                  <Clock className="w-3.5 h-3.5 text-[#FFE600]" />
-                  <span>CIERRE DE INSCRIPCIONES</span>
-                </span>
-                <span className="text-slate-400">
-                  {CONTACT_INFO.deadlineLabel}
-                </span>
+            {/* Arcade Countdown Screen (INICIO DEL TORNEO: MIÉRCOLES 4 A LAS 9PM) */}
+            <div className="w-full bg-[#05070B] border-2 border-[#00F0FF] p-3.5 sm:p-5 shadow-brutal-cyan relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2.5 mb-3.5 border-b-2 border-white/10 font-pixel text-[10px] sm:text-[11px] gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 bg-[#00F0FF] inline-block animate-arcade-blink" />
+                  <span className="text-[#00F0FF] uppercase font-black tracking-wider flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-[#00F0FF]" />
+                    <span>CUENTA REGRESIVA // INICIO DEL TORNEO</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="bg-[#FFE600] text-black px-2 py-0.5 text-[9px] font-black uppercase border border-black shadow-sm">
+                    MIÉRCOLES 4 NOV
+                  </span>
+                  <span className="text-[#FFE600] font-black text-xs sm:text-sm">
+                    9:00 PM (21:00)
+                  </span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-2 text-center">
-                <div className="bg-[#0F1726] border-2 border-white/10 p-2 shadow-brutal-black">
-                  <span className="font-pixel text-xl sm:text-3xl text-white block">
-                    {String(timeLeft.days).padStart(2, '0')}
+              {timeLeft.isExpired ? (
+                <div className="p-4 bg-black border-2 border-[#10B981] text-center space-y-1">
+                  <span className="font-pixel text-lg sm:text-2xl text-[#10B981] font-black block animate-pulse">
+                    ¡EL TORNEO HA COMENZADO!
                   </span>
-                  <span className="font-pixel text-[8px] sm:text-[9px] text-slate-400 uppercase tracking-widest mt-1 block">
-                    DIAS
-                  </span>
+                  <p className="font-cyber text-xs text-slate-300">
+                    Las salas de juego y llaves se encuentran en disputa en vivo.
+                  </p>
                 </div>
+              ) : (
+                <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
+                  <div className="bg-[#0F1726] border-2 border-white/10 p-2.5 sm:p-3 shadow-brutal-black">
+                    <span className="font-pixel text-2xl sm:text-4xl text-white block">
+                      {String(timeLeft.days).padStart(2, '0')}
+                    </span>
+                    <span className="font-pixel text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-widest mt-1 block">
+                      DIAS
+                    </span>
+                  </div>
 
-                <div className="bg-[#0F1726] border-2 border-white/10 p-2 shadow-brutal-black">
-                  <span className="font-pixel text-xl sm:text-3xl text-white block">
-                    {String(timeLeft.hours).padStart(2, '0')}
-                  </span>
-                  <span className="font-pixel text-[8px] sm:text-[9px] text-slate-400 uppercase tracking-widest mt-1 block">
-                    HORAS
-                  </span>
-                </div>
+                  <div className="bg-[#0F1726] border-2 border-white/10 p-2.5 sm:p-3 shadow-brutal-black">
+                    <span className="font-pixel text-2xl sm:text-4xl text-[#00F0FF] block">
+                      {String(timeLeft.hours).padStart(2, '0')}
+                    </span>
+                    <span className="font-pixel text-[8px] sm:text-[10px] text-[#00F0FF] uppercase tracking-widest mt-1 block">
+                      HORAS
+                    </span>
+                  </div>
 
-                <div className="bg-[#0F1726] border-2 border-white/10 p-2 shadow-brutal-black">
-                  <span className="font-pixel text-xl sm:text-3xl text-white block">
-                    {String(timeLeft.minutes).padStart(2, '0')}
-                  </span>
-                  <span className="font-pixel text-[8px] sm:text-[9px] text-slate-400 uppercase tracking-widest mt-1 block">
-                    MIN
-                  </span>
-                </div>
+                  <div className="bg-[#0F1726] border-2 border-white/10 p-2.5 sm:p-3 shadow-brutal-black">
+                    <span className="font-pixel text-2xl sm:text-4xl text-white block">
+                      {String(timeLeft.minutes).padStart(2, '0')}
+                    </span>
+                    <span className="font-pixel text-[8px] sm:text-[10px] text-slate-400 uppercase tracking-widest mt-1 block">
+                      MIN
+                    </span>
+                  </div>
 
-                <div className="bg-[#0F1726] border-2 border-[#FF0055] p-2 shadow-brutal-pink">
-                  <span className="font-pixel text-xl sm:text-3xl text-[#FFE600] block animate-pulse">
-                    {String(timeLeft.seconds).padStart(2, '0')}
-                  </span>
-                  <span className="font-pixel text-[8px] sm:text-[9px] text-[#FF0055] uppercase tracking-widest mt-1 block">
-                    SEG
-                  </span>
+                  <div className="bg-[#0F1726] border-2 border-[#FF0055] p-2.5 sm:p-3 shadow-brutal-pink">
+                    <span className="font-pixel text-2xl sm:text-4xl text-[#FFE600] block animate-pulse">
+                      {String(timeLeft.seconds).padStart(2, '0')}
+                    </span>
+                    <span className="font-pixel text-[8px] sm:text-[10px] text-[#FF0055] uppercase tracking-widest mt-1 block">
+                      SEG
+                    </span>
+                  </div>
                 </div>
+              )}
+
+              {/* Countdown status bar note */}
+              <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center justify-between font-pixel text-[8px] sm:text-[9px] text-slate-400">
+                <span className="text-[#FF0055] font-bold">★ INSCRIPCIONES CERRADAS</span>
+                <span className="text-slate-300">MODALIDAD ONLINE // TRANSMISIÓN EN VIVO</span>
               </div>
             </div>
 

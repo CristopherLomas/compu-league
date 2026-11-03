@@ -394,6 +394,7 @@ function App() {
                 onSelectGameSlot={handleScrollToGameSlot}
                 onScrollToBrackets={() => navigateTo('brackets')}
                 onScrollToGames={() => navigateTo('juegos')}
+                onScrollToParticipants={() => navigateTo('participantes')}
               />
             </div>
             <div id="juegos">

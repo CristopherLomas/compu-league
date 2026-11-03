@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Check, Copy, Upload, AlertCircle, 
   Zap, Phone, Link2, ExternalLink, Send, 
-  CheckCircle2, Clock, ArrowRight, ArrowLeft, Terminal, Coins, CreditCard, Crown
+  CheckCircle2, Clock, ArrowRight, ArrowLeft, Terminal, Coins, CreditCard, Crown, Lock
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { BANK_INFO, GAMES, CONTACT_INFO, getGameWhatsAppGroupUrl } from '../data/tournamentData';
@@ -417,7 +417,43 @@ export default function RegistrationModal({
         {/* Modal Body */}
         <div className="p-4 sm:p-6 max-h-[85vh] overflow-y-auto space-y-5 bg-[#090D15]">
           
-          {successData ? (
+          {CONTACT_INFO.isRegistrationClosed && !editingRegistration && !successData ? (
+            <div className="py-8 px-4 text-center space-y-5 animate-in fade-in duration-200">
+              <div className="w-16 h-16 bg-[#1A0A10] border-4 border-black text-[#FF0055] flex items-center justify-center mx-auto shadow-brutal-pink">
+                <Lock className="w-8 h-8 stroke-[2.5]" />
+              </div>
+              <div className="space-y-1.5">
+                <div className="inline-block px-3 py-1 bg-black text-[#FF0055] border-2 border-[#FF0055] font-pixel text-[9px] uppercase shadow-brutal-black">
+                  ★ FASE DE REGISTRO FINALIZADA ★
+                </div>
+                <h4 className="text-xl sm:text-3xl font-black uppercase text-white font-display tracking-wide drop-shadow-[2px_2px_0px_#000]">
+                  INSCRIPCIONES CERRADAS
+                </h4>
+                <p className="text-slate-300 text-xs sm:text-sm max-w-md mx-auto font-cyber leading-relaxed">
+                  El periodo de registro oficial ha concluido y las llaves del torneo están en preparación. Los enfrentamientos iniciarán este <strong className="text-white">Miércoles 4 de Noviembre a las 9:00 PM (21:00)</strong>.
+                </p>
+              </div>
+
+              <div className="p-3.5 bg-black border-2 border-[#00F0FF] max-w-md mx-auto shadow-brutal-cyan text-left space-y-1 font-cyber text-xs">
+                <span className="text-[#00F0FF] font-pixel text-[9px] block uppercase">
+                  ¿HICISTE PRE-REGISTRO PREVIAMENTE?
+                </span>
+                <p className="text-slate-300">
+                  Si apartaste tu cupo con la opción <em>Pagar Después</em>, puedes seguir subiendo tu comprobante ingresando directamente desde tu Enlace Mágico de pago.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="btn-arcade-press shadow-brutal-yellow py-3 px-8 bg-[#FFE600] text-black font-pixel font-black text-xs uppercase tracking-wider border-2 border-black cursor-pointer"
+                >
+                  [ ENTENDIDO // CERRAR ]
+                </button>
+              </div>
+            </div>
+          ) : successData ? (
             /* ======================================================== */
             /* SUCCESS STATES (PAGAR AHORA vs PAGAR DESPUÉS)            */
             /* ======================================================== */

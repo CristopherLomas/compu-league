@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Zap, Flame } from 'lucide-react';
+import { Menu, X, Zap, Flame, Users, Trophy } from 'lucide-react';
 
 export default function Navbar({ 
   onOpenRegister, 
@@ -94,13 +94,13 @@ export default function Navbar({
         {/* Right: Neo-Brutalist Arcade CTA Button & Mobile Trigger */}
         <div className="flex items-center gap-3 shrink-0">
 
-          {/* Primary CTA: INSCRIBIRSE (Physical Arcade Sinking Button) */}
+          {/* Primary CTA: VER ROSTER (Physical Arcade Sinking Button) */}
           <button
-            onClick={onOpenRegister}
+            onClick={() => handleNavClick('participantes')}
             className="btn-arcade-press shadow-brutal-yellow hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-pixel font-black text-xs uppercase tracking-wider cursor-pointer whitespace-nowrap shrink-0"
           >
-            <Zap className="w-3.5 h-3.5 fill-black shrink-0" />
-            <span>INSCRIBIRSE</span>
+            <Users className="w-3.5 h-3.5 stroke-[2.5] text-black shrink-0" />
+            <span>VER ROSTER</span>
           </button>
 
           {/* Mobile menu trigger */}
@@ -147,12 +147,12 @@ export default function Navbar({
           <button
             onClick={() => {
               setMobileMenuOpen(false);
-              onOpenRegister();
+              handleNavClick('participantes');
             }}
             className="btn-arcade-press shadow-brutal-yellow w-full mt-3 py-3.5 bg-[#FFE600] text-black font-pixel font-black text-xs uppercase tracking-wider border-2 border-black flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Zap className="w-4 h-4 fill-black" />
-            <span>INSCRIBIRSE</span>
+            <Users className="w-4 h-4 stroke-[2.5] text-black" />
+            <span>VER ROSTER DE JUGADORES</span>
           </button>
         </div>
       )}
