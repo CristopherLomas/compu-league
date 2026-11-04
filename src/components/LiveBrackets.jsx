@@ -28,9 +28,23 @@ export default function LiveBrackets() {
       const savedClash = localStorage.getItem('compu_league_clash_matches');
       const savedBr = localStorage.getItem('compu_league_br_standings');
 
-      setValorantMatches(savedVal ? JSON.parse(savedVal) : DEMO_VALORANT_MATCHES);
-      setClashMatches(savedClash ? JSON.parse(savedClash) : DEMO_CLASH_MATCHES);
-      setBrStandings(savedBr ? JSON.parse(savedBr) : DEMO_BATTLE_ROYALE_STANDINGS);
+      // Limpiar cache legacy de pruebas si contiene nombres de demostración antiguos
+      const isLegacy = (str) => {
+        if (!str) return true;
+        return str.includes('CyberKnights') || str.includes('Kernel Panic') || str.includes('Alex_Master') || str.includes('Dragons E-Sports');
+      };
+
+      const valMatches = (!savedVal || isLegacy(savedVal)) ? DEMO_VALORANT_MATCHES : JSON.parse(savedVal);
+      const clashM = (!savedClash || isLegacy(savedClash)) ? DEMO_CLASH_MATCHES : JSON.parse(savedClash);
+      const brS = (!savedBr || isLegacy(savedBr)) ? DEMO_BATTLE_ROYALE_STANDINGS : JSON.parse(savedBr);
+
+      setValorantMatches(valMatches);
+      setClashMatches(clashM);
+      setBrStandings(brS);
+
+      if (isLegacy(savedVal)) localStorage.setItem('compu_league_valorant_matches', JSON.stringify(DEMO_VALORANT_MATCHES));
+      if (isLegacy(savedClash)) localStorage.setItem('compu_league_clash_matches', JSON.stringify(DEMO_CLASH_MATCHES));
+      if (isLegacy(savedBr)) localStorage.setItem('compu_league_br_standings', JSON.stringify(DEMO_BATTLE_ROYALE_STANDINGS));
     } catch {
       setValorantMatches(DEMO_VALORANT_MATCHES);
       setClashMatches(DEMO_CLASH_MATCHES);
@@ -250,7 +264,7 @@ export default function LiveBrackets() {
                 </p>
               </div>
               <span className="text-[9px] px-2.5 py-1 border border-white/20 bg-black text-[#A855F7] font-bold">
-                16 JUGADORES
+                12 JUGADORES CONFIRMADOS
               </span>
             </div>
 

@@ -955,7 +955,13 @@ export const updateRegistrationStatus = async (id, status, notes = '') => {
 export const getValorantMatches = () => {
   const local = localStorage.getItem(STORAGE_KEYS.VALORANT_MATCHES);
   if (local) {
-    try { return JSON.parse(local); } catch (e) {}
+    try {
+      if (local.includes('CyberKnights') || local.includes('Kernel Panic')) {
+        localStorage.setItem(STORAGE_KEYS.VALORANT_MATCHES, JSON.stringify(DEMO_VALORANT_MATCHES));
+        return DEMO_VALORANT_MATCHES;
+      }
+      return JSON.parse(local);
+    } catch (e) {}
   }
   localStorage.setItem(STORAGE_KEYS.VALORANT_MATCHES, JSON.stringify(DEMO_VALORANT_MATCHES));
   return DEMO_VALORANT_MATCHES;
@@ -971,7 +977,13 @@ export const updateValorantMatch = (matchId, updates) => {
 export const getClashMatches = () => {
   const local = localStorage.getItem(STORAGE_KEYS.CLASH_MATCHES);
   if (local) {
-    try { return JSON.parse(local); } catch (e) {}
+    try {
+      if (local.includes('Alex_Master') || local.includes('DarkKnight99')) {
+        localStorage.setItem(STORAGE_KEYS.CLASH_MATCHES, JSON.stringify(DEMO_CLASH_MATCHES));
+        return DEMO_CLASH_MATCHES;
+      }
+      return JSON.parse(local);
+    } catch (e) {}
   }
   localStorage.setItem(STORAGE_KEYS.CLASH_MATCHES, JSON.stringify(DEMO_CLASH_MATCHES));
   return DEMO_CLASH_MATCHES;
@@ -990,7 +1002,13 @@ export const updateClashMatch = (matchId, updates) => {
 export const getBattleRoyaleStandings = () => {
   const local = localStorage.getItem(STORAGE_KEYS.BR_STANDINGS);
   if (local) {
-    try { return JSON.parse(local); } catch (e) {}
+    try {
+      if (local.includes('Dragons E-Sports') || local.includes('ChugJug Boys')) {
+        localStorage.setItem(STORAGE_KEYS.BR_STANDINGS, JSON.stringify(DEMO_BATTLE_ROYALE_STANDINGS));
+        return DEMO_BATTLE_ROYALE_STANDINGS;
+      }
+      return JSON.parse(local);
+    } catch (e) {}
   }
   localStorage.setItem(STORAGE_KEYS.BR_STANDINGS, JSON.stringify(DEMO_BATTLE_ROYALE_STANDINGS));
   return DEMO_BATTLE_ROYALE_STANDINGS;

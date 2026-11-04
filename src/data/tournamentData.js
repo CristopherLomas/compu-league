@@ -233,24 +233,25 @@ export const INITIAL_SCHEDULE = [
 
 // Equipos y brackets oficiales basados 100% en el Roster Oficial del PDF
 export const DEMO_VALORANT_MATCHES = [
-  // Upper Bracket Cuartos de Final (6 Equipos: 2 Byes y 2 Enfrentamientos)
+  // Upper Bracket Cuartos de Final (Jueves 5, 22:00 PM)
   { id: 'v-u1', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 1, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'v-u2', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Los pusydystroyer', teamB: 'LOS SIN MANOS', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
-  // Upper Bracket Semifinales (TEAM ING e ikonikos entran como cabezas de serie)
-  { id: 'v-u3', bracket: 'upper', round: 'Semifinal Upper 1', matchIndex: 3, teamA: 'TEAM ING', teamB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u4', bracket: 'upper', round: 'Semifinal Upper 2', matchIndex: 4, teamA: 'ikonikos', teamB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Upper Bracket Semifinales (Jueves 5, 22:50 PM - TEAM ING e ikonikos como cabezas de serie)
+  { id: 'v-u3', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 3, teamA: 'TEAM ING', teamB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u4', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 4, teamA: 'ikonikos', teamB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
-  // Upper Bracket Final
+  // Upper Bracket Final (Viernes 6)
   { id: 'v-u5', bracket: 'upper', round: 'Final Upper Bracket', matchIndex: 5, teamA: 'Ganador Semi 1', teamB: 'Ganador Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
-  // Lower Bracket
+  // Lower Bracket (Viernes 6, 21:00 PM)
   { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 6, teamA: 'Perdedor M1', teamB: 'Perdedor M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-l2', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 7, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor Semi Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-l3', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 8, teamA: 'Ganador Semi Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l2', bracket: 'lower', round: 'Ronda 2 Loser', matchIndex: 7, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor Semi 1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l3', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 8, teamA: 'Ganador Ronda 2 Loser', teamB: 'Perdedor Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l4', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 9, teamA: 'Ganador Semifinal Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
-  // Grand Final Bo3
-  { id: 'v-gf', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 9, teamA: 'Campeón Upper Bracket', teamB: 'Campeón Loser Bracket', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
+  // Grand Final Bo3 (Viernes 6, 22:15 PM)
+  { id: 'v-gf', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 10, teamA: 'Campeón Upper Bracket', teamB: 'Campeón Loser Bracket', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
 ];
 
 export const DEMO_CLASH_MATCHES = [
@@ -291,7 +292,21 @@ export const DEMO_BATTLE_ROYALE_STANDINGS = {
     { rank: 13, team: 'Los Solitarios (Trío)', captain: 'David Tarapues / Matew / Alejandro', kills: 0, status: 'Sala Escuadras + Solitario' },
   ],
   free_fire_solitario: [
-    { rank: 1, team: 'SALA SOLITARIO ABIERTA', captain: 'Todos los inscritos de Free Fire', kills: 0, status: 'Acceso Total para Todos los Participantes' },
+    { rank: 1, team: 'David Tarapues', captain: 'David Tarapues', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 2, team: 'Matew Cevallos', captain: 'Matew Cevallos', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 3, team: 'Alejandro Tates', captain: 'Alejandro Tates', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 4, team: 'Leonel De La Torre', captain: 'Leonel De La Torre', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 5, team: 'Harold Mejia', captain: 'Harold Mejia', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 6, team: 'Alexis Mallamas', captain: 'Alexis Mallamas', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 7, team: 'Alejandro Lucero', captain: 'Alejandro Lucero', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 8, team: 'Xavier Lema', captain: 'Xavier Lema', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 9, team: 'Elkin Cuayal', captain: 'Elkin Cuayal', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 10, team: 'Liceth Escobar', captain: 'Liceth Escobar', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 11, team: 'Melinda Reascos', captain: 'Melinda Reascos', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 12, team: 'Henry Tipaz', captain: 'Henry Tipaz', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 13, team: 'Mateo Cuaical', captain: 'Mateo Cuaical', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 14, team: 'JORDAN', captain: 'JORDAN', kills: 0, status: 'Sala Solitario Abierta' },
+    { rank: 15, team: 'Maicol Flores', captain: 'Maicol Flores', kills: 0, status: 'Sala Solitario Abierta' },
   ],
   fortnite_duos: [
     { rank: 1, team: 'LOS SIN MANOS', captain: 'ANTHONY JIMENEZ', kills: 0, status: 'Partida 1 (Build) + Partida 2 (Zero Build)' },
