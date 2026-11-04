@@ -3,6 +3,8 @@ import Navbar from './components/Navbar';
 import MainEsportsHero from './components/MainEsportsHero';
 import GameCards from './components/GameCards';
 import ParticipantsSection from './components/ParticipantsSection';
+import ScheduleSection from './components/ScheduleSection';
+import LiveBrackets from './components/LiveBrackets';
 import ComingSoonPage from './components/ComingSoonPage';
 import LoadingTransition from './components/LoadingTransition';
 import Footer from './components/Footer';
@@ -375,27 +377,17 @@ function App() {
           </div>
         )}
 
-        {/* VIEW 3: BRACKETS (Coming Soon Page) */}
+        {/* VIEW 3: BRACKETS */}
         {currentView === 'brackets' && (
           <div className="animate-fadeIn">
-            <ComingSoonPage 
-              type="brackets" 
-              hideHeader 
-              hideFooter 
-              onGoHome={() => navigateTo('inicio')} 
-            />
+            <LiveBrackets />
           </div>
         )}
 
-        {/* VIEW 4: CRONOGRAMA (Coming Soon Page) */}
+        {/* VIEW 4: CRONOGRAMA */}
         {currentView === 'cronograma' && (
           <div className="animate-fadeIn">
-            <ComingSoonPage 
-              type="cronograma" 
-              hideHeader 
-              hideFooter 
-              onGoHome={() => navigateTo('inicio')} 
-            />
+            <ScheduleSection />
           </div>
         )}
 

@@ -18,7 +18,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
       const data = await getPublicRegistrations();
       if (Array.isArray(data)) {
         // Excluir terminantemente registros rechazados de la vista pública
-        setRegistrations(data.filter((r) => r.status !== 'rejected'));
+        setRegistrations(data.filter((r) => (r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid') && r.status !== 'rejected'));
       }
     } catch (err) {
       console.error('Error cargando participantes:', err);
@@ -33,7 +33,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
 
   // Filter registrations (excluye cualquier inscripción rechazada)
   const filtered = registrations
-    .filter((r) => r.status !== 'rejected')
+    .filter((r) => (r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid') && r.status !== 'rejected')
     .map((reg) => {
       if (reg.game === 'clash_royale') {
         return {

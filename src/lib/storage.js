@@ -110,12 +110,28 @@ export const getPublicRegistrations = async () => {
     try {
       const { data, error } = await supabase
         .from('registrations')
-        .select('id, created_at, game, game_name, modality, ff_modality, team_name, is_free_agent, captain_name, captain_game_id, members, status')
+        .select('id, created_at, game, game_name, modality, ff_modality, team_name, is_free_agent, captain_name, captain_game_id, members, status, payment_status')
         .neq('status', 'rejected')
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data) && data.length > 0) {
-        return data.filter((r) => r.status !== 'rejected').map((r) => {
+        // Excluir pre-registros pendientes y mostrar únicamente registros validados / pagados
+        let hasSeenTatesFF = false;
+        return data.filter((r) => {
+          if (r.status === 'rejected') return false;
+          const isConfirmed = r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid';
+          if (!isConfirmed) return false;
+          // Excluir a Leonel de Valorant (reembolso por falta de equipo)
+          const cap = (r.captain_name || '').toLowerCase();
+          const team = (r.team_name || '').toLowerCase();
+          if (r.game === 'valorant' && (cap.includes('leonel') || team.includes('leonel'))) return false;
+          // Evitar duplicado de Alejandro Tates en Free Fire
+          if (r.game === 'free_fire' && cap.includes('tates')) {
+            if (hasSeenTatesFF) return false;
+            hasSeenTatesFF = true;
+          }
+          return true;
+        }).map((r) => {
           const sanitized = sanitizeRegistrationRecord(r);
           const safeMembers = Array.isArray(sanitized.members)
             ? sanitized.members.map((m) => ({
@@ -140,6 +156,7 @@ export const getPublicRegistrations = async () => {
             captain_game_id: sanitized.captain_game_id,
             members: safeMembers,
             status: sanitized.status,
+            payment_status: sanitized.payment_status,
           };
         });
       }
@@ -154,7 +171,7 @@ export const getPublicRegistrations = async () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(
-        `${creds.url}/rest/v1/registrations?select=id,created_at,game,game_name,modality,ff_modality,team_name,is_free_agent,captain_name,captain_game_id,members,status&status=neq.rejected&order=created_at.desc`,
+        `${creds.url}/rest/v1/registrations?select=id,created_at,game,game_name,modality,ff_modality,team_name,is_free_agent,captain_name,captain_game_id,members,status,payment_status&status=neq.rejected&order=created_at.desc`,
         {
           headers: {
             apikey: creds.anonKey,
@@ -168,7 +185,20 @@ export const getPublicRegistrations = async () => {
       if (res.ok) {
         const rawJson = await res.json();
         if (Array.isArray(rawJson) && rawJson.length > 0) {
-          return rawJson.filter((r) => r.status !== 'rejected').map((r) => {
+          let hasSeenTatesFetch = false;
+          return rawJson.filter((r) => {
+            if (r.status === 'rejected') return false;
+            const isConfirmed = r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid';
+            if (!isConfirmed) return false;
+            const cap = (r.captain_name || '').toLowerCase();
+            const team = (r.team_name || '').toLowerCase();
+            if (r.game === 'valorant' && (cap.includes('leonel') || team.includes('leonel'))) return false;
+            if (r.game === 'free_fire' && cap.includes('tates')) {
+              if (hasSeenTatesFetch) return false;
+              hasSeenTatesFetch = true;
+            }
+            return true;
+          }).map((r) => {
             const sanitized = sanitizeRegistrationRecord(r);
             const safeMembers = Array.isArray(sanitized.members)
               ? sanitized.members.map((m) => ({
