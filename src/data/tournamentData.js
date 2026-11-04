@@ -209,70 +209,80 @@ export const INITIAL_SCHEDULE = [
   },
 ];
 
-// Equipos y brackets oficiales con participantes confirmados (solo completos)
+// Equipos y brackets oficiales basados 100% en el Roster Oficial del PDF
 export const DEMO_VALORANT_MATCHES = [
-  // Upper Bracket: Play-in y Semifinales
-  { id: 'v-u1', bracket: 'upper', round: 'Play-in Clasificatorio', matchIndex: 1, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u2', bracket: 'upper', round: 'Semifinal Upper 1', matchIndex: 2, teamA: 'TEAM ING', teamB: 'Ganador Play-in', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u3', bracket: 'upper', round: 'Semifinal Upper 2', matchIndex: 3, teamA: 'ikonikos', teamB: 'Los pusydystroyer', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Upper Bracket Cuartos de Final (6 Equipos: 2 Byes y 2 Enfrentamientos)
+  { id: 'v-u1', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 1, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u2', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Los pusydystroyer', teamB: 'LOS SIN MANOS', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
+  // Upper Bracket Semifinales (TEAM ING e ikonikos entran como cabezas de serie)
+  { id: 'v-u3', bracket: 'upper', round: 'Semifinal Upper 1', matchIndex: 3, teamA: 'TEAM ING', teamB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u4', bracket: 'upper', round: 'Semifinal Upper 2', matchIndex: 4, teamA: 'ikonikos', teamB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+
   // Upper Bracket Final
-  { id: 'v-u4', bracket: 'upper', round: 'Final Upper Bracket', matchIndex: 4, teamA: 'Ganador Semi 1', teamB: 'Ganador Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u5', bracket: 'upper', round: 'Final Upper Bracket', matchIndex: 5, teamA: 'Ganador Semi 1', teamB: 'Ganador Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
   // Lower Bracket
-  { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 5, teamA: 'Perdedor Play-in', teamB: 'Perdedor Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-l2', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 6, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor Semi 1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-l3', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 7, teamA: 'Ganador Semi Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 6, teamA: 'Perdedor M1', teamB: 'Perdedor M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l2', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 7, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor Semi Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l3', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 8, teamA: 'Ganador Semi Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
   // Grand Final Bo3
-  { id: 'v-gf', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 8, teamA: 'Campeón Upper Bracket', teamB: 'Campeón Loser Bracket', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
+  { id: 'v-gf', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 9, teamA: 'Campeón Upper Bracket', teamB: 'Campeón Loser Bracket', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
 ];
 
 export const DEMO_CLASH_MATCHES = [
-  // Preliminar / Octavos
-  { id: 'cr-1', round: 'Ronda Clasificatoria', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-2', round: 'Ronda Clasificatoria', matchIndex: 2, playerA: 'Edwin Landeta', playerB: 'Harold Mejia', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  // Cuartos
-  { id: 'cr-3', round: 'Cuartos de Final', matchIndex: 3, playerA: 'Milton Fuel Bravo', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-4', round: 'Cuartos de Final', matchIndex: 4, playerA: 'Juan Carlos Llore', playerB: 'Ivan Bernal', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-5', round: 'Cuartos de Final', matchIndex: 5, playerA: 'Stalin Obando', playerB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-6', round: 'Cuartos de Final', matchIndex: 6, playerA: 'Jeremy Valdivieso', playerB: 'Marcillo Cuascota', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  // Semis
-  { id: 'cr-7', round: 'Semifinales', matchIndex: 7, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-8', round: 'Semifinales', matchIndex: 8, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Octavos de Final Preliminares (12 Jugadores Oficiales del PDF: 4 Byes a cuartos)
+  { id: 'cr-1', round: 'Octavos de Final', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-2', round: 'Octavos de Final', matchIndex: 2, playerA: 'Edwin Landeta', playerB: 'Harold Mejia', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-3', round: 'Octavos de Final', matchIndex: 3, playerA: 'Danny Quilumbaquin', playerB: 'Paul Ger', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-4', round: 'Octavos de Final', matchIndex: 4, playerA: 'Ivan Bernal', playerB: 'Marcillo Pablo', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  
+  // Cuartos de Final (Entran Milton Fuel, Juan Carlos Llore, Stalin Obando, Jeremy Valdivieso)
+  { id: 'cr-5', round: 'Cuartos de Final', matchIndex: 5, playerA: 'Milton Fuel Bravo', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-6', round: 'Cuartos de Final', matchIndex: 6, playerA: 'Juan Carlos Llore', playerB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-7', round: 'Cuartos de Final', matchIndex: 7, playerA: 'Stalin Obando', playerB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-8', round: 'Cuartos de Final', matchIndex: 8, playerA: 'Jeremy Valdivieso', playerB: 'Ganador M4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  
+  // Semifinales
+  { id: 'cr-9', round: 'Semifinales', matchIndex: 9, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-10', round: 'Semifinales', matchIndex: 10, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  
   // Gran Final Bo3
-  { id: 'cr-9', round: 'GRAN FINAL (Bo3)', matchIndex: 9, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-11', round: 'GRAN FINAL (Bo3)', matchIndex: 11, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 ];
 
 export const DEMO_BATTLE_ROYALE_STANDINGS = {
   free_fire_escuadras: [
-    { rank: 1, team: 'Los Duvalineros', captain: 'JORDAN', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 2, team: 'AJOS FC', captain: 'Alejandro Lucero', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 3, team: 'KODEX', captain: 'Alexis Mallamas', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 4, team: 'pisa cabezas', captain: 'Leonel De La Torre', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 5, team: 'Camtina', captain: 'Harold Mejia', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 6, team: 'Switch', captain: 'Maicol Flores', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 7, team: 'Lowe', captain: 'Xavier Lema', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 8, team: 'Zenith', captain: 'Elkin Cuayal', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 9, team: 'Dinastía-Cero', captain: 'Liceth Escobar', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 10, team: 'Los Renacidos', captain: 'Melinda Reascos', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 11, team: 'leviatán', captain: 'Henry Tipaz', kills: 0, status: 'Confirmado - Sala Escuadras' },
-    { rank: 12, team: 'Los Solitarios (Trío)', captain: 'David Tarapues / Matew / Alejandro', kills: 0, status: 'Confirmado - Sala Escuadras' },
+    { rank: 1, team: 'Los Duvalineros', captain: 'JORDAN', kills: 0, status: 'Confirmado (PDF #1)' },
+    { rank: 2, team: 'CHUPITeam', captain: 'Mateo Cuaical', kills: 0, status: 'Confirmado (PDF #2)' },
+    { rank: 3, team: 'AJOS FC', captain: 'Alejandro Lucero', kills: 0, status: 'Confirmado (PDF #3)' },
+    { rank: 4, team: 'KODEX', captain: 'Alexis Mallamas', kills: 0, status: 'Confirmado (PDF #4)' },
+    { rank: 5, team: 'pisa cabezas', captain: 'Leonel De La Torre', kills: 0, status: 'Confirmado (PDF #5)' },
+    { rank: 6, team: 'Camtina', captain: 'Harold Mejia', kills: 0, status: 'Confirmado (PDF #6)' },
+    { rank: 7, team: 'Switch', captain: 'Maicol Flores', kills: 0, status: 'Confirmado (PDF #8)' },
+    { rank: 8, team: 'Lowe', captain: 'Xavier Lema', kills: 0, status: 'Confirmado (PDF #9)' },
+    { rank: 9, team: 'Zenith', captain: 'Elkin Cuayal', kills: 0, status: 'Confirmado (PDF #10)' },
+    { rank: 10, team: 'Dinastía-Cero', captain: 'Liceth Escobar', kills: 0, status: 'Confirmado (PDF #11)' },
+    { rank: 11, team: 'Los Renacidos', captain: 'Melinda Reascos', kills: 0, status: 'Confirmado (PDF #13)' },
+    { rank: 12, team: 'leviatán', captain: 'Henry Tipaz', kills: 0, status: 'Confirmado (PDF #14)' },
+    { rank: 13, team: 'Los Solitarios (Trío)', captain: 'David Tarapues / Matew / Alejandro', kills: 0, status: 'Unificados (PDF #7, #12, #16)' },
   ],
   free_fire_solitario: [
-    { rank: 1, team: 'Unificados a Sala Escuadras', captain: 'David Tarapues, Matew Cevallos, Alejandro Tates', kills: 0, status: 'Fusión oficial como Escuadra #12' },
+    { rank: 1, team: 'Unificados a Sala Escuadras', captain: 'David Tarapues, Matew Cevallos, Alejandro Tates', kills: 0, status: 'Fusión oficial como Escuadra #13' },
   ],
   fortnite_duos: [
-    { rank: 1, team: 'G2 Encebollados', captain: 'Fernando Muñoz', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 2, team: '67 Boys', captain: 'Carlos Loza', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 3, team: '𓆰LOS MISMISIMOS𓆪', captain: 'Alejandro & Juan V.', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 4, team: 'Winners', captain: 'Anthony Hurtado', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 5, team: 'PERRITOS ORG', captain: 'Romel Maldonado', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 6, team: 'Herederos de epstein', captain: 'Angel Yar', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 7, team: 'Los legendarios', captain: 'Richard Bonilla', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 8, team: 'Los saiyans', captain: 'Andrés Argoti', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 9, team: 'Inges sin título', captain: 'José Jiménez', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 10, team: 'LOS GUACHITURROS', captain: 'Jeremy Valdivieso', kills: 0, status: 'Confirmado - Sala Dúos' },
-    { rank: 11, team: 'CIBER', captain: 'Lenin Pozo', kills: 0, status: 'Confirmado - Sala Dúos' },
+    { rank: 1, team: 'LOS SIN MANOS', captain: 'ANTHONY JIMENEZ', kills: 0, status: 'Confirmado (PDF #1)' },
+    { rank: 2, team: 'G2 Encebollados', captain: 'Fernando Muñoz', kills: 0, status: 'Confirmado (PDF #2)' },
+    { rank: 3, team: '67 Boys', captain: 'Carlos Loza', kills: 0, status: 'Confirmado (PDF #3)' },
+    { rank: 4, team: 'LOS MISMISIMOS', captain: 'Alejandro & Juan V.', kills: 0, status: 'Confirmado (PDF #4)' },
+    { rank: 5, team: 'Winners', captain: 'Anthony Hurtado', kills: 0, status: 'Confirmado (PDF #5)' },
+    { rank: 6, team: 'PERRITOS ORG', captain: 'Romel Maldonado', kills: 0, status: 'Confirmado (PDF #6)' },
+    { rank: 7, team: 'Herederos de epstein', captain: 'Angel Yar', kills: 0, status: 'Confirmado (PDF #7)' },
+    { rank: 8, team: 'Los legendarios', captain: 'Richard Bonilla', kills: 0, status: 'Confirmado (PDF #8)' },
+    { rank: 9, team: 'Los saiyans', captain: 'Andrés Argoti', kills: 0, status: 'Confirmado (PDF #9)' },
+    { rank: 10, team: 'Inges sin título', captain: 'José Jiménez', kills: 0, status: 'Confirmado (PDF #10)' },
+    { rank: 11, team: 'LOS GUACHITURROS', captain: 'Jeremy Valdivieso', kills: 0, status: 'Confirmado (PDF #11)' },
+    { rank: 12, team: 'CIBER', captain: 'Lenin Pozo', kills: 0, status: 'Confirmado (PDF #12)' },
   ]
 };
