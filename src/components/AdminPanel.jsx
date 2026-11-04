@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Lock, CheckCircle, XCircle, Eye, Phone, Copy, Check, 
   Users, DollarSign, Database, Trophy, AlertCircle, Search, Bell, 
-  FileText, Download, Printer 
+  FileText, Download, Printer, RefreshCw 
 } from 'lucide-react';
 import { 
+  sanitizeRegistrationRecord,
   getRegistrations, 
   updateRegistrationStatus, 
   getValorantMatches, 
@@ -33,8 +34,21 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   // Active Admin Sub-tab
   const [activeAdminTab, setActiveAdminTab] = useState('registrations'); // 'registrations', 'free_agents', 'brackets', 'schedule', 'supabase'
 
-  // Data states
-  const [registrations, setRegistrations] = useState([]);
+  // Data states & loading feedback
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [loadError, setLoadError] = useState('');
+  const [registrations, setRegistrations] = useState(() => {
+    try {
+      const cached = localStorage.getItem('compu_league_registrations');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(sanitizeRegistrationRecord);
+        }
+      }
+    } catch {}
+    return [];
+  });
   const [filterGame, setFilterGame] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,15 +67,26 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   const [supabaseSaved, setSupabaseSaved] = useState(false);
 
   const loadAllData = async () => {
-    const regs = await getRegistrations();
-    setRegistrations(regs);
-    setValorantMatches(getValorantMatches());
-    setClashMatches(getClashMatches());
-    setBrStandings(getBattleRoyaleStandings());
+    setIsLoadingData(true);
+    setLoadError('');
+    try {
+      const regs = await getRegistrations();
+      if (Array.isArray(regs)) {
+        setRegistrations(regs);
+      }
+      setValorantMatches(getValorantMatches());
+      setClashMatches(getClashMatches());
+      setBrStandings(getBattleRoyaleStandings());
 
-    const creds = getSupabaseCredentials();
-    setSupabaseUrl(creds.url);
-    setSupabaseAnonKey(creds.anonKey);
+      const creds = getSupabaseCredentials();
+      setSupabaseUrl(creds.url);
+      setSupabaseAnonKey(creds.anonKey);
+    } catch (err) {
+      console.error('Error cargando datos en AdminPanel:', err);
+      setLoadError('Error de conexión con la base de datos.');
+    } finally {
+      setIsLoadingData(false);
+    }
   };
 
   useEffect(() => {
@@ -612,10 +637,12 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
             <button
               type="button"
               onClick={loadAllData}
-              className="px-2.5 py-1.5 bg-[#1B273F] hover:bg-[#28395B] border border-cyan-500/40 text-cyan-300 font-pixel text-[8px] sm:text-[9px] uppercase transition cursor-pointer"
-              title="Recargar datos"
+              disabled={isLoadingData}
+              className="px-2.5 py-1.5 bg-[#1B273F] hover:bg-[#28395B] border border-cyan-500/40 text-cyan-300 font-pixel text-[8px] sm:text-[9px] uppercase transition cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
+              title="Recargar datos de la base de datos"
             >
-              RECARGAR
+              <RefreshCw className={`w-3 h-3 ${isLoadingData ? 'animate-spin' : ''}`} />
+              <span>{isLoadingData ? 'CARGANDO...' : 'RECARGAR'}</span>
             </button>
             <button
               type="button"
@@ -937,7 +964,28 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
 
                 {/* 1. VISTA MÓVIL EN TARJETAS (Visible solo en smartphones/pantallas pequeñas < md) */}
                 <div className="block md:hidden space-y-3.5 font-sans">
-                  {filteredRegs.length === 0 ? (
+                  {isLoadingData && registrations.length === 0 ? (
+                    <div className="py-10 px-4 text-center space-y-3 bg-slate-900/80 border border-cyan-500/30">
+                      <div className="w-8 h-8 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
+                      <p className="font-pixel text-[10px] text-cyan-300 uppercase tracking-wider">
+                        Sincronizando con Base de Datos...
+                      </p>
+                      <span className="text-[11px] text-slate-400 block font-cyber">
+                        Cargando participantes oficiales
+                      </span>
+                    </div>
+                  ) : loadError ? (
+                    <div className="p-4 bg-rose-950/60 border-2 border-rose-500 text-center space-y-2">
+                      <p className="text-xs text-rose-200 font-bold">{loadError}</p>
+                      <button
+                        type="button"
+                        onClick={loadAllData}
+                        className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase cursor-pointer"
+                      >
+                        Reintentar Conexión
+                      </button>
+                    </div>
+                  ) : filteredRegs.length === 0 ? (
                     <div className="py-8 px-4 text-center text-slate-400 bg-slate-900/60 border border-slate-800 text-xs">
                       No hay inscripciones registradas que coincidan con los filtros.
                     </div>
@@ -1208,7 +1256,16 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/60">
-                        {filteredRegs.length === 0 ? (
+                        {isLoadingData && registrations.length === 0 ? (
+                          <tr>
+                            <td colSpan="8" className="py-12 text-center text-slate-300">
+                              <div className="w-7 h-7 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                              <span className="font-pixel text-[10px] text-cyan-300 uppercase tracking-wider">
+                                Sincronizando con Base de Datos...
+                              </span>
+                            </td>
+                          </tr>
+                        ) : filteredRegs.length === 0 ? (
                           <tr>
                             <td colSpan="8" className="py-8 text-center text-slate-500">
                               No hay inscripciones registradas que coincidan con los filtros.

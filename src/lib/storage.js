@@ -16,19 +16,33 @@ const STORAGE_KEYS = {
   SUPABASE_CONFIG: 'compu_league_supabase_config',
 };
 
-// Obtener credenciales desde localStorage o desde variables de entorno Vite
+// Default Official Supabase Credentials (permanente y seguro para producción)
+export const DEFAULT_SUPABASE_URL = 'https://tcntzazutwamcmcrwtji.supabase.co';
+export const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRjbnR6YXp1dHdhbWNtY3J3dGppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Njk4OTEsImV4cCI6MjA5NTU0NTg5MX0.feQC7r8mXHykDzVp8nCW1jyfonveQYlQhSiygeF0rk0';
+
+// Obtener credenciales con verificación estricta y fallback garantizado
 export const getSupabaseCredentials = () => {
-  const saved = localStorage.getItem(STORAGE_KEYS.SUPABASE_CONFIG);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch (e) {
-      // ignore
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.SUPABASE_CONFIG);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed.url === 'string' && parsed.url.trim().startsWith('http') && !parsed.url.includes('xyzcompany') && parsed.anonKey) {
+        return {
+          url: parsed.url.trim(),
+          anonKey: parsed.anonKey.trim(),
+        };
+      }
     }
+  } catch (e) {
+    // ignore
   }
+
+  const envUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SUPABASE_URL) || '';
+  const envKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SUPABASE_ANON_KEY) || '';
+
   return {
-    url: import.meta.env.VITE_SUPABASE_URL || '',
-    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+    url: (envUrl && envUrl.trim().startsWith('http')) ? envUrl.trim() : DEFAULT_SUPABASE_URL,
+    anonKey: envKey.trim() || DEFAULT_SUPABASE_ANON_KEY,
   };
 };
 
@@ -88,22 +102,74 @@ export const sanitizeRegistrationRecord = (r) => {
 // REGISTROS PÚBLICOS (PROTECCIÓN DE PRIVACIDAD: SIN TELÉFONOS, EMAILS NI COMPROBANTES)
 // -------------------------------------------------------------
 export const getPublicRegistrations = async () => {
+  const creds = getSupabaseCredentials();
+
+  // 1. Intento con Supabase Client SDK
   const supabase = getSupabaseClient();
   if (supabase) {
     try {
-      // SOLO columnas públicas necesarias para el fixture y roster (excluye rechazados)
       const { data, error } = await supabase
         .from('registrations')
         .select('id, created_at, game, game_name, modality, ff_modality, team_name, is_free_agent, captain_name, captain_game_id, members, status')
         .neq('status', 'rejected')
         .order('created_at', { ascending: false });
 
-      if (!error && Array.isArray(data)) {
-        return data
-          .filter((r) => r.status !== 'rejected')
-          .map((r) => {
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data.filter((r) => r.status !== 'rejected').map((r) => {
+          const sanitized = sanitizeRegistrationRecord(r);
+          const safeMembers = Array.isArray(sanitized.members)
+            ? sanitized.members.map((m) => ({
+                name: m.name || '',
+                game_id: m.game_id || m.gameId || '',
+                gameId: m.game_id || m.gameId || '',
+                is_substitute: Boolean(m.is_substitute || m.isSubstitute),
+                isSubstitute: Boolean(m.is_substitute || m.isSubstitute),
+              }))
+            : [];
+
+          return {
+            id: sanitized.id,
+            created_at: sanitized.created_at,
+            game: sanitized.game,
+            game_name: sanitized.game_name,
+            modality: sanitized.modality,
+            ff_modality: sanitized.ff_modality,
+            team_name: sanitized.team_name,
+            is_free_agent: sanitized.is_free_agent,
+            captain_name: sanitized.captain_name,
+            captain_game_id: sanitized.captain_game_id,
+            members: safeMembers,
+            status: sanitized.status,
+          };
+        });
+      }
+    } catch (err) {
+      console.warn('Error obteniendo registros públicos con Supabase Client:', err);
+    }
+  }
+
+  // 2. Intento de respaldo con fetch() directo HTTP nativo (alta resiliencia en redes móviles)
+  if (creds.url && creds.anonKey) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(
+        `${creds.url}/rest/v1/registrations?select=id,created_at,game,game_name,modality,ff_modality,team_name,is_free_agent,captain_name,captain_game_id,members,status&status=neq.rejected&order=created_at.desc`,
+        {
+          headers: {
+            apikey: creds.anonKey,
+            Authorization: `Bearer ${creds.anonKey}`,
+          },
+          signal: controller.signal,
+        }
+      );
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const rawJson = await res.json();
+        if (Array.isArray(rawJson) && rawJson.length > 0) {
+          return rawJson.filter((r) => r.status !== 'rejected').map((r) => {
             const sanitized = sanitizeRegistrationRecord(r);
-            // Ocultar números de WhatsApp que pudieran estar en miembros
             const safeMembers = Array.isArray(sanitized.members)
               ? sanitized.members.map((m) => ({
                   name: m.name || '',
@@ -129,9 +195,10 @@ export const getPublicRegistrations = async () => {
               status: sanitized.status,
             };
           });
+        }
       }
-    } catch (err) {
-      console.warn('Error obteniendo registros públicos:', err);
+    } catch (fetchErr) {
+      console.warn('Fetch nativo de registros públicos falló:', fetchErr);
     }
   }
 
@@ -167,21 +234,62 @@ export const getPublicRegistrations = async () => {
 // REGISTROS COMPLETOS (USO EXCLUSIVO DEL PANEL DE ADMINISTRACIÓN)
 // -------------------------------------------------------------
 export const getRegistrations = async () => {
+  const creds = getSupabaseCredentials();
+
+  // 1. Intento principal con @supabase/supabase-js
   const supabase = getSupabaseClient();
   if (supabase) {
-    const { data, error } = await supabase
-      .from('registrations')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (!error && data) return data.map(sanitizeRegistrationRecord);
+    try {
+      const { data, error } = await supabase
+        .from('registrations')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        try {
+          localStorage.setItem(STORAGE_KEYS.REGISTRATIONS, JSON.stringify(data));
+        } catch {}
+        return data.map(sanitizeRegistrationRecord);
+      }
+    } catch (err) {
+      console.warn('Error en consulta SDK Supabase, intentando fetch nativo:', err);
+    }
   }
 
-  // Fallback LocalStorage
+  // 2. Intento de respaldo con fetch() directo HTTP nativo (resiliente en 4G/móvil)
+  if (creds.url && creds.anonKey) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(`${creds.url}/rest/v1/registrations?select=*&order=created_at.desc`, {
+        headers: {
+          apikey: creds.anonKey,
+          Authorization: `Bearer ${creds.anonKey}`,
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const rawJson = await res.json();
+        if (Array.isArray(rawJson) && rawJson.length > 0) {
+          try {
+            localStorage.setItem(STORAGE_KEYS.REGISTRATIONS, JSON.stringify(rawJson));
+          } catch {}
+          return rawJson.map(sanitizeRegistrationRecord);
+        }
+      }
+    } catch (fetchErr) {
+      console.warn('Fetch directo HTTP nativo a Supabase falló:', fetchErr);
+    }
+  }
+
+  // 3. Fallback LocalStorage (Registros cacheados previamente)
   const savedLocal = localStorage.getItem(STORAGE_KEYS.REGISTRATIONS);
   if (savedLocal) {
     try {
       const parsed = JSON.parse(savedLocal);
-      if (Array.isArray(parsed) && parsed.length >= 8) {
+      if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed.map(sanitizeRegistrationRecord);
       }
     } catch (e) {}
