@@ -148,7 +148,7 @@ export const INITIAL_SCHEDULE = [
     time: '22:15 - 23:45',
     gameId: 'valorant',
     gameName: 'Valorant (5v5) - Jornada 1: Cuartos de Final',
-    stageTitle: 'Match 1: Chupines 2027 vs Profugos | Match 2: Pusydystroyer vs Sin Manos | Match 3: TEAM ING vs VIPERX',
+    stageTitle: 'Match 1: LOS SIN MANOS vs TEAM ING | Match 2: Chupines 2027 vs Profugos | Match 3: Pusydystroyer vs VIPERX',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -181,7 +181,7 @@ export const INITIAL_SCHEDULE = [
     time: '22:30 - 23:45',
     gameId: 'valorant',
     gameName: 'Valorant (5v5) - Jornada 2: Semifinales Upper',
-    stageTitle: 'Semi 1: ikonikos vs Ganador M1 | Semi 2: Ganador M2 vs Ganador M3',
+    stageTitle: 'Semi 1: ikonikos vs Ganador M2 | Semi 2: Ganador M1 (Sin Manos/Team Ing) vs Ganador M3',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -234,20 +234,20 @@ export const INITIAL_SCHEDULE = [
 // Equipos y brackets oficiales basados 100% en el Roster Oficial del PDF
 export const DEMO_VALORANT_MATCHES = [
   // Upper Bracket Cuartos de Final (Miércoles 4, 22:15 PM - 7 Equipos Oficiales)
-  { id: 'v-u1', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 1, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u2', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Los pusydystroyer', teamB: 'LOS SIN MANOS', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u3', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 3, teamA: 'TEAM ING', teamB: 'VIPERX', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u1', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 1, teamA: 'LOS SIN MANOS', teamB: 'TEAM ING', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u2', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u3', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 3, teamA: 'Los pusydystroyer', teamB: 'VIPERX', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
   // Upper Bracket Semifinales (Jueves 5, 22:30 PM - ikonikos con pase Bye como cabeza de serie)
-  { id: 'v-u4', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 4, teamA: 'ikonikos', teamB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u5', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 5, teamA: 'Ganador M2', teamB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u4', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 4, teamA: 'ikonikos', teamB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u5', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 5, teamA: 'Ganador M1', teamB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
   // Upper Bracket Final (Viernes 6)
   { id: 'v-u6', bracket: 'upper', round: 'Final Upper Bracket', matchIndex: 6, teamA: 'Ganador Semi 1', teamB: 'Ganador Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
   // Lower Bracket (Viernes 6, 21:00 PM)
-  { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 7, teamA: 'Perdedor M1', teamB: 'Perdedor M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-l2', bracket: 'lower', round: 'Ronda 2 Loser', matchIndex: 8, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 7, teamA: 'Perdedor M2', teamB: 'Perdedor M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l2', bracket: 'lower', round: 'Ronda 2 Loser', matchIndex: 8, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'v-l3', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 9, teamA: 'Ganador Ronda 2 Loser', teamB: 'Perdedor Semi 1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'v-l4', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 10, teamA: 'Ganador Semifinal Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 

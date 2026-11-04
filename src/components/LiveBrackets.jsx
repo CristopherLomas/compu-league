@@ -24,27 +24,36 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
+      const CURRENT_DATA_VERSION = 'v5_sin_manos_vs_team_ing_7val_14cr';
+      const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
-      const savedBr = localStorage.getItem('compu_league_br_standings');
 
-      // Limpiar cache legacy de pruebas si contiene nombres de demostración antiguos
-      const isLegacy = (str) => {
-        if (!str) return true;
-        return str.includes('CyberKnights') || str.includes('Kernel Panic') || str.includes('Alex_Master') || str.includes('Dragons E-Sports');
-      };
+      // Forzar actualización inmediata si la versión es anterior o faltan los nuevos cruces
+      const isOutdated = 
+        savedVersion !== CURRENT_DATA_VERSION ||
+        !savedVal ||
+        !savedVal.includes('VIPERX') ||
+        !savedVal.includes('LOS SIN MANOS') ||
+        !savedVal.includes('TEAM ING') ||
+        !savedClash ||
+        !savedClash.includes('Lenin Rodríguez') ||
+        !savedClash.includes('Kevin Pozo');
 
-      const valMatches = (!savedVal || isLegacy(savedVal)) ? DEMO_VALORANT_MATCHES : JSON.parse(savedVal);
-      const clashM = (!savedClash || isLegacy(savedClash)) ? DEMO_CLASH_MATCHES : JSON.parse(savedClash);
-      const brS = (!savedBr || isLegacy(savedBr)) ? DEMO_BATTLE_ROYALE_STANDINGS : JSON.parse(savedBr);
+      if (isOutdated) {
+        localStorage.setItem('compu_league_brackets_version', CURRENT_DATA_VERSION);
+        localStorage.setItem('compu_league_valorant_matches', JSON.stringify(DEMO_VALORANT_MATCHES));
+        localStorage.setItem('compu_league_clash_matches', JSON.stringify(DEMO_CLASH_MATCHES));
+        localStorage.setItem('compu_league_br_standings', JSON.stringify(DEMO_BATTLE_ROYALE_STANDINGS));
+        setValorantMatches(DEMO_VALORANT_MATCHES);
+        setClashMatches(DEMO_CLASH_MATCHES);
+        setBrStandings(DEMO_BATTLE_ROYALE_STANDINGS);
+        return;
+      }
 
-      setValorantMatches(valMatches);
-      setClashMatches(clashM);
-      setBrStandings(brS);
-
-      if (isLegacy(savedVal)) localStorage.setItem('compu_league_valorant_matches', JSON.stringify(DEMO_VALORANT_MATCHES));
-      if (isLegacy(savedClash)) localStorage.setItem('compu_league_clash_matches', JSON.stringify(DEMO_CLASH_MATCHES));
-      if (isLegacy(savedBr)) localStorage.setItem('compu_league_br_standings', JSON.stringify(DEMO_BATTLE_ROYALE_STANDINGS));
+      setValorantMatches(JSON.parse(savedVal));
+      setClashMatches(JSON.parse(savedClash));
+      setBrStandings(localStorage.getItem('compu_league_br_standings') ? JSON.parse(localStorage.getItem('compu_league_br_standings')) : DEMO_BATTLE_ROYALE_STANDINGS);
     } catch {
       setValorantMatches(DEMO_VALORANT_MATCHES);
       setClashMatches(DEMO_CLASH_MATCHES);
@@ -52,7 +61,7 @@ export default function LiveBrackets() {
     }
   };
 
-  useEffect(() => {
+    useEffect(() => {
     loadData();
   }, []);
 
@@ -157,6 +166,16 @@ export default function LiveBrackets() {
                   {valorantMatches.filter(m => m.bracket === 'upper' && m.round === 'Cuartos de Final').map((m) => (
                     <EsportsMatchCard key={m.id} match={m} />
                   ))}
+                  <div className="border-2 border-dashed border-[#FFE600]/50 p-2.5 bg-black/80 font-pixel text-[8px] text-slate-300 space-y-1 shadow-brutal-black">
+                    <div className="flex items-center justify-between text-[#FFE600] font-bold">
+                      <span>PASE DIRECTO (BYE #1)</span>
+                      <span className="bg-[#FFE600] text-black px-1.5 py-0.5 text-[7px] font-black">A SEMIFINALES</span>
+                    </div>
+                    <div className="font-cyber text-xs text-white uppercase font-bold flex items-center justify-between">
+                      <span className="text-[#FFE600]">★ IKONIKOS</span>
+                      <span className="text-slate-400 font-pixel text-[8px]">CABEZA DE SERIE</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Semis */}
@@ -264,7 +283,7 @@ export default function LiveBrackets() {
                 </p>
               </div>
               <span className="text-[9px] px-2.5 py-1 border border-white/20 bg-black text-[#A855F7] font-bold">
-                12 JUGADORES CONFIRMADOS
+                14 GLADIADORES CONFIRMADOS
               </span>
             </div>
 
