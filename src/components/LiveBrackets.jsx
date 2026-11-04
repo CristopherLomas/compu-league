@@ -166,16 +166,6 @@ export default function LiveBrackets() {
                   {valorantMatches.filter(m => m.bracket === 'upper' && m.round === 'Cuartos de Final').map((m) => (
                     <EsportsMatchCard key={m.id} match={m} />
                   ))}
-                  <div className="border-2 border-dashed border-[#FFE600]/50 p-2.5 bg-black/80 font-pixel text-[8px] text-slate-300 space-y-1 shadow-brutal-black">
-                    <div className="flex items-center justify-between text-[#FFE600] font-bold">
-                      <span>PASE DIRECTO (BYE #1)</span>
-                      <span className="bg-[#FFE600] text-black px-1.5 py-0.5 text-[7px] font-black">A SEMIFINALES</span>
-                    </div>
-                    <div className="font-cyber text-xs text-white uppercase font-bold flex items-center justify-between">
-                      <span className="text-[#FFE600]">★ IKONIKOS</span>
-                      <span className="text-slate-400 font-pixel text-[8px]">CABEZA DE SERIE</span>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Semis */}
