@@ -1,3 +1,4 @@
+import { OFFICIAL_CONFIRMED_ROSTER } from '../data/officialConfirmedRoster';
 // Sistema de Almacenamiento Unificado: Supabase + LocalStorage Fallback
 import { createClient } from '@supabase/supabase-js';
 import { 
@@ -101,6 +102,95 @@ export const sanitizeRegistrationRecord = (r) => {
 // -------------------------------------------------------------
 // REGISTROS PÚBLICOS (PROTECCIÓN DE PRIVACIDAD: SIN TELÉFONOS, EMAILS NI COMPROBANTES)
 // -------------------------------------------------------------
+export const processPublicRoster = (rawRecords) => {
+  if (!Array.isArray(rawRecords) || rawRecords.length === 0) {
+    return OFFICIAL_CONFIRMED_ROSTER;
+  }
+
+  const confirmed = rawRecords.filter((r) => {
+    if (r.status === 'rejected') return false;
+    const isApprovedOrPaid = r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid';
+    if (!isApprovedOrPaid) return false;
+
+    const cap = (r.captain_name || '').toLowerCase();
+    const team = (r.team_name || '').toLowerCase();
+
+    // Excluir a Leonel de Valorant (reembolso por falta de equipo)
+    if (r.game === 'valorant' && (cap.includes('leonel') || team.includes('leonel'))) return false;
+
+    // Excluir pre-registros pendientes no confirmados
+    if (cap.includes('darwin morales') || cap.includes('brayan tacan') || team.includes('cultosmv') || team.includes('evil genius')) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const ffSolitarios = [];
+  const processed = [];
+
+  for (const r of confirmed) {
+    const cap = (r.captain_name || '').toLowerCase();
+    const team = (r.team_name || '').toLowerCase();
+
+    // Unificar solitarios de Free Fire
+    if (r.game === 'free_fire' && (cap.includes('tarapues') || cap.includes('cevallos') || cap.includes('tates') || team.includes('solitario') || team.includes('individual'))) {
+      const exists = ffSolitarios.some(s => (s.captain_name || '').toLowerCase().trim() === cap.trim());
+      if (!exists) {
+        ffSolitarios.push(r);
+      }
+      continue;
+    }
+
+    // Normalizar Clash Royale como 1v1 individual estricto
+    if (r.game === 'clash_royale') {
+      processed.push({
+        ...sanitizeRegistrationRecord(r),
+        is_free_agent: true,
+        members: [],
+        modality: '1v1',
+      });
+      continue;
+    }
+
+    processed.push(sanitizeRegistrationRecord(r));
+  }
+
+  // Si se encontraron solitarios de Free Fire, unificarlos en una sola Escuadra
+  if (ffSolitarios.length > 0) {
+    const leader = ffSolitarios.find(s => (s.captain_name || '').toLowerCase().includes('tarapues')) || ffSolitarios[0];
+    const otherMembers = ffSolitarios.filter(s => s !== leader).map(s => ({
+      name: s.captain_name || 'Compañero Solitario',
+      game_id: s.captain_game_id || '',
+      gameId: s.captain_game_id || '',
+      is_substitute: false,
+      isSubstitute: false,
+    }));
+
+    processed.push({
+      id: 'ff-squad-solitarios',
+      created_at: leader.created_at || '2026-11-03T18:00:00Z',
+      game: 'free_fire',
+      game_name: 'FREE FIRE',
+      modality: 'escuadras',
+      ff_modality: 'escuadras',
+      team_name: 'Los Solitarios (Trío Oficial)',
+      is_free_agent: false,
+      captain_name: leader.captain_name,
+      captain_game_id: leader.captain_game_id,
+      members: otherMembers,
+      status: 'approved',
+      payment_status: 'paid',
+    });
+  }
+
+  if (processed.length >= 40) {
+    return processed;
+  }
+
+  return OFFICIAL_CONFIRMED_ROSTER;
+};
+
 export const getPublicRegistrations = async () => {
   const creds = getSupabaseCredentials();
 
@@ -115,61 +205,18 @@ export const getPublicRegistrations = async () => {
         .order('created_at', { ascending: false });
 
       if (!error && Array.isArray(data) && data.length > 0) {
-        // Excluir pre-registros pendientes y mostrar únicamente registros validados / pagados
-        let hasSeenTatesFF = false;
-        return data.filter((r) => {
-          if (r.status === 'rejected') return false;
-          const isConfirmed = r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid';
-          if (!isConfirmed) return false;
-          // Excluir a Leonel de Valorant (reembolso por falta de equipo)
-          const cap = (r.captain_name || '').toLowerCase();
-          const team = (r.team_name || '').toLowerCase();
-          if (r.game === 'valorant' && (cap.includes('leonel') || team.includes('leonel'))) return false;
-          // Evitar duplicado de Alejandro Tates en Free Fire
-          if (r.game === 'free_fire' && cap.includes('tates')) {
-            if (hasSeenTatesFF) return false;
-            hasSeenTatesFF = true;
-          }
-          return true;
-        }).map((r) => {
-          const sanitized = sanitizeRegistrationRecord(r);
-          const safeMembers = Array.isArray(sanitized.members)
-            ? sanitized.members.map((m) => ({
-                name: m.name || '',
-                game_id: m.game_id || m.gameId || '',
-                gameId: m.game_id || m.gameId || '',
-                is_substitute: Boolean(m.is_substitute || m.isSubstitute),
-                isSubstitute: Boolean(m.is_substitute || m.isSubstitute),
-              }))
-            : [];
-
-          return {
-            id: sanitized.id,
-            created_at: sanitized.created_at,
-            game: sanitized.game,
-            game_name: sanitized.game_name,
-            modality: sanitized.modality,
-            ff_modality: sanitized.ff_modality,
-            team_name: sanitized.team_name,
-            is_free_agent: sanitized.is_free_agent,
-            captain_name: sanitized.captain_name,
-            captain_game_id: sanitized.captain_game_id,
-            members: safeMembers,
-            status: sanitized.status,
-            payment_status: sanitized.payment_status,
-          };
-        });
+        return processPublicRoster(data);
       }
     } catch (err) {
       console.warn('Error obteniendo registros públicos con Supabase Client:', err);
     }
   }
 
-  // 2. Intento de respaldo con fetch() directo HTTP nativo (alta resiliencia en redes móviles)
+  // 2. Intento de respaldo con fetch() directo HTTP nativo
   if (creds.url && creds.anonKey) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
       const res = await fetch(
         `${creds.url}/rest/v1/registrations?select=id,created_at,game,game_name,modality,ff_modality,team_name,is_free_agent,captain_name,captain_game_id,members,status,payment_status&status=neq.rejected&order=created_at.desc`,
         {
@@ -185,82 +232,18 @@ export const getPublicRegistrations = async () => {
       if (res.ok) {
         const rawJson = await res.json();
         if (Array.isArray(rawJson) && rawJson.length > 0) {
-          let hasSeenTatesFetch = false;
-          return rawJson.filter((r) => {
-            if (r.status === 'rejected') return false;
-            const isConfirmed = r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid';
-            if (!isConfirmed) return false;
-            const cap = (r.captain_name || '').toLowerCase();
-            const team = (r.team_name || '').toLowerCase();
-            if (r.game === 'valorant' && (cap.includes('leonel') || team.includes('leonel'))) return false;
-            if (r.game === 'free_fire' && cap.includes('tates')) {
-              if (hasSeenTatesFetch) return false;
-              hasSeenTatesFetch = true;
-            }
-            return true;
-          }).map((r) => {
-            const sanitized = sanitizeRegistrationRecord(r);
-            const safeMembers = Array.isArray(sanitized.members)
-              ? sanitized.members.map((m) => ({
-                  name: m.name || '',
-                  game_id: m.game_id || m.gameId || '',
-                  gameId: m.game_id || m.gameId || '',
-                  is_substitute: Boolean(m.is_substitute || m.isSubstitute),
-                  isSubstitute: Boolean(m.is_substitute || m.isSubstitute),
-                }))
-              : [];
-
-            return {
-              id: sanitized.id,
-              created_at: sanitized.created_at,
-              game: sanitized.game,
-              game_name: sanitized.game_name,
-              modality: sanitized.modality,
-              ff_modality: sanitized.ff_modality,
-              team_name: sanitized.team_name,
-              is_free_agent: sanitized.is_free_agent,
-              captain_name: sanitized.captain_name,
-              captain_game_id: sanitized.captain_game_id,
-              members: safeMembers,
-              status: sanitized.status,
-            };
-          });
+          return processPublicRoster(rawJson);
         }
       }
-    } catch (fetchErr) {
-      console.warn('Fetch nativo de registros públicos falló:', fetchErr);
+    } catch (e) {
+      console.warn('Fetch fallback public registrations failed:', e);
     }
   }
 
-  // Fallback a registros locales pero sanitizando campos sensibles y excluyendo rechazados
-  const all = await getRegistrations();
-  return all
-    .filter((r) => r.status !== 'rejected')
-    .map((r) => ({
-      id: r.id,
-      created_at: r.created_at,
-      game: r.game,
-      game_name: r.game_name,
-      modality: r.modality,
-      ff_modality: r.ff_modality,
-      team_name: r.team_name,
-      is_free_agent: r.is_free_agent,
-      captain_name: r.captain_name,
-      captain_game_id: r.captain_game_id,
-      status: r.status,
-      members: Array.isArray(r.members)
-        ? r.members.map((m) => ({
-            name: m.name,
-            game_id: m.game_id || m.gameId,
-            gameId: m.game_id || m.gameId,
-            is_substitute: Boolean(m.is_substitute || m.isSubstitute),
-            isSubstitute: Boolean(m.is_substitute || m.isSubstitute),
-          }))
-        : [],
-    }));
+  // 3. Fallback directo a lista oficial confirmada idéntica al PDF
+  return OFFICIAL_CONFIRMED_ROSTER;
 };
 
-// -------------------------------------------------------------
 // REGISTROS COMPLETOS (USO EXCLUSIVO DEL PANEL DE ADMINISTRACIÓN)
 // -------------------------------------------------------------
 export const getRegistrations = async () => {
@@ -318,7 +301,15 @@ export const getRegistrations = async () => {
   const savedLocal = localStorage.getItem(STORAGE_KEYS.REGISTRATIONS);
   if (savedLocal) {
     try {
-      const parsed = JSON.parse(savedLocal);
+      if (savedLocal.includes('reg-val-1') || savedLocal.includes('CyberKnights') || savedLocal.includes('Alpha Hunters')) {
+        localStorage.removeItem(STORAGE_KEYS.REGISTRATIONS);
+      }
+    } catch (e) {}
+  }
+  const cleanSavedLocal = localStorage.getItem(STORAGE_KEYS.REGISTRATIONS);
+  if (cleanSavedLocal) {
+    try {
+      const parsed = JSON.parse(cleanSavedLocal);
       if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed.map(sanitizeRegistrationRecord);
       }
@@ -326,336 +317,7 @@ export const getRegistrations = async () => {
   }
 
   // Registros demo iniciales para que el portal muestre equipos y jugadores de inmediato
-  const defaultRegistrations = [
-    // --- VALORANT (5v5) ---
-    {
-      id: 'reg-val-1',
-      created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
-      game: 'valorant',
-      modality: '5v5',
-      team_name: 'CyberKnights',
-      is_free_agent: false,
-      captain_name: 'Carlos Mendoza',
-      captain_game_id: 'Shadow#LAN',
-      captain_whatsapp: '+593987654321',
-      captain_email: 'carlos.m@computacion.edu.ec',
-      amount_due: 5.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Transferencia validada en Banco Pichincha.',
-      members: [
-        { name: 'Mateo Ramos', game_id: 'MatR#LAN', whatsapp: '+593981111111' },
-        { name: 'David Lomas', game_id: 'DaveL#LAN', whatsapp: '+593982222222' },
-        { name: 'Kevin Benavides', game_id: 'KevB#LAN', whatsapp: '+593983333333' },
-        { name: 'Andrés Villota', game_id: 'AndyV#LAN', whatsapp: '+593984444444' },
-        { name: 'Paul Revelo (Suplente)', game_id: 'PauR#LAN', whatsapp: '+593985555555', is_substitute: true },
-      ],
-    },
-    {
-      id: 'reg-val-2',
-      created_at: new Date(Date.now() - 3600000 * 3).toISOString(),
-      game: 'valorant',
-      modality: '5v5',
-      team_name: 'Vanguard Elite',
-      is_free_agent: false,
-      captain_name: 'Diego Morales',
-      captain_game_id: 'Viper#LAN',
-      captain_whatsapp: '+593982345678',
-      captain_email: 'diego.m@gmail.com',
-      amount_due: 5.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Inscripción confirmada.',
-      members: [
-        { name: 'Sebastián Guerra', game_id: 'ReynaGod#LAN', whatsapp: '+593981223344' },
-        { name: 'Gabriel Paredes', game_id: 'OmenMain#LAN', whatsapp: '+593982334455' },
-        { name: 'Christian Ruiz', game_id: 'SovaDarts#LAN', whatsapp: '+593983445566' },
-        { name: 'Bryan Pozo', game_id: 'JettDiff#LAN', whatsapp: '+593984556677' },
-        { name: 'Alex Meneses (Suplente)', game_id: 'CypherCam#LAN', whatsapp: '+593985667788', is_substitute: true },
-      ],
-    },
-    {
-      id: 'reg-val-3',
-      created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
-      game: 'valorant',
-      modality: '5v5',
-      team_name: 'Nexus Squad',
-      is_free_agent: false,
-      captain_name: 'Jhonatan Narváez',
-      captain_game_id: 'Phoenix#LAN',
-      captain_whatsapp: '+593991122334',
-      captain_email: 'jhonatan.n@gmail.com',
-      amount_due: 5.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Comprobante aprobado.',
-      members: [
-        { name: 'Kevin Rosero', game_id: 'SageHeal#LAN', whatsapp: '+593992233445' },
-        { name: 'Daniel Enríquez', game_id: 'FadeHaunt#LAN', whatsapp: '+593993344556' },
-        { name: 'Luis Ibarra', game_id: 'BrimStone#LAN', whatsapp: '+593994455667' },
-        { name: 'Fernando Mora', game_id: 'BreachStun#LAN', whatsapp: '+593995566778' },
-      ],
-    },
-    {
-      id: 'reg-val-fa-1',
-      created_at: new Date(Date.now() - 1800000).toISOString(),
-      game: 'valorant',
-      modality: 'individual',
-      team_name: 'Individual',
-      is_free_agent: true,
-      captain_name: 'Santiago Bolaños',
-      captain_game_id: 'SantiB#LAN',
-      captain_whatsapp: '+593974567890',
-      captain_email: 'santi.b@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Inscripción individual lista para emparejar (Rol: Duelista / Iniciador).',
-      members: [],
-    },
-    {
-      id: 'reg-val-fa-2',
-      created_at: new Date(Date.now() - 900000).toISOString(),
-      game: 'valorant',
-      modality: 'individual',
-      team_name: 'Individual',
-      is_free_agent: true,
-      captain_name: 'Ricardo Chamorro',
-      captain_game_id: 'RickySmokes#LAN',
-      captain_whatsapp: '+593983344556',
-      captain_email: 'ricky.c@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Inscripción individual lista (Rol: Controlador / Smokes).',
-      members: [],
-    },
-
-    // --- FREE FIRE (ESCUADRAS Y SOLITARIO) ---
-    {
-      id: 'reg-ff-1',
-      created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
-      game: 'free_fire',
-      modality: 'escuadras',
-      team_name: 'Alpha Hunters',
-      is_free_agent: false,
-      captain_name: 'Brayan Silva',
-      captain_game_id: 'BrayanFF_12',
-      captain_whatsapp: '+593992345678',
-      captain_email: 'brayan.s@gmail.com',
-      amount_due: 4.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Comprobante verificado.',
-      members: [
-        { name: 'Juan Perez', game_id: 'Juancho_FF', whatsapp: '+593991234567' },
-        { name: 'Esteban Carchi', game_id: 'Tiburón_7', whatsapp: '+593997654321' },
-        { name: 'Joel Tulcán', game_id: 'JTulcan_Pro', whatsapp: '+593998888888' },
-      ],
-    },
-    {
-      id: 'reg-ff-2',
-      created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-      game: 'free_fire',
-      modality: 'escuadras',
-      team_name: 'Los Intocables',
-      is_free_agent: false,
-      captain_name: 'Marco Tulcán',
-      captain_game_id: 'M4rco_Pro',
-      captain_whatsapp: '+593993456789',
-      captain_email: 'marco.t@gmail.com',
-      amount_due: 4.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Escuadra confirmada.',
-      members: [
-        { name: 'Alex Huertas', game_id: 'Alex_Sniper', whatsapp: '+593994567890' },
-        { name: 'Edison Rosero', game_id: 'Eddy_Headshot', whatsapp: '+593995678901' },
-        { name: 'William Cuasquer', game_id: 'Willy_Rush', whatsapp: '+593996789012' },
-      ],
-    },
-    {
-      id: 'reg-ff-solo-1',
-      created_at: new Date(Date.now() - 3600000 * 3).toISOString(),
-      game: 'free_fire',
-      modality: 'solitario',
-      team_name: 'Kev_SoloFF',
-      is_free_agent: false,
-      captain_name: 'Kevin Portilla',
-      captain_game_id: 'Kev_SoloFF',
-      captain_whatsapp: '+593997788990',
-      captain_email: 'kevin.p@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Modalidad Solitario confirmada.',
-      members: [],
-    },
-    {
-      id: 'reg-ff-solo-2',
-      created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
-      game: 'free_fire',
-      modality: 'solitario',
-      team_name: 'Bastidas_99',
-      is_free_agent: false,
-      captain_name: 'David Bastidas',
-      captain_game_id: 'Bastidas_99',
-      captain_whatsapp: '+593998899001',
-      captain_email: 'david.b@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Modalidad Solitario confirmada.',
-      members: [],
-    },
-
-    // --- FORTNITE (DÚOS) ---
-    {
-      id: 'reg-fn-1',
-      created_at: new Date(Date.now() - 3600000 * 4).toISOString(),
-      game: 'fortnite',
-      modality: 'duos',
-      team_name: 'Chug Jug Dúo',
-      is_free_agent: false,
-      captain_name: 'Anthony Rosas',
-      captain_game_id: 'Anthony_Box#NAE',
-      captain_whatsapp: '+593961234567',
-      captain_email: 'anthony.r@gmail.com',
-      amount_due: 2.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Dúo oficial verificado.',
-      members: [
-        { name: 'Mauricio Pantoja', game_id: 'MauriPiece#NAE', whatsapp: '+593962345678' },
-      ],
-    },
-    {
-      id: 'reg-fn-2',
-      created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-      game: 'fortnite',
-      modality: 'duos',
-      team_name: 'Storm Surge',
-      is_free_agent: false,
-      captain_name: 'Steven Guerrero',
-      captain_game_id: 'Steven_Clutch#NAE',
-      captain_whatsapp: '+593963456789',
-      captain_email: 'steven.g@gmail.com',
-      amount_due: 2.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Dúo verificado.',
-      members: [
-        { name: 'Jonathan Vallejo', game_id: 'Jona_HighGround#NAE', whatsapp: '+593964567890' },
-      ],
-    },
-    {
-      id: 'reg-fn-3',
-      created_at: new Date(Date.now() - 1200000).toISOString(),
-      game: 'fortnite',
-      modality: 'duos',
-      team_name: 'Zero Build Kings',
-      is_free_agent: false,
-      captain_name: 'Patricio Delgado',
-      captain_game_id: 'Pato_Laser#NAE',
-      captain_whatsapp: '+593965678901',
-      captain_email: 'pato.d@gmail.com',
-      amount_due: 2.00,
-      status: 'pending',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'En revisión de comprobante.',
-      members: [
-        { name: 'Jorge Burbano', game_id: 'Burbano_Shotty#NAE', whatsapp: '+593966789012' },
-      ],
-    },
-
-    // --- CLASH ROYALE (1v1) ---
-    {
-      id: 'reg-cr-1',
-      created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
-      game: 'clash_royale',
-      modality: '1v1',
-      team_name: 'Alejandro Morales',
-      is_free_agent: true,
-      captain_name: 'Alejandro Morales',
-      captain_game_id: '#9PR88CLQ',
-      captain_whatsapp: '+593963456789',
-      captain_email: 'alex.m@hotmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Comprobante verificado.',
-      members: [],
-    },
-    {
-      id: 'reg-cr-2',
-      created_at: new Date(Date.now() - 3600000 * 3).toISOString(),
-      game: 'clash_royale',
-      modality: '1v1',
-      team_name: 'Mateo Cárdenas',
-      is_free_agent: true,
-      captain_name: 'Mateo Cárdenas',
-      captain_game_id: '#28Y00PQL',
-      captain_whatsapp: '+593964567890',
-      captain_email: 'mateo.c@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Jugador 1v1 confirmado.',
-      members: [],
-    },
-    {
-      id: 'reg-cr-3',
-      created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-      game: 'clash_royale',
-      modality: '1v1',
-      team_name: 'Christian Benalcázar',
-      is_free_agent: true,
-      captain_name: 'Christian Benalcázar',
-      captain_game_id: '#88LU00Q',
-      captain_whatsapp: '+593965678901',
-      captain_email: 'chris.b@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Jugador 1v1 confirmado.',
-      members: [],
-    },
-    {
-      id: 'reg-cr-4',
-      created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
-      game: 'clash_royale',
-      modality: '1v1',
-      team_name: 'Erick Cadena',
-      is_free_agent: true,
-      captain_name: 'Erick Cadena',
-      captain_game_id: '#99VR11Q',
-      captain_whatsapp: '+593966789012',
-      captain_email: 'erick.c@gmail.com',
-      amount_due: 1.00,
-      status: 'approved',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'Jugador 1v1 confirmado.',
-      members: [],
-    },
-    {
-      id: 'reg-cr-5',
-      created_at: new Date(Date.now() - 600000).toISOString(),
-      game: 'clash_royale',
-      modality: '1v1',
-      team_name: 'Josué Revelo',
-      is_free_agent: true,
-      captain_name: 'Josué Revelo',
-      captain_game_id: '#33PQ22X',
-      captain_whatsapp: '+593967890123',
-      captain_email: 'josue.r@gmail.com',
-      amount_due: 1.00,
-      status: 'pending',
-      receipt_url: '/assets/demo_receipt.svg',
-      admin_notes: 'En verificación bancaria.',
-      members: [],
-    },
-  ];
-
+  const defaultRegistrations = OFFICIAL_CONFIRMED_ROSTER;
   localStorage.setItem(STORAGE_KEYS.REGISTRATIONS, JSON.stringify(defaultRegistrations));
   return defaultRegistrations;
 };
