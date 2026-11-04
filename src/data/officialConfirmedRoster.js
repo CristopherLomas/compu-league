@@ -547,6 +547,22 @@ export const OFFICIAL_CONFIRMED_ROSTER = [
     "payment_status": "paid"
   },
   {
+    "id": "a6e21e52-9c9c-4a56-a908-d88c645006bb",
+    "created_at": "2026-11-04T14:47:00+00:00",
+    "game": "clash_royale",
+    "game_name": "CLASH ROYALE",
+    "modality": "1v1",
+    "ff_modality": null,
+    "team_name": "Edison Godoy",
+    "is_free_agent": true,
+    "captain_name": "Edison Godoy",
+    "captain_game_id": "#Y22UG2YC",
+    "captain_whatsapp": "0982789151",
+    "members": [],
+    "status": "approved",
+    "payment_status": "paid"
+  },
+  {
     "id": "f22af963-f485-4148-847f-ab975a4ea4b9",
     "created_at": "2026-10-19T20:12:31.402+00:00",
     "game": "fortnite",
