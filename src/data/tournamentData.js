@@ -16,7 +16,8 @@ export const CONTACT_INFO = {
   whatsappStaff: '0962074110',
   whatsappDirectUrl: 'https://wa.me/593962074110?text=Hola,%20tengo%20una%20consulta%20sobre%20el%20torneo%20Compu%20League%202026',
   discordUrl: 'https://discord.gg/ynfD8aHHmP',
-  streamFacebook: 'https://facebook.com', // Enlace o transmisión de la carrera
+  streamFacebook: 'https://www.facebook.com/compuleagueesports/', // Transmisión oficial en vivo
+  facebookUrl: 'https://www.facebook.com/compuleagueesports/',
   deadlineIso: '2026-11-04T21:00:00-05:00',
   deadlineLabel: 'Miércoles 4 de Noviembre - 9:00 PM',
   tournamentStartIso: '2026-11-04T21:00:00-05:00',

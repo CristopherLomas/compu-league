@@ -48,9 +48,9 @@ export default function Footer({ onOpenRegister }) {
               El torneo oficial de la carrera de Computación. Compite individualmente o con tu equipo, domina la partida y demuestra quien es el mejor.
             </p>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#10B981] text-black border-2 border-black font-pixel text-[8px] font-black uppercase">
-              <span className="w-2 h-2 bg-black animate-arcade-blink" />
-              <span>INSCRIPCIONES ABIERTAS</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FF0055] text-white border-2 border-black font-pixel text-[8px] font-black uppercase shadow-brutal-pink">
+              <span className="w-2 h-2 bg-white animate-arcade-blink" />
+              <span>INSCRIPCIONES CERRADAS</span>
             </div>
           </div>
 
@@ -122,14 +122,27 @@ export default function Footer({ onOpenRegister }) {
             </p>
 
             <div className="space-y-2 pt-1">
+              {/* Facebook Oficial Transmisión en Vivo */}
+              <a
+                href={CONTACT_INFO.facebookUrl || "https://www.facebook.com/compuleagueesports/"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-arcade-press shadow-brutal-cyan w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#1877F2] hover:bg-[#166FE5] text-white border-2 border-black font-pixel font-black text-[9px] uppercase tracking-wider"
+              >
+                <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                <span>[ FACEBOOK // EN VIVO ]</span>
+              </a>
+
               <a
                 href={CONTACT_INFO.whatsappDirectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-arcade-press shadow-brutal-black flex items-center justify-center gap-2 px-4 py-3 bg-[#10B981] hover:bg-[#15D494] text-black border-2 border-black font-pixel font-black text-[9px] uppercase tracking-wider"
+                className="btn-arcade-press shadow-brutal-black flex items-center justify-center gap-2 px-4 py-2.5 bg-[#10B981] hover:bg-[#15D494] text-black border-2 border-black font-pixel font-black text-[9px] uppercase tracking-wider"
               >
                 <Phone className="w-4 h-4 shrink-0" />
-                <span>WhatsApp: {CONTACT_INFO.whatsappStaff}</span>
+                <span>WhatsApp Staff</span>
               </a>
 
               {/* Discord Oficial en morado */}
@@ -137,10 +150,10 @@ export default function Footer({ onOpenRegister }) {
                 href={CONTACT_INFO.discordUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-arcade-press shadow-brutal-black w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#5865F2] hover:bg-[#6975F7] text-white border-2 border-black font-pixel font-black text-[9px] uppercase tracking-wider"
+                className="btn-arcade-press shadow-brutal-black w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#5865F2] hover:bg-[#6975F7] text-white border-2 border-black font-pixel font-black text-[9px] uppercase tracking-wider"
               >
                 <MessageSquare className="w-4 h-4 shrink-0" />
-                <span>[ ENTRAR AL DISCORD OFICIAL ]</span>
+                <span>[ DISCORD OFICIAL ]</span>
               </a>
             </div>
           </div>
