@@ -137,7 +137,7 @@ export const INITIAL_SCHEDULE = [
     time: '21:15 - 22:15',
     gameId: 'clash_royale',
     gameName: 'Clash Royale (1v1) - Torneo Completo',
-    stageTitle: 'Octavos, Cuartos, Semifinales y Gran Final (Bo3) - 15 Gladiadores',
+    stageTitle: 'Octavos, Cuartos, Semifinales y Gran Final (Bo3) - 16 Gladiadores (Cuadro Completo)',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -256,7 +256,7 @@ export const DEMO_VALORANT_MATCHES = [
 ];
 
 export const DEMO_CLASH_MATCHES = [
-  // Octavos de Final Preliminares (15 Jugadores Oficiales: 1 Bye a cuartos y 7 duelos directos)
+  // Octavos de Final (16 Gladiadores Oficiales: Cuadro Completo de 8 Duelos Directos)
   { id: 'cr-1', round: 'Octavos de Final', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-2', round: 'Octavos de Final', matchIndex: 2, playerA: 'Edwin Landeta', playerB: 'Harold Mejia', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-3', round: 'Octavos de Final', matchIndex: 3, playerA: 'Danny Quilumbaquin', playerB: 'Paul Ger', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
@@ -264,19 +264,20 @@ export const DEMO_CLASH_MATCHES = [
   { id: 'cr-5', round: 'Octavos de Final', matchIndex: 5, playerA: 'Stalin Obando', playerB: 'Lenin Rodríguez', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-6', round: 'Octavos de Final', matchIndex: 6, playerA: 'Jeremy Valdivieso', playerB: 'Kevin Pozo', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-7', round: 'Octavos de Final', matchIndex: 7, playerA: 'Juan Carlos Llore', playerB: 'Edison Godoy', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-8', round: 'Octavos de Final', matchIndex: 8, playerA: 'Milton Fuel Bravo', playerB: 'Nicolas Villareal', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
-  // Cuartos de Final (Entra Milton Fuel Bravo con pase Bye directo como cabeza de serie #1)
-  { id: 'cr-8', round: 'Cuartos de Final', matchIndex: 8, playerA: 'Milton Fuel Bravo', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-9', round: 'Cuartos de Final', matchIndex: 9, playerA: 'Ganador M2', playerB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-10', round: 'Cuartos de Final', matchIndex: 10, playerA: 'Ganador M4', playerB: 'Ganador M5', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-11', round: 'Cuartos de Final', matchIndex: 11, playerA: 'Ganador M6', playerB: 'Ganador M7', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Cuartos de Final (8 Mejores)
+  { id: 'cr-9', round: 'Cuartos de Final', matchIndex: 9, playerA: 'Ganador M8', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-10', round: 'Cuartos de Final', matchIndex: 10, playerA: 'Ganador M7', playerB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-11', round: 'Cuartos de Final', matchIndex: 11, playerA: 'Ganador M5', playerB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-12', round: 'Cuartos de Final', matchIndex: 12, playerA: 'Ganador M6', playerB: 'Ganador M4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
-  // Semifinales
-  { id: 'cr-12', round: 'Semifinales', matchIndex: 12, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-13', round: 'Semifinales', matchIndex: 13, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Semifinales (4 Mejores)
+  { id: 'cr-13', round: 'Semifinales', matchIndex: 13, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-14', round: 'Semifinales', matchIndex: 14, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
   // Gran Final Bo3
-  { id: 'cr-14', round: 'GRAN FINAL (Bo3)', matchIndex: 14, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-15', round: 'GRAN FINAL (Bo3)', matchIndex: 15, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 ];
 
 export const DEMO_BATTLE_ROYALE_STANDINGS = {

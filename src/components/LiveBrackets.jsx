@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v7_fortnite_team_ing_49total';
+      const CURRENT_DATA_VERSION = 'v8_clash_16_full_bracket_50total';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -38,7 +38,7 @@ export default function LiveBrackets() {
         !savedVal.includes('TEAM ING') ||
         !savedClash ||
         !savedClash.includes('Lenin Rodríguez') ||
-        !savedClash.includes('Kevin Pozo') || !savedClash.includes('Edison Godoy');
+        !savedClash.includes('Kevin Pozo') || !savedClash.includes('Edison Godoy') || !savedClash.includes('Nicolas Villareal');
 
       if (isOutdated) {
         localStorage.setItem('compu_league_brackets_version', CURRENT_DATA_VERSION);
@@ -273,7 +273,7 @@ export default function LiveBrackets() {
                 </p>
               </div>
               <span className="text-[9px] px-2.5 py-1 border border-white/20 bg-black text-[#A855F7] font-bold">
-                15 GLADIADORES CONFIRMADOS
+                16 GLADIADORES CONFIRMADOS (CUADRO COMPLETO)
               </span>
             </div>
 

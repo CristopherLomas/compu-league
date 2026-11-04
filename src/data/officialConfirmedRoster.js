@@ -563,6 +563,22 @@ export const OFFICIAL_CONFIRMED_ROSTER = [
     "payment_status": "paid"
   },
   {
+    "id": "b3b7b819-2d9d-4fa7-a4c8-fa19c4d0dbc6",
+    "created_at": "2026-11-04T15:29:00+00:00",
+    "game": "clash_royale",
+    "game_name": "CLASH ROYALE",
+    "modality": "1v1",
+    "ff_modality": null,
+    "team_name": "Nicolas Villareal",
+    "is_free_agent": true,
+    "captain_name": "Nicolas Villareal",
+    "captain_game_id": "#JL29VJP8L",
+    "captain_whatsapp": "0991455132",
+    "members": [],
+    "status": "approved",
+    "payment_status": "paid"
+  },
+  {
     "id": "f22af963-f485-4148-847f-ab975a4ea4b9",
     "created_at": "2026-10-19T20:12:31.402+00:00",
     "game": "fortnite",
