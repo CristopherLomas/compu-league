@@ -137,7 +137,7 @@ export const INITIAL_SCHEDULE = [
     time: '21:15 - 22:15',
     gameId: 'clash_royale',
     gameName: 'Clash Royale (1v1)',
-    stageTitle: 'Octavos, Cuartos, Semifinales y Gran Final (Bo3)',
+    stageTitle: 'Octavos Preliminares, Cuartos, Semifinales y Gran Final (Bo3) - 10 Jugadores',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -148,7 +148,7 @@ export const INITIAL_SCHEDULE = [
     time: '22:15 - 23:30',
     gameId: 'free_fire',
     gameName: 'Free Fire (Battle Royale)',
-    stageTitle: 'Sala 1: Torneo Solitario | Sala 2: Torneo Escuadras (11 Squads)',
+    stageTitle: 'Sala de Escuadras Completa (12 Squads / Incluye Trío Solitarios)',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -159,7 +159,7 @@ export const INITIAL_SCHEDULE = [
     time: '21:00 - 22:00',
     gameId: 'fortnite',
     gameName: 'Fortnite (Dúos)',
-    stageTitle: 'Sala Personalizada Battle Royale - 2 Partidas Puntuables (11 Dúos)',
+    stageTitle: 'Sala Personalizada Battle Royale - 2 Partidas Puntuables (11 Dúos Confirmados)',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -170,7 +170,7 @@ export const INITIAL_SCHEDULE = [
     time: '22:00 - 23:45',
     gameId: 'valorant',
     gameName: 'Valorant (5v5)',
-    stageTitle: 'Cuartos de Final y Semifinales de Upper Bracket (Bo1)',
+    stageTitle: 'Play-in Clasificatorio y Semifinales de Upper Bracket (5 Equipos Completos)',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -209,32 +209,23 @@ export const INITIAL_SCHEDULE = [
   },
 ];
 
-// Equipos y brackets oficiales con participantes confirmados
+// Equipos y brackets oficiales con participantes confirmados (solo completos)
 export const DEMO_VALORANT_MATCHES = [
-  // Upper Bracket R1 / Cuartos
-  { id: 'v-u1', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 1, teamA: 'TEAM ING', teamB: 'ikonikos', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u2', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u3', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 3, teamA: 'Los pusydystroyer', teamB: 'VIPERX', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u4', bracket: 'upper', round: 'Cuartos de Final', matchIndex: 4, teamA: 'Clasificado Bye', teamB: 'Esperando Rival', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-
-  // Upper Bracket Semifinals
-  { id: 'v-u5', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 5, teamA: 'Ganador M1', teamB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-u6', bracket: 'upper', round: 'Semifinal Upper', matchIndex: 6, teamA: 'Ganador M3', teamB: 'Clasificado Bye', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-
-  // Upper Bracket Final
-  { id: 'v-u7', bracket: 'upper', round: 'Final Upper Bracket', matchIndex: 7, teamA: 'Finalista Upper 1', teamB: 'Finalista Upper 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-
-  // Lower Bracket R1
-  { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 8, teamA: 'Perdedor M1', teamB: 'Perdedor M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-l2', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 9, teamA: 'Perdedor M3', teamB: 'Perdedor M4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Upper Bracket: Play-in y Semifinales
+  { id: 'v-u1', bracket: 'upper', round: 'Play-in Clasificatorio', matchIndex: 1, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u2', bracket: 'upper', round: 'Semifinal Upper 1', matchIndex: 2, teamA: 'TEAM ING', teamB: 'Ganador Play-in', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-u3', bracket: 'upper', round: 'Semifinal Upper 2', matchIndex: 3, teamA: 'ikonikos', teamB: 'Los pusydystroyer', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
-  // Lower Bracket Semifinal
-  { id: 'v-l3', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 10, teamA: 'Ganador L1', teamB: 'Ganador L2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  // Lower Final
-  { id: 'v-l4', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 11, teamA: 'Ganador Semi Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Upper Bracket Final
+  { id: 'v-u4', bracket: 'upper', round: 'Final Upper Bracket', matchIndex: 4, teamA: 'Ganador Semi 1', teamB: 'Ganador Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+
+  // Lower Bracket
+  { id: 'v-l1', bracket: 'lower', round: 'Ronda 1 Loser', matchIndex: 5, teamA: 'Perdedor Play-in', teamB: 'Perdedor Semi 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l2', bracket: 'lower', round: 'Semifinal Loser', matchIndex: 6, teamA: 'Ganador Ronda 1 Loser', teamB: 'Perdedor Semi 1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-l3', bracket: 'lower', round: 'Final Loser Bracket', matchIndex: 7, teamA: 'Ganador Semi Loser', teamB: 'Perdedor Final Upper', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 
   // Grand Final Bo3
-  { id: 'v-gf', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 12, teamA: 'Campeón Upper Bracket', teamB: 'Campeón Loser Bracket', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
+  { id: 'v-gf', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 8, teamA: 'Campeón Upper Bracket', teamB: 'Campeón Loser Bracket', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
 ];
 
 export const DEMO_CLASH_MATCHES = [
@@ -266,13 +257,10 @@ export const DEMO_BATTLE_ROYALE_STANDINGS = {
     { rank: 9, team: 'Dinastía-Cero', captain: 'Liceth Escobar', kills: 0, status: 'Confirmado - Sala Escuadras' },
     { rank: 10, team: 'Los Renacidos', captain: 'Melinda Reascos', kills: 0, status: 'Confirmado - Sala Escuadras' },
     { rank: 11, team: 'leviatán', captain: 'Henry Tipaz', kills: 0, status: 'Confirmado - Sala Escuadras' },
+    { rank: 12, team: 'Los Solitarios (Trío)', captain: 'David Tarapues / Matew / Alejandro', kills: 0, status: 'Confirmado - Sala Escuadras' },
   ],
   free_fire_solitario: [
-    { rank: 1, team: 'David Tarapues (Solitario)', captain: 'David Tarapues', kills: 0, status: 'Confirmado - Sala Solitario' },
-    { rank: 2, team: 'Matew Cevallos (Solitario)', captain: 'Matew Cevallos', kills: 0, status: 'Confirmado - Sala Solitario' },
-    { rank: 3, team: 'Alejandro Tates (Solitario)', captain: 'Alejandro Tates', kills: 0, status: 'Confirmado - Sala Solitario' },
-    { rank: 4, team: 'Harold Mejia (Solitario)', captain: 'Harold Mejia', kills: 0, status: 'Confirmado - Sala Solitario' },
-    { rank: 5, team: 'Leonel De La Torre (Solitario)', captain: 'Leonel De La Torre', kills: 0, status: 'Confirmado - Sala Solitario' },
+    { rank: 1, team: 'Unificados a Sala Escuadras', captain: 'David Tarapues, Matew Cevallos, Alejandro Tates', kills: 0, status: 'Fusión oficial como Escuadra #12' },
   ],
   fortnite_duos: [
     { rank: 1, team: 'G2 Encebollados', captain: 'Fernando Muñoz', kills: 0, status: 'Confirmado - Sala Dúos' },
