@@ -851,6 +851,30 @@ export const OFFICIAL_CONFIRMED_ROSTER = [
     "payment_status": "paid"
   },
   {
+    "id": "07f147de-547d-4aa1-a892-fece5eb2cf52",
+    "created_at": "2026-11-04T14:48:00+00:00",
+    "game": "fortnite",
+    "game_name": "FORTNITE",
+    "modality": "duos",
+    "ff_modality": null,
+    "team_name": "TEAM ING",
+    "is_free_agent": false,
+    "captain_name": "Edison Godoy",
+    "captain_game_id": "Edy22O (ID: 25d24ccebae344319e101bf7b219936f)",
+    "captain_whatsapp": "0982789151",
+    "members": [
+      {
+        "name": "Kevin Mejia",
+        "game_id": "Kevinuwu1234 (ID: 37ee4703e90449839a68de32163a8497)",
+        "gameId": "Kevinuwu1234 (ID: 37ee4703e90449839a68de32163a8497)",
+        "is_substitute": false,
+        "isSubstitute": false
+      }
+    ],
+    "status": "approved",
+    "payment_status": "paid"
+  },
+  {
     "id": "7d7cea0d-dd60-4f46-8c6c-88eb0cf87917",
     "created_at": "2026-10-16T14:49:25.894+00:00",
     "game": "free_fire",

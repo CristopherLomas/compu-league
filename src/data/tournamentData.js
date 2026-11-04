@@ -192,7 +192,7 @@ export const INITIAL_SCHEDULE = [
     time: '21:00 - 21:35',
     gameId: 'fortnite',
     gameName: 'Fortnite (Dúos) - Partida 1: Con Construcción (Build)',
-    stageTitle: 'Sala Personalizada en Parejas - Modo Clásico Con Construcción',
+    stageTitle: '13 Dúos en Sala Personalizada en Parejas - Modo Clásico Con Construcción',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
