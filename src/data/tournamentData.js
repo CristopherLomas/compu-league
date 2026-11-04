@@ -137,7 +137,7 @@ export const INITIAL_SCHEDULE = [
     time: '21:15 - 22:15',
     gameId: 'clash_royale',
     gameName: 'Clash Royale (1v1) - Torneo Completo',
-    stageTitle: 'Octavos, Cuartos, Semifinales y Gran Final (Bo3) - 12 Jugadores',
+    stageTitle: 'Octavos, Cuartos, Semifinales y Gran Final (Bo3) - 14 Gladiadores',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -256,24 +256,26 @@ export const DEMO_VALORANT_MATCHES = [
 ];
 
 export const DEMO_CLASH_MATCHES = [
-  // Octavos de Final Preliminares (12 Jugadores Oficiales del PDF: 4 Byes a cuartos)
+  // Octavos de Final Preliminares (14 Jugadores Oficiales: 2 Byes a cuartos y 6 duelos directos)
   { id: 'cr-1', round: 'Octavos de Final', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-2', round: 'Octavos de Final', matchIndex: 2, playerA: 'Edwin Landeta', playerB: 'Harold Mejia', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-3', round: 'Octavos de Final', matchIndex: 3, playerA: 'Danny Quilumbaquin', playerB: 'Paul Ger', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   { id: 'cr-4', round: 'Octavos de Final', matchIndex: 4, playerA: 'Ivan Bernal', playerB: 'Marcillo Pablo', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-5', round: 'Octavos de Final', matchIndex: 5, playerA: 'Stalin Obando', playerB: 'Lenin Rodríguez', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-6', round: 'Octavos de Final', matchIndex: 6, playerA: 'Jeremy Valdivieso', playerB: 'Kevin Pozo', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
-  // Cuartos de Final (Entran Milton Fuel, Juan Carlos Llore, Stalin Obando, Jeremy Valdivieso)
-  { id: 'cr-5', round: 'Cuartos de Final', matchIndex: 5, playerA: 'Milton Fuel Bravo', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-6', round: 'Cuartos de Final', matchIndex: 6, playerA: 'Juan Carlos Llore', playerB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-7', round: 'Cuartos de Final', matchIndex: 7, playerA: 'Stalin Obando', playerB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-8', round: 'Cuartos de Final', matchIndex: 8, playerA: 'Jeremy Valdivieso', playerB: 'Ganador M4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Cuartos de Final (Entran Milton Fuel Bravo y Juan Carlos Llore con pase Bye directo)
+  { id: 'cr-7', round: 'Cuartos de Final', matchIndex: 7, playerA: 'Milton Fuel Bravo', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-8', round: 'Cuartos de Final', matchIndex: 8, playerA: 'Juan Carlos Llore', playerB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-9', round: 'Cuartos de Final', matchIndex: 9, playerA: 'Ganador M3', playerB: 'Ganador M4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-10', round: 'Cuartos de Final', matchIndex: 10, playerA: 'Ganador M5', playerB: 'Ganador M6', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
   // Semifinales
-  { id: 'cr-9', round: 'Semifinales', matchIndex: 9, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-10', round: 'Semifinales', matchIndex: 10, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-11', round: 'Semifinales', matchIndex: 11, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-12', round: 'Semifinales', matchIndex: 12, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
   
   // Gran Final Bo3
-  { id: 'cr-11', round: 'GRAN FINAL (Bo3)', matchIndex: 11, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-13', round: 'GRAN FINAL (Bo3)', matchIndex: 13, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
 ];
 
 export const DEMO_BATTLE_ROYALE_STANDINGS = {
@@ -291,6 +293,7 @@ export const DEMO_BATTLE_ROYALE_STANDINGS = {
     { rank: 11, team: 'Los Renacidos', captain: 'Melinda Reascos', kills: 0, status: 'Sala Escuadras + Solitario' },
     { rank: 12, team: 'leviatán', captain: 'Henry Tipaz', kills: 0, status: 'Sala Escuadras + Solitario' },
     { rank: 13, team: 'Los Solitarios (Trío)', captain: 'David Tarapues / Matew / Alejandro', kills: 0, status: 'Sala Escuadras + Solitario' },
+    { rank: 14, team: 'Los duros del trago', captain: 'Anchundia Kevin', kills: 0, status: 'Sala Escuadras + Solitario' },
   ],
   free_fire_solitario: [
     { rank: 1, team: 'David Tarapues', captain: 'David Tarapues', kills: 0, status: 'Sala Solitario Abierta' },

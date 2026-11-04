@@ -515,6 +515,38 @@ export const OFFICIAL_CONFIRMED_ROSTER = [
     "payment_status": "paid"
   },
   {
+    "id": "44769556-710e-4691-9310-abfd7b105947",
+    "created_at": "2026-11-04T14:36:00+00:00",
+    "game": "clash_royale",
+    "game_name": "CLASH ROYALE",
+    "modality": "1v1",
+    "ff_modality": null,
+    "team_name": "Lenin Rodríguez",
+    "is_free_agent": true,
+    "captain_name": "Lenin Rodríguez",
+    "captain_game_id": "#2CYPJ0YYC",
+    "captain_whatsapp": "0960759841",
+    "members": [],
+    "status": "approved",
+    "payment_status": "paid"
+  },
+  {
+    "id": "21f4c53c-f044-40bf-bf41-cf807b1f2f58",
+    "created_at": "2026-11-04T14:36:30+00:00",
+    "game": "clash_royale",
+    "game_name": "CLASH ROYALE",
+    "modality": "1v1",
+    "ff_modality": null,
+    "team_name": "Kevin Pozo",
+    "is_free_agent": true,
+    "captain_name": "Kevin Pozo",
+    "captain_game_id": "Kevin 7 (#VCLRGRLVG)",
+    "captain_whatsapp": "0963630921",
+    "members": [],
+    "status": "approved",
+    "payment_status": "paid"
+  },
+  {
     "id": "f22af963-f485-4148-847f-ab975a4ea4b9",
     "created_at": "2026-10-19T20:12:31.402+00:00",
     "game": "fortnite",
