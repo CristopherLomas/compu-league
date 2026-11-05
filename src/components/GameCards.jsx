@@ -22,9 +22,9 @@ const ARCADE_GAMES = [
     platformIcon: Monitor,
     buttonText: '[ REGISTRAR 5V5 ]',
     rules: [
-      'Doble eliminación oficial con Winners Bracket y Losers Bracket.',
+      'Eliminación directa oficial: Cuartos de Final, Semifinales y Gran Final.',
+      'Partidas Bo1 en rondas eliminatorias; Gran Final Bo3 al mejor de 3 mapas.',
       'Mapas oficiales del circuito competitivo.',
-      'Gran Final Bo3 al mejor de 3 mapas.',
     ],
   },
   {

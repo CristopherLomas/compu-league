@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v13_valorant_m1_team_ing';
+      const CURRENT_DATA_VERSION = 'v14_valorant_single_elimination_clean';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -35,7 +35,7 @@ export default function LiveBrackets() {
         !savedVal ||
         !savedVal.includes('VIPERX') ||
         !savedVal.includes('LOS SIN MANOS') ||
-        !savedVal.includes('TEAM ING') || !savedVal.includes('"winner":"TEAM ING"') ||
+        !savedVal.includes('"bracket":"cuartos"') || !savedVal.includes('"winner":"TEAM ING"') ||
         !savedClash ||
         !savedClash.includes('Lenin Rodríguez') ||
         !savedClash.includes('Kevin Pozo') || !savedClash.includes('Edison Godoy') || !savedClash.includes('Nicolas Villareal') || !savedClash.includes('Kevin Diaz') || !savedClash.includes('"status":"completed"');
@@ -141,102 +141,79 @@ export default function LiveBrackets() {
         {activeTab === 'valorant' && (
           <div className="space-y-8">
             
-            {/* Upper Bracket Section */}
-            <div className="border-4 border-black bg-[#0B101A] p-5 sm:p-7 shadow-brutal-black">
-              <div className="mb-6 pb-4 border-b-2 border-black flex items-center justify-between font-pixel">
+            {/* Single Elimination Main Bracket */}
+            <div className="border-4 border-black bg-[#0B101A] p-5 sm:p-7 shadow-brutal-cyan">
+              <div className="mb-6 pb-4 border-b-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-pixel">
                 <div className="space-y-1">
-                  <span className="text-[#FFE600] text-xs font-bold tracking-wider block">
-                    UPPER BRACKET // CUADRO PRINCIPAL
+                  <span className="text-[#00F0FF] text-xs font-bold tracking-wider block">
+                    VALORANT 5v5 // ELIMINACIÓN DIRECTA
                   </span>
                   <p className="text-[10px] text-slate-400 font-cyber">
-                    Partidas Bo1. El ganador avanza; el derrotado desciende a Loser Bracket.
+                    Partidas Bo1 en Cuartos y Semifinales. Gran Final al mejor de 3 mapas (Bo3). ¡El ganador avanza, el perdedor queda eliminado!
                   </p>
                 </div>
-                <span className="text-[9px] px-2 py-0.5 border border-white/20 bg-black text-white font-bold">
-                  BO1
+                <span className="text-[9px] px-2.5 py-1 border border-[#00F0FF]/40 bg-black text-[#00F0FF] font-bold self-start sm:self-auto">
+                  7 EQUIPOS OFICIALES // BO1 &amp; GRAN FINAL BO3
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Cuartos */}
+                {/* Cuartos de Final */}
                 <div className="space-y-3">
-                  <div className="text-[9px] text-[#00F0FF] pb-2 border-b-2 border-black font-pixel font-bold uppercase">
-                    CUARTOS DE FINAL
+                  <div className="text-[9px] text-[#00F0FF] pb-2 border-b-2 border-black font-pixel font-bold uppercase flex items-center justify-between">
+                    <span>CUARTOS DE FINAL</span>
+                    <span className="text-[8px] text-slate-400">BO1</span>
                   </div>
-                  {valorantMatches.filter(m => m.bracket === 'upper' && m.round === 'Cuartos de Final').map((m) => (
+                  {valorantMatches.filter(m => m.round === 'Cuartos de Final').map((m) => (
+                    <EsportsMatchCard key={m.id} match={m} />
+                  ))}
+
+                  {/* Seed 1 Bye Banner */}
+                  <div className="border-2 border-dashed border-[#FFE600]/40 bg-black/60 p-3.5 space-y-1 text-center shadow-brutal-black">
+                    <span className="font-pixel text-[8px] text-[#FFE600] uppercase block">
+                      ★ PASE DIRECTO A SEMIFINALES ★
+                    </span>
+                    <span className="font-display font-black text-sm uppercase text-white block">
+                      IKONIKOS
+                    </span>
+                    <span className="text-[9px] font-cyber text-slate-400 block">
+                      Cabeza de serie clasificado directo
+                    </span>
+                  </div>
+                </div>
+
+                {/* Semifinales */}
+                <div className="space-y-3">
+                  <div className="text-[9px] text-[#FFE600] pb-2 border-b-2 border-black font-pixel font-bold uppercase flex items-center justify-between">
+                    <span>SEMIFINALES</span>
+                    <span className="text-[8px] text-slate-400">BO1</span>
+                  </div>
+                  {valorantMatches.filter(m => m.round === 'Semifinales').map((m) => (
                     <EsportsMatchCard key={m.id} match={m} />
                   ))}
                 </div>
 
-                {/* Semis */}
+                {/* Gran Final */}
                 <div className="space-y-3">
-                  <div className="text-[9px] text-[#00F0FF] pb-2 border-b-2 border-black font-pixel font-bold uppercase">
-                    SEMIFINALES UPPER
+                  <div className="text-[9px] text-[#FF0055] pb-2 border-b-2 border-black font-pixel font-bold uppercase flex items-center justify-between">
+                    <span>GRAN FINAL</span>
+                    <span className="text-[8px] text-[#FFE600] font-black">BO3</span>
                   </div>
-                  {valorantMatches.filter(m => m.bracket === 'upper' && m.round === 'Semifinal Upper').map((m) => (
-                    <EsportsMatchCard key={m.id} match={m} />
-                  ))}
-                </div>
-
-                {/* Final Upper */}
-                <div className="space-y-3">
-                  <div className="text-[9px] text-[#FFE600] pb-2 border-b-2 border-black font-pixel font-bold uppercase">
-                    FINAL UPPER BRACKET
-                  </div>
-                  {valorantMatches.filter(m => m.bracket === 'upper' && m.round === 'Final Upper Bracket').map((m) => (
+                  {valorantMatches.filter(m => m.round === 'GRAN FINAL (Bo3)' || m.bracket === 'grand_final').map((m) => (
                     <EsportsMatchCard key={m.id} match={m} highlight />
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Loser Bracket Section */}
-            <div className="border-4 border-black bg-[#0B101A] p-5 sm:p-7 shadow-brutal-pink">
-              <div className="mb-6 pb-4 border-b-2 border-black font-pixel">
-                <span className="text-[#FF0055] text-xs font-bold tracking-wider block">
-                  LOSER BRACKET // REPECHAJE OFICIAL
-                </span>
-                <p className="text-[10px] text-slate-400 font-cyber mt-1">
-                  Segunda oportunidad. Una derrota más significa la eliminación definitiva.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="space-y-3">
-                  <div className="text-[8px] text-slate-400 pb-1 border-b border-white/10 font-pixel">RONDA 1</div>
-                  {valorantMatches.filter(m => m.bracket === 'lower' && m.round === 'Ronda 1 Loser').map((m) => (
-                    <EsportsMatchCard key={m.id} match={m} compact />
-                  ))}
+            {/* Grand Final Feature Box */}
+            {valorantMatches.filter(m => m.bracket === 'grand_final' || m.round === 'GRAN FINAL (Bo3)').map((m) => (
+              <div key={m.id} className="border-4 border-black bg-black p-6 sm:p-8 text-center space-y-4 shadow-brutal-yellow">
+                <div className="inline-block px-4 py-1.5 bg-[#FFE600] text-black font-pixel text-xs font-black uppercase tracking-wider border-2 border-black">
+                  🏆 DEFINICIÓN DEL TÍTULO // GRAN FINAL VALORANT (BO3)
                 </div>
-                <div className="space-y-3">
-                  <div className="text-[8px] text-slate-400 pb-1 border-b border-white/10 font-pixel">RONDA 2</div>
-                  {valorantMatches.filter(m => m.bracket === 'lower' && m.round === 'Ronda 2 Loser').map((m) => (
-                    <EsportsMatchCard key={m.id} match={m} compact />
-                  ))}
-                </div>
-                <div className="space-y-3">
-                  <div className="text-[8px] text-slate-400 pb-1 border-b border-white/10 font-pixel">SEMIFINAL</div>
-                  {valorantMatches.filter(m => m.bracket === 'lower' && m.round === 'Semifinal Loser').map((m) => (
-                    <EsportsMatchCard key={m.id} match={m} compact />
-                  ))}
-                </div>
-                <div className="space-y-3">
-                  <div className="text-[8px] text-[#FF0055] pb-1 border-b border-white/10 font-pixel">FINAL LOSER</div>
-                  {valorantMatches.filter(m => m.bracket === 'lower' && m.round === 'Final Loser Bracket').map((m) => (
-                    <EsportsMatchCard key={m.id} match={m} compact highlight />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Grand Final Bo3 */}
-            <div className="border-4 border-black bg-black p-6 sm:p-8 text-center space-y-4 shadow-brutal-yellow">
-              <div className="inline-block px-4 py-1.5 bg-[#FFE600] text-black font-pixel text-xs font-black uppercase tracking-wider border-2 border-black">
-                🏆 GRAN FINAL VALORANT (BO3)
-              </div>
-              
-              {valorantMatches.filter(m => m.bracket === 'grand_final').map((m) => (
-                <div key={m.id} className="p-5 sm:p-7 border-2 border-black bg-[#0C121D] max-w-xl mx-auto shadow-brutal-black">
+                
+                <div className="p-5 sm:p-7 border-2 border-[#FFE600] bg-[#0C121D] max-w-xl mx-auto shadow-brutal-black">
                   <div className="flex items-center justify-between text-base sm:text-xl font-black font-display">
                     <div className={`flex-1 text-right pr-4 uppercase ${m.winner === m.teamA ? 'text-[#FFE600] font-black' : 'text-slate-100'}`}>
                       {m.teamA}
@@ -249,11 +226,11 @@ export default function LiveBrackets() {
                     </div>
                   </div>
                   <p className="mt-3 font-pixel text-[9px] text-[#00F0FF]">
-                    Ganador Upper vs. Ganador Loser • Noche del 6 de Noviembre
+                    Ganador Semifinal 1 vs. Ganador Semifinal 2 • Al mejor de 3 mapas
                   </p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
 
           </div>
         )}
