@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v12_clash_bo1_final_2_0_main_hero';
+      const CURRENT_DATA_VERSION = 'v13_valorant_m1_team_ing';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -35,7 +35,7 @@ export default function LiveBrackets() {
         !savedVal ||
         !savedVal.includes('VIPERX') ||
         !savedVal.includes('LOS SIN MANOS') ||
-        !savedVal.includes('TEAM ING') ||
+        !savedVal.includes('TEAM ING') || !savedVal.includes('"winner":"TEAM ING"') ||
         !savedClash ||
         !savedClash.includes('Lenin Rodríguez') ||
         !savedClash.includes('Kevin Pozo') || !savedClash.includes('Edison Godoy') || !savedClash.includes('Nicolas Villareal') || !savedClash.includes('Kevin Diaz') || !savedClash.includes('"status":"completed"');
