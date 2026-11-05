@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v10_clash_champion_edwin_landeta';
+      const CURRENT_DATA_VERSION = 'v11_clash_milton_kevin_diaz';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');

@@ -257,7 +257,7 @@ export const DEMO_VALORANT_MATCHES = [
 
 export const DEMO_CLASH_MATCHES = [
   // Duelo Clasificatorio de Apertura (Play-In 21:05 PM)
-  { id: 'cr-playin', round: 'Play-In Apertura', matchIndex: 0, playerA: 'Nicolas Villareal', playerB: 'Kevin Diaz', scoreA: 2, scoreB: 1, winner: 'Nicolas Villareal', status: 'completed' },
+  { id: 'cr-playin', round: 'Play-In Apertura', matchIndex: 0, playerA: 'Nicolas Villareal', playerB: 'Kevin Diaz', scoreA: 1, scoreB: 2, winner: 'Kevin Diaz', status: 'completed' },
 
   // Octavos de Final (16 Gladiadores en 8 Duelos Directos)
   { id: 'cr-1', round: 'Octavos de Final', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 1, scoreB: 2, winner: 'Akane Reina', status: 'completed' },
@@ -267,7 +267,7 @@ export const DEMO_CLASH_MATCHES = [
   { id: 'cr-5', round: 'Octavos de Final', matchIndex: 5, playerA: 'Stalin Obando', playerB: 'Lenin Rodríguez', scoreA: 2, scoreB: 0, winner: 'Stalin Obando', status: 'completed' },
   { id: 'cr-6', round: 'Octavos de Final', matchIndex: 6, playerA: 'Jeremy Valdivieso', playerB: 'Kevin Pozo', scoreA: 1, scoreB: 2, winner: 'Kevin Pozo', status: 'completed' },
   { id: 'cr-7', round: 'Octavos de Final', matchIndex: 7, playerA: 'Juan Carlos Llore', playerB: 'Edison Godoy', scoreA: 1, scoreB: 2, winner: 'Edison Godoy', status: 'completed' },
-  { id: 'cr-8', round: 'Octavos de Final', matchIndex: 8, playerA: 'Milton Fuel Bravo', playerB: 'Nicolas Villareal', scoreA: 2, scoreB: 0, winner: 'Milton Fuel Bravo', status: 'completed' },
+  { id: 'cr-8', round: 'Octavos de Final', matchIndex: 8, playerA: 'Milton Fuel Bravo', playerB: 'Kevin Diaz', scoreA: 2, scoreB: 0, winner: 'Milton Fuel Bravo', status: 'completed' },
   
   // Cuartos de Final (Top 8)
   { id: 'cr-9', round: 'Cuartos de Final (Q1)', matchIndex: 9, playerA: 'Milton Fuel Bravo', playerB: 'Akane Reina', scoreA: 2, scoreB: 1, winner: 'Milton Fuel Bravo', status: 'completed' },
