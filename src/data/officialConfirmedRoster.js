@@ -1976,6 +1976,56 @@ export const OFFICIAL_CONFIRMED_ROSTER = [
     "updated_at": "2026-11-04T19:26:04.359648+00:00"
   },
   {
+    "id": "6dbcdbed-041b-41e6-bc41-9d2a1dc38e67",
+    "created_at": "2026-11-05T23:05:49.029815+00:00",
+    "game": "free_fire",
+    "game_name": "FREE FIRE",
+    "modality": "escuadras",
+    "ff_modality": "ambas",
+    "team_name": "Team Elvin Yumi",
+    "is_free_agent": false,
+    "captain_name": "Elvin Yumi",
+    "captain_game_id": "2463269960",
+    "captain_whatsapp": "0999999999",
+    "captain_email": "",
+    "captain_discord": "",
+    "members": [
+      {
+        "name": "Adriana Abigail uwu",
+        "gameId": "337527507",
+        "game_id": "337527507",
+        "whatsapp": "",
+        "isSubstitute": false,
+        "is_substitute": false
+      },
+      {
+        "name": "Leslie Anahi",
+        "gameId": "708323452",
+        "game_id": "708323452",
+        "whatsapp": "",
+        "isSubstitute": false,
+        "is_substitute": false
+      },
+      {
+        "name": "Jhostin Naranjo",
+        "gameId": "457410886",
+        "game_id": "457410886",
+        "whatsapp": "",
+        "isSubstitute": false,
+        "is_substitute": false
+      }
+    ],
+    "amount_due": 4.0,
+    "total_amount": 4.0,
+    "receipt_url": null,
+    "receipt_image": null,
+    "payment_status": "paid",
+    "status": "approved",
+    "admin_notes": "Inscripción confirmada por el usuario en chat staff.",
+    "verified_at": "2026-11-05T23:05:49.029815+00:00",
+    "updated_at": "2026-11-05T23:05:48.658966+00:00"
+  },
+  {
     "id": "solitarios-unified-official-2026",
     "created_at": "2026-10-19T21:00:00.000+00:00",
     "team_name": "Los Solitarios (Trio Oficial)",

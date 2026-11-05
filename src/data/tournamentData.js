@@ -159,7 +159,7 @@ export const INITIAL_SCHEDULE = [
     time: '21:00 - 21:45',
     gameId: 'free_fire',
     gameName: 'Free Fire - Partida 1: Torneo de Escuadras',
-    stageTitle: '15 Escuadras en Sala Personalizada Battle Royale. 8 en Sala A y 7 en Sala B.',
+    stageTitle: '16 Escuadras en Sala Personalizada Battle Royale. 8 en Sala A y 8 en Sala B.',
     status: 'Programado',
     streamLabel: 'En vivo por Facebook',
   },
@@ -298,6 +298,7 @@ export const DEMO_BATTLE_ROYALE_STANDINGS = {
     { rank: 13, team: 'Los Solitarios (Trío)', captain: 'David Tarapues / Matew / Alejandro', kills: 0, status: 'Sala Escuadras + Solitario' },
     { rank: 14, team: 'Los duros del trago', captain: 'Anchundia Kevin', kills: 0, status: 'Sala Escuadras + Solitario' },
     { rank: 15, team: 'Team Dylan', captain: 'Dylan (亗Dylanᖭ22♡)', kills: 0, status: 'Sala Escuadras + Solitario' },
+    { rank: 16, team: 'Team Elvin Yumi', captain: 'Elvin Yumi', kills: 0, status: 'Sala Escuadras + Solitario' },
   ],
   free_fire_solitario: [
     { rank: 1, team: 'David Tarapues', captain: 'David Tarapues', kills: 0, status: 'Sala Solitario Abierta' },
