@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v11_clash_milton_kevin_diaz';
+      const CURRENT_DATA_VERSION = 'v12_clash_bo1_final_2_0_main_hero';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -269,7 +269,7 @@ export default function LiveBrackets() {
                   CLASH ROYALE // TORNEO 1v1 BO3
                 </span>
                 <p className="text-[10px] text-slate-400 font-cyber mt-1">
-                  Torneo oficial finalizado el 4 de Noviembre. Duelos al mejor de 3 con reglas estandarizadas de torneo.
+                  Torneo oficial finalizado el 4 de Noviembre. Duelos al mejor de 1 (Bo1) y Gran Final ganada 2-0 por Edwin Landeta.
                 </p>
               </div>
               <span className="text-[9px] px-2.5 py-1 border border-[#FFE600]/40 bg-black text-[#FFE600] font-bold self-start sm:self-auto">
@@ -286,7 +286,7 @@ export default function LiveBrackets() {
                 👑 <span className="text-[#FFE600]">EDWIN LANDETA</span> 👑
               </div>
               <p className="text-xs sm:text-sm font-cyber text-slate-200 max-w-2xl mx-auto">
-                ¡Felicitaciones al gran campeón! Edwin Landeta se coronó en una emocionante Gran Final tras superar a Stalin Obando.
+                ¡Felicitaciones al gran campeón! Edwin Landeta se coronó en una emocionante Gran Final tras superar 2-0 a Stalin Obando en la Gran Final.
               </p>
               <div className="flex flex-wrap justify-center items-center gap-3 pt-2 text-xs font-cyber">
                 <div className="px-3.5 py-1.5 bg-black/90 border-2 border-slate-700 flex items-center gap-2 shadow-brutal-black">
