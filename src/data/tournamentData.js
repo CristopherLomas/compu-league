@@ -137,8 +137,8 @@ export const INITIAL_SCHEDULE = [
     time: '21:15 - 22:15',
     gameId: 'clash_royale',
     gameName: 'Clash Royale (1v1) - Torneo Completo',
-    stageTitle: 'Octavos, Cuartos, Semifinales y Gran Final (Bo3) - 17 Gladiadores (Play-In Apertura a las 21:05 + Cuadro Completo)',
-    status: 'Programado',
+    stageTitle: '🏆 ¡CAMPEÓN: EDWIN LANDETA! Subcampeón: Stalin Obando (Torneo Finalizado)',
+    status: 'Finalizado',
     streamLabel: 'En vivo por Facebook',
   },
   {
@@ -257,31 +257,38 @@ export const DEMO_VALORANT_MATCHES = [
 
 export const DEMO_CLASH_MATCHES = [
   // Duelo Clasificatorio de Apertura (Play-In 21:05 PM)
-  { id: 'cr-playin', round: 'Play-In Apertura', matchIndex: 0, playerA: 'Nicolas Villareal', playerB: 'Kevin Diaz', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-playin', round: 'Play-In Apertura', matchIndex: 0, playerA: 'Nicolas Villareal', playerB: 'Kevin Diaz', scoreA: 2, scoreB: 1, winner: 'Nicolas Villareal', status: 'completed' },
 
   // Octavos de Final (16 Gladiadores en 8 Duelos Directos)
-  { id: 'cr-1', round: 'Octavos de Final', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-2', round: 'Octavos de Final', matchIndex: 2, playerA: 'Edwin Landeta', playerB: 'Harold Mejia', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-3', round: 'Octavos de Final', matchIndex: 3, playerA: 'Danny Quilumbaquin', playerB: 'Paul Ger', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-4', round: 'Octavos de Final', matchIndex: 4, playerA: 'Ivan Bernal', playerB: 'Marcillo Pablo', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-5', round: 'Octavos de Final', matchIndex: 5, playerA: 'Stalin Obando', playerB: 'Lenin Rodríguez', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-6', round: 'Octavos de Final', matchIndex: 6, playerA: 'Jeremy Valdivieso', playerB: 'Kevin Pozo', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-7', round: 'Octavos de Final', matchIndex: 7, playerA: 'Juan Carlos Llore', playerB: 'Edison Godoy', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-8', round: 'Octavos de Final', matchIndex: 8, playerA: 'Milton Fuel Bravo', playerB: 'Ganador Play-In (Villareal / Diaz)', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-1', round: 'Octavos de Final', matchIndex: 1, playerA: 'Jordan Bastidas', playerB: 'Akane Reina', scoreA: 1, scoreB: 2, winner: 'Akane Reina', status: 'completed' },
+  { id: 'cr-2', round: 'Octavos de Final', matchIndex: 2, playerA: 'Edwin Landeta', playerB: 'Harold Mejia', scoreA: 2, scoreB: 0, winner: 'Edwin Landeta', status: 'completed' },
+  { id: 'cr-3', round: 'Octavos de Final', matchIndex: 3, playerA: 'Danny Quilumbaquin', playerB: 'Paul Ger', scoreA: 1, scoreB: 2, winner: 'Paul Ger', status: 'completed' },
+  { id: 'cr-4', round: 'Octavos de Final', matchIndex: 4, playerA: 'Ivan Bernal', playerB: 'Marcillo Pablo', scoreA: 2, scoreB: 0, winner: 'Ivan Bernal', status: 'completed' },
+  { id: 'cr-5', round: 'Octavos de Final', matchIndex: 5, playerA: 'Stalin Obando', playerB: 'Lenin Rodríguez', scoreA: 2, scoreB: 0, winner: 'Stalin Obando', status: 'completed' },
+  { id: 'cr-6', round: 'Octavos de Final', matchIndex: 6, playerA: 'Jeremy Valdivieso', playerB: 'Kevin Pozo', scoreA: 1, scoreB: 2, winner: 'Kevin Pozo', status: 'completed' },
+  { id: 'cr-7', round: 'Octavos de Final', matchIndex: 7, playerA: 'Juan Carlos Llore', playerB: 'Edison Godoy', scoreA: 1, scoreB: 2, winner: 'Edison Godoy', status: 'completed' },
+  { id: 'cr-8', round: 'Octavos de Final', matchIndex: 8, playerA: 'Milton Fuel Bravo', playerB: 'Nicolas Villareal', scoreA: 2, scoreB: 0, winner: 'Milton Fuel Bravo', status: 'completed' },
   
-  // Cuartos de Final (8 Mejores)
-  { id: 'cr-9', round: 'Cuartos de Final', matchIndex: 9, playerA: 'Ganador M8', playerB: 'Ganador M1', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-10', round: 'Cuartos de Final', matchIndex: 10, playerA: 'Ganador M7', playerB: 'Ganador M2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-11', round: 'Cuartos de Final', matchIndex: 11, playerA: 'Ganador M5', playerB: 'Ganador M3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-12', round: 'Cuartos de Final', matchIndex: 12, playerA: 'Ganador M6', playerB: 'Ganador M4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Cuartos de Final (Top 8)
+  { id: 'cr-9', round: 'Cuartos de Final (Q1)', matchIndex: 9, playerA: 'Milton Fuel Bravo', playerB: 'Akane Reina', scoreA: 2, scoreB: 1, winner: 'Milton Fuel Bravo', status: 'completed' },
+  { id: 'cr-10', round: 'Cuartos de Final (Q2)', matchIndex: 10, playerA: 'Edison Godoy', playerB: 'Edwin Landeta', scoreA: 1, scoreB: 2, winner: 'Edwin Landeta', status: 'completed' },
+  { id: 'cr-11', round: 'Cuartos de Final (Q3)', matchIndex: 11, playerA: 'Stalin Obando', playerB: 'Paul Ger', scoreA: 2, scoreB: 1, winner: 'Stalin Obando', status: 'completed' },
+  { id: 'cr-12', round: 'Cuartos de Final (Q4)', matchIndex: 12, playerA: 'Kevin Pozo', playerB: 'Ivan Bernal', scoreA: 2, scoreB: 1, winner: 'Kevin Pozo', status: 'completed' },
   
-  // Semifinales (4 Mejores)
-  { id: 'cr-13', round: 'Semifinales', matchIndex: 13, playerA: 'Ganador Cuartos 1', playerB: 'Ganador Cuartos 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'cr-14', round: 'Semifinales', matchIndex: 14, playerA: 'Ganador Cuartos 3', playerB: 'Ganador Cuartos 4', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  // Semifinales (Top 4)
+  { id: 'cr-13', round: 'Semifinal 1', matchIndex: 13, playerA: 'Milton Fuel Bravo', playerB: 'Edwin Landeta', scoreA: 1, scoreB: 2, winner: 'Edwin Landeta', status: 'completed' },
+  { id: 'cr-14', round: 'Semifinal 2', matchIndex: 14, playerA: 'Stalin Obando', playerB: 'Kevin Pozo', scoreA: 2, scoreB: 1, winner: 'Stalin Obando', status: 'completed' },
   
   // Gran Final Bo3
-  { id: 'cr-15', round: 'GRAN FINAL (Bo3)', matchIndex: 15, playerA: 'Finalista 1', playerB: 'Finalista 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'cr-15', round: 'GRAN FINAL (Bo3)', matchIndex: 15, playerA: 'Edwin Landeta', playerB: 'Stalin Obando', scoreA: 2, scoreB: 1, winner: 'Edwin Landeta', status: 'completed' },
 ];
+
+export const CLASH_ROYALE_CHAMPION = {
+  champion: 'Edwin Landeta',
+  runnerUp: 'Stalin Obando',
+  semifinalists: ['Milton Fuel Bravo', 'Kevin Pozo'],
+  completedDate: '2026-11-04'
+};
 
 export const DEMO_BATTLE_ROYALE_STANDINGS = {
   free_fire_escuadras: [

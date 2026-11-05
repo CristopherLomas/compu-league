@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v9_kevin_diaz_team_dylan_52total';
+      const CURRENT_DATA_VERSION = 'v10_clash_champion_edwin_landeta';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -38,7 +38,7 @@ export default function LiveBrackets() {
         !savedVal.includes('TEAM ING') ||
         !savedClash ||
         !savedClash.includes('Lenin Rodríguez') ||
-        !savedClash.includes('Kevin Pozo') || !savedClash.includes('Edison Godoy') || !savedClash.includes('Nicolas Villareal') || !savedClash.includes('Kevin Diaz');
+        !savedClash.includes('Kevin Pozo') || !savedClash.includes('Edison Godoy') || !savedClash.includes('Nicolas Villareal') || !savedClash.includes('Kevin Diaz') || !savedClash.includes('"status":"completed"');
 
       if (isOutdated) {
         localStorage.setItem('compu_league_brackets_version', CURRENT_DATA_VERSION);
@@ -263,39 +263,77 @@ export default function LiveBrackets() {
         {/* ------------------------------------------------------------- */}
         {activeTab === 'clash_royale' && (
           <div className="border-4 border-black bg-[#0B101A] p-6 sm:p-8 space-y-6 shadow-brutal-purple">
-            <div className="pb-4 border-b-2 border-black flex items-center justify-between font-pixel">
+            <div className="pb-4 border-b-2 border-black flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-pixel">
               <div>
                 <span className="text-white text-xs font-bold tracking-wider block">
                   CLASH ROYALE // TORNEO 1v1 BO3
                 </span>
                 <p className="text-[10px] text-slate-400 font-cyber mt-1">
-                  Duelos al mejor de 3 partidas con nivel de cartas estandarizado de torneo.
+                  Torneo oficial finalizado el 4 de Noviembre. Duelos al mejor de 3 con reglas estandarizadas de torneo.
                 </p>
               </div>
-              <span className="text-[9px] px-2.5 py-1 border border-white/20 bg-black text-[#A855F7] font-bold">
-                17 GLADIADORES CONFIRMADOS (PLAY-IN + OCTAVOS)
+              <span className="text-[9px] px-2.5 py-1 border border-[#FFE600]/40 bg-black text-[#FFE600] font-bold self-start sm:self-auto">
+                🏆 TORNEO FINALIZADO // CAMPEÓN DEFINIDO
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {clashMatches.map((m) => (
-                <div key={m.id} className="border-2 border-black bg-black p-3.5 space-y-2 shadow-brutal-black">
-                  <div className="flex justify-between font-pixel text-[8px] text-slate-400 pb-1.5 border-b border-white/10">
-                    <span>{m.round}</span>
-                    <span className="text-[#10B981]">{m.status.toUpperCase()}</span>
-                  </div>
-                  <div className="space-y-1 font-cyber text-xs">
-                    <div className={`flex justify-between p-1.5 border border-white/5 ${m.winner === m.playerA ? 'bg-[#FFE600]/15 text-[#FFE600] font-bold' : 'text-slate-300'}`}>
-                      <span>{m.playerA}</span>
-                      <strong className="font-pixel text-[10px]">{m.scoreA}</strong>
-                    </div>
-                    <div className={`flex justify-between p-1.5 border border-white/5 ${m.winner === m.playerB ? 'bg-[#FFE600]/15 text-[#FFE600] font-bold' : 'text-slate-300'}`}>
-                      <span>{m.playerB}</span>
-                      <strong className="font-pixel text-[10px]">{m.scoreB}</strong>
-                    </div>
-                  </div>
+            {/* Champion Showcase Podium */}
+            <div className="border-4 border-black bg-gradient-to-r from-[#FFE600]/15 via-black to-[#FFE600]/15 p-5 sm:p-7 text-center space-y-3 shadow-brutal-yellow">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#FFE600] text-black font-pixel text-xs font-black uppercase border-2 border-black">
+                <Trophy className="w-4 h-4 text-black" /> ¡CAMPEÓN OFICIAL CLASH ROYALE 2026! 🏆
+              </div>
+              <div className="text-3xl sm:text-5xl font-black font-display text-white tracking-wide uppercase drop-shadow-[3px_3px_0px_#000]">
+                👑 <span className="text-[#FFE600]">EDWIN LANDETA</span> 👑
+              </div>
+              <p className="text-xs sm:text-sm font-cyber text-slate-200 max-w-2xl mx-auto">
+                ¡Felicitaciones al gran campeón! Edwin Landeta se coronó en una emocionante Gran Final tras superar a Stalin Obando.
+              </p>
+              <div className="flex flex-wrap justify-center items-center gap-3 pt-2 text-xs font-cyber">
+                <div className="px-3.5 py-1.5 bg-black/90 border-2 border-slate-700 flex items-center gap-2 shadow-brutal-black">
+                  <span className="font-pixel text-[9px] text-slate-400 uppercase">🥈 SUBCAMPEÓN</span>
+                  <span className="text-white font-bold">Stalin Obando</span>
                 </div>
-              ))}
+                <div className="px-3.5 py-1.5 bg-black/90 border-2 border-slate-700 flex items-center gap-2 shadow-brutal-black">
+                  <span className="font-pixel text-[9px] text-[#00F0FF] uppercase">🥉 TOP 4 (SEMIS)</span>
+                  <span className="text-slate-200 font-bold">Milton Fuel Bravo &bull; Kevin Pozo</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Matches Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {clashMatches.map((m) => {
+                const isGrandFinal = m.round.includes('GRAN FINAL');
+                return (
+                  <div 
+                    key={m.id} 
+                    className={`border-2 border-black bg-black p-3.5 space-y-2 shadow-brutal-black ${isGrandFinal ? 'sm:col-span-2 lg:col-span-4 border-[#FFE600] bg-gradient-to-b from-[#1C1605] to-black ring-2 ring-[#FFE600]/30' : ''}`}
+                  >
+                    <div className="flex justify-between font-pixel text-[8px] text-slate-400 pb-1.5 border-b border-white/10">
+                      <span className={isGrandFinal ? 'text-[#FFE600] font-bold text-[9px]' : ''}>{m.round}</span>
+                      <span className={m.status === 'completed' ? 'text-[#10B981] font-bold' : 'text-slate-400'}>
+                        {m.status === 'completed' ? 'FINALIZADO' : m.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="space-y-1 font-cyber text-xs">
+                      <div className={`flex justify-between items-center p-1.5 border transition-colors ${m.winner === m.playerA ? 'bg-[#FFE600]/20 text-[#FFE600] font-bold border-[#FFE600]/50' : 'text-slate-300 border-white/5'}`}>
+                        <span className="flex items-center gap-1.5 truncate">
+                          {m.winner === m.playerA && <Crown className="w-3.5 h-3.5 text-[#FFE600] shrink-0" />}
+                          <span className="truncate">{m.playerA}</span>
+                        </span>
+                        <strong className="font-pixel text-xs shrink-0 ml-2">{m.scoreA}</strong>
+                      </div>
+                      <div className={`flex justify-between items-center p-1.5 border transition-colors ${m.winner === m.playerB ? 'bg-[#FFE600]/20 text-[#FFE600] font-bold border-[#FFE600]/50' : 'text-slate-300 border-white/5'}`}>
+                        <span className="flex items-center gap-1.5 truncate">
+                          {m.winner === m.playerB && <Crown className="w-3.5 h-3.5 text-[#FFE600] shrink-0" />}
+                          <span className="truncate">{m.playerB}</span>
+                        </span>
+                        <strong className="font-pixel text-xs shrink-0 ml-2">{m.scoreB}</strong>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
