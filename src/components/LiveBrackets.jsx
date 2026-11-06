@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v16_free_fire_clash_finalized_champions_hidden';
+      const CURRENT_DATA_VERSION = 'v17_fortnite_official_scoring_flyer';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -396,6 +396,53 @@ export default function LiveBrackets() {
                 </div>
               </div>
             )}
+            {/* Fortnite Official Scoring System Showcase (Matching Official Flyer) */}
+            {activeTab === 'fortnite' && (
+              <div className="border-4 border-black bg-gradient-to-r from-[#00F0FF]/15 via-black to-[#00F0FF]/15 p-4 sm:p-6 shadow-brutal-cyan space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-black pb-3 font-pixel">
+                  <div>
+                    <span className="text-[#00F0FF] text-xs font-bold uppercase tracking-wider block">
+                      FORTNITE DÚOS // SISTEMA OFICIAL DE PUNTOS
+                    </span>
+                    <p className="text-[10px] text-slate-300 font-cyber mt-0.5">
+                      2 Partidas en Sala Privada: Partida 1 (Con Construcción) + Partida 2 (Cero Construcción).
+                    </p>
+                  </div>
+                  <span className="text-[9px] px-2.5 py-1 bg-black text-[#00F0FF] border border-[#00F0FF] font-bold self-start sm:self-auto">
+                    13 DÚOS // SALA CON CLAVE
+                  </span>
+                </div>
+
+                {/* Points Cards Grid matching the official flyer */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 font-pixel text-center">
+                  <div className="bg-black/90 border-2 border-[#FFE600] p-2.5 shadow-brutal-black">
+                    <span className="text-[9px] text-[#FFE600] block mb-0.5">🏆 1º LUGAR</span>
+                    <span className="text-white text-base sm:text-lg font-black">10 PTS</span>
+                  </div>
+                  <div className="bg-black/90 border-2 border-slate-300 p-2.5 shadow-brutal-black">
+                    <span className="text-[9px] text-slate-300 block mb-0.5">🥈 2º LUGAR</span>
+                    <span className="text-white text-base sm:text-lg font-black">5 PTS</span>
+                  </div>
+                  <div className="bg-black/90 border-2 border-[#D97706] p-2.5 shadow-brutal-black">
+                    <span className="text-[9px] text-[#F59E0B] block mb-0.5">🥉 3º LUGAR</span>
+                    <span className="text-white text-base sm:text-lg font-black">3 PTS</span>
+                  </div>
+                  <div className="bg-black/90 border-2 border-[#00F0FF] p-2.5 shadow-brutal-black">
+                    <span className="text-[9px] text-[#00F0FF] block mb-0.5">🎖️ 4º LUGAR</span>
+                    <span className="text-white text-base sm:text-lg font-black">2 PTS</span>
+                  </div>
+                  <div className="bg-black/90 border-2 border-[#00F0FF]/60 p-2.5 shadow-brutal-black">
+                    <span className="text-[9px] text-[#00F0FF]/80 block mb-0.5">👤 5º LUGAR</span>
+                    <span className="text-white text-base sm:text-lg font-black">1 PTO</span>
+                  </div>
+                  <div className="bg-black/90 border-2 border-[#FF0055] p-2.5 shadow-brutal-pink">
+                    <span className="text-[9px] text-[#FF0055] block mb-0.5">🎯 CADA KILL</span>
+                    <span className="text-[#FF0055] text-base sm:text-lg font-black">1 PTO</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between pb-3 border-b-2 border-black font-pixel">
               <span className="text-[#FFE600] text-xs font-bold uppercase">
                 TABLA DE POSICIONES // BATTLE ROYALE

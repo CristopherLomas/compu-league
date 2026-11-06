@@ -71,9 +71,9 @@ const ARCADE_GAMES = [
     platformIcon: Gamepad2,
     buttonText: '[ INSCRIBIR DUO ]',
     rules: [
-      'Sala privada Battle Royale en parejas con código exclusivo de servidor.',
-      'Crossplay 100% abierto: compite desde PC, PlayStation, Xbox o Móvil.',
-      'Victoria Magistral: gana la última pareja en pie dentro de la tormenta final.',
+      '2 Partidas en Parejas: Partida 1 Con Construcción (Build) y Partida 2 Cero Construcción (Zero Build).',
+      'Puntos Oficiales: 1º (10 pts) • 2º (5 pts) • 3º (3 pts) • 4º (2 pts) • 5º (1 pto) • Kill (1 pto).',
+      'Suma acumulada de ambas partidas para definir al Dúo Campeón Oficial.',
     ],
   },
   {
