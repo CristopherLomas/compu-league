@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v15_free_fire_team_elvin_yumi_53total';
+      const CURRENT_DATA_VERSION = 'v16_free_fire_clash_finalized_champions_hidden';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -67,9 +67,9 @@ export default function LiveBrackets() {
 
   const tabs = [
     { id: 'valorant', name: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
-    { id: 'free_fire', name: 'FREE FIRE (BR)', icon: Flame, color: '#FFE600' },
     { id: 'fortnite', name: 'FORTNITE (DUOS)', icon: Crosshair, color: '#00F0FF' },
-    { id: 'clash_royale', name: 'CLASH ROYALE (1v1)', icon: Crown, color: '#A855F7' },
+    { id: 'free_fire', name: 'FREE FIRE (🏆 FINALIZADO)', icon: Flame, color: '#FFE600' },
+    { id: 'clash_royale', name: 'CLASH ROYALE (🏆 FINALIZADO)', icon: Crown, color: '#A855F7' },
   ];
 
   return (
@@ -319,7 +319,83 @@ export default function LiveBrackets() {
         {/* 3. BATTLE ROYALE STANDINGS                                    */}
         {/* ------------------------------------------------------------- */}
         {(activeTab === 'free_fire' || activeTab === 'fortnite') && (
-          <div className="border-4 border-black bg-[#0B101A] p-5 sm:p-7 shadow-brutal-black space-y-5">
+          <div className="border-4 border-black bg-[#0B101A] p-5 sm:p-7 shadow-brutal-black space-y-6">
+
+            {/* Free Fire Champions Showcase Podium */}
+            {activeTab === 'free_fire' && (
+              <div className="border-4 border-black bg-gradient-to-r from-[#FFE600]/15 via-black to-[#FFE600]/15 p-5 sm:p-7 text-center space-y-5 shadow-brutal-yellow">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#FFE600] text-black font-pixel text-xs font-black uppercase border-2 border-black">
+                  <Trophy className="w-4 h-4 text-black" /> ¡TORNEO OFICIAL FREE FIRE CONCLUIDO! 🏆
+                </div>
+
+                <div className="space-y-1">
+                  <div className="text-2xl sm:text-4xl font-black font-display text-white tracking-wide uppercase drop-shadow-[2px_2px_0px_#000]">
+                    👑 <span className="text-[#FFE600]">CUADRO DE HONOR Y CAMPEONES</span> 👑
+                  </div>
+                  <p className="text-xs sm:text-sm font-cyber text-slate-300 max-w-2xl mx-auto">
+                    Partidas oficiales disputadas en salas privadas de Battle Royale (16 Escuadras y Torneo Solitario).
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left pt-2">
+                  {/* Ronda 1: Lowe */}
+                  <div className="border-2 border-black bg-black p-4 space-y-2 shadow-brutal-black relative overflow-hidden">
+                    <div className="flex items-center justify-between font-pixel text-[9px] text-[#FFE600] border-b border-white/10 pb-1.5">
+                      <span>ESCUADRAS // RONDA 1</span>
+                      <span className="bg-[#FFE600] text-black px-1.5 py-0.5 font-black">BOOYAH!</span>
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black font-display text-white uppercase">
+                      🏆 LOWE
+                    </div>
+                    <div className="text-xs font-cyber text-slate-300">
+                      Capitán: <strong className="text-white">Xavier Lema</strong> (339299831)
+                    </div>
+                    <div className="text-[11px] font-cyber text-slate-400 space-y-0.5 pt-1 border-t border-white/5">
+                      <div>• Edison (406508681)</div>
+                      <div>• JuanPa (2677070637)</div>
+                      <div>• Daniel (383753985)</div>
+                    </div>
+                  </div>
+
+                  {/* Ronda 2: Pisa Cabezas */}
+                  <div className="border-2 border-black bg-black p-4 space-y-2 shadow-brutal-black relative overflow-hidden">
+                    <div className="flex items-center justify-between font-pixel text-[9px] text-[#FFE600] border-b border-white/10 pb-1.5">
+                      <span>ESCUADRAS // RONDA 2</span>
+                      <span className="bg-[#FFE600] text-black px-1.5 py-0.5 font-black">BOOYAH!</span>
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black font-display text-white uppercase">
+                      🏆 PISA CABEZAS
+                    </div>
+                    <div className="text-xs font-cyber text-slate-300">
+                      Capitán: <strong className="text-white">Leonel De La Torre</strong> (693056546)
+                    </div>
+                    <div className="text-[11px] font-cyber text-slate-400 space-y-0.5 pt-1 border-t border-white/5">
+                      <div>• Marlon Guamán (7232971902)</div>
+                      <div>• Juan Morán (262414604)</div>
+                      <div>• Sebastián Guzmán (2297093616)</div>
+                    </div>
+                  </div>
+
+                  {/* Individual: Sebastián Guzmán */}
+                  <div className="border-2 border-[#00F0FF] bg-gradient-to-b from-[#031B2A] to-black p-4 space-y-2 shadow-brutal-cyan relative overflow-hidden ring-1 ring-[#00F0FF]/40">
+                    <div className="flex items-center justify-between font-pixel text-[9px] text-[#00F0FF] border-b border-white/10 pb-1.5">
+                      <span>TORNEO SOLITARIO</span>
+                      <span className="bg-[#00F0FF] text-black px-1.5 py-0.5 font-black">CAMPEÓN</span>
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black font-display text-[#FFE600] uppercase">
+                      👑 SEBASTIÁN GUZMÁN
+                    </div>
+                    <div className="text-xs font-cyber text-slate-300">
+                      Escuadra: <strong className="text-white">Pisa Cabezas</strong>
+                    </div>
+                    <div className="text-[11px] font-cyber text-slate-300 space-y-0.5 pt-1 border-t border-white/5">
+                      <div>ID Jugador: <strong className="text-[#00F0FF]">2297093616</strong></div>
+                      <div className="text-[#10B981] font-bold">¡Último sobreviviente en pie!</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="flex items-center justify-between pb-3 border-b-2 border-black font-pixel">
               <span className="text-[#FFE600] text-xs font-bold uppercase">
                 TABLA DE POSICIONES // BATTLE ROYALE

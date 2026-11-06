@@ -12,6 +12,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
   const [selectedType, setSelectedType] = useState('all'); // 'all', 'teams', 'individuals'
   const [searchTerm, setSearchTerm] = useState('');
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [showArchived, setShowArchived] = useState(false);
 
   const loadData = async () => {
     try {
@@ -31,9 +32,21 @@ export default function ParticipantsSection({ onOpenRegister }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Filter registrations (excluye cualquier inscripción rechazada)
-  const filtered = registrations
-    .filter((r) => (r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid') && r.status !== 'rejected')
+  // Juegos concluidos cuyos participantes se archivan de la vista principal
+  const isFinishedGame = (g) => g === 'clash_royale' || g === 'free_fire';
+
+  // Registros válidos (excluye rechazados)
+  const approvedRegistrations = registrations.filter(
+    (r) => (r.status === 'approved' || r.status === 'confirmed' || r.payment_status === 'paid') && r.status !== 'rejected'
+  );
+
+  // Registros visibles: oculta Clash Royale y Free Fire si showArchived es false
+  const visibleRegistrations = showArchived
+    ? approvedRegistrations
+    : approvedRegistrations.filter((r) => !isFinishedGame(r.game));
+
+  // Filter registrations
+  const filtered = visibleRegistrations
     .map((reg) => {
       if (reg.game === 'clash_royale') {
         return {
@@ -75,8 +88,8 @@ export default function ParticipantsSection({ onOpenRegister }) {
   const teamsList = filtered.filter(item => item.game !== 'clash_royale' && !item.is_free_agent && Array.isArray(item.members) && item.members.length > 0);
   const individualsList = filtered.filter(item => item.game === 'clash_royale' || item.is_free_agent || !Array.isArray(item.members) || item.members.length === 0);
 
-  const totalTeams = registrations.filter(r => r.game !== 'clash_royale' && !r.is_free_agent && Array.isArray(r.members) && r.members.length > 0).length;
-  const totalPlayers = registrations.reduce((acc, r) => {
+  const totalTeams = visibleRegistrations.filter(r => r.game !== 'clash_royale' && !r.is_free_agent && Array.isArray(r.members) && r.members.length > 0).length;
+  const totalPlayers = visibleRegistrations.reduce((acc, r) => {
     if (r.game === 'clash_royale') return acc + 1;
     const memberCount = Array.isArray(r.members) ? r.members.length : 0;
     return acc + 1 + memberCount;
@@ -87,12 +100,16 @@ export default function ParticipantsSection({ onOpenRegister }) {
   const fortniteCount = registrations.filter(r => r.game === 'fortnite').length;
   const clashCount = registrations.filter(r => r.game === 'clash_royale').length;
 
-  const gameFilters = [
-    { id: 'all', label: 'TODOS', icon: Zap, color: '#FFE600' },
+  const gameFilters = showArchived ? [
+    { id: 'all', label: 'TODOS (GENERAL)', icon: Zap, color: '#FFE600' },
     { id: 'valorant', label: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
-    { id: 'free_fire', label: 'FREE FIRE', icon: Flame, color: '#FFE600' },
     { id: 'fortnite', label: 'FORTNITE (DUOS)', icon: Crosshair, color: '#00F0FF' },
-    { id: 'clash_royale', label: 'CLASH ROYALE (1v1)', icon: Crown, color: '#A855F7' },
+    { id: 'free_fire', label: 'FREE FIRE (ARCHIVADO)', icon: Flame, color: '#FFE600' },
+    { id: 'clash_royale', label: 'CLASH ROYALE (ARCHIVADO)', icon: Crown, color: '#A855F7' },
+  ] : [
+    { id: 'all', label: 'TODOS (EN COMPETENCIA)', icon: Zap, color: '#FFE600' },
+    { id: 'valorant', label: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
+    { id: 'fortnite', label: 'FORTNITE (DUOS)', icon: Crosshair, color: '#00F0FF' },
   ];
 
   const getGameBadge = (gameId, modality) => {
@@ -192,9 +209,11 @@ export default function ParticipantsSection({ onOpenRegister }) {
         {/* ======================================================= */}
         {/* 2. SUMMARY COUNTER HUD (SOLID 3D SHADOW CARDS)          */}
         {/* ======================================================= */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
-            <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFE600] uppercase block">TOTAL PLAYERS</span>
+            <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFE600] uppercase block">
+              {showArchived ? 'TOTAL PLAYERS' : 'PLAYERS ACTIVOS'}
+            </span>
             <span className="font-display text-2xl sm:text-4xl font-black text-white block leading-none">{totalPlayers}</span>
           </div>
 
@@ -204,24 +223,63 @@ export default function ParticipantsSection({ onOpenRegister }) {
           </div>
 
           <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
-            <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFE600] uppercase block">FREE FIRE</span>
-            <span className="font-display text-2xl sm:text-4xl font-black text-[#FFE600] block leading-none">{freeFireCount}</span>
-          </div>
-
-          <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#00F0FF] uppercase block">FORTNITE</span>
             <span className="font-display text-2xl sm:text-4xl font-black text-[#00F0FF] block leading-none">{fortniteCount}</span>
           </div>
 
-          <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1 col-span-2 sm:col-span-1">
+          <div className="bg-[#0D131F] border-2 border-[#FFE600]/40 p-3.5 shadow-brutal-yellow text-center space-y-1">
+            <span className="font-pixel text-[8px] sm:text-[9px] text-[#FFE600] uppercase block">FREE FIRE</span>
+            <span className="font-pixel text-xs sm:text-sm font-black text-[#FFE600] block leading-tight pt-1">
+              🏆 FINALIZADO
+            </span>
+            <span className="text-[9px] text-slate-400 font-cyber block truncate">Lowe • Pisa Cabezas</span>
+          </div>
+
+          <div className="bg-[#0D131F] border-2 border-[#A855F7]/40 p-3.5 shadow-brutal-purple text-center space-y-1 col-span-2 sm:col-span-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#A855F7] uppercase block">CLASH ROYALE</span>
-            <span className="font-display text-2xl sm:text-4xl font-black text-[#A855F7] block leading-none">{clashCount}</span>
+            <span className="font-pixel text-xs sm:text-sm font-black text-[#A855F7] block leading-tight pt-1">
+              🏆 FINALIZADO
+            </span>
+            <span className="text-[9px] text-slate-400 font-cyber block truncate">Edwin Landeta (2-0)</span>
           </div>
         </div>
 
-        {/* ======================================================= */}
-        {/* 3. FILTERS & TERMINAL SEARCH BAR                        */}
-        {/* ======================================================= */}
+        {/* Torneos Concluidos Notice Banner */}
+        <div className="bg-[#0B101A] border-4 border-black p-4 sm:p-5 mb-8 shadow-brutal-yellow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#FFE600] text-black border-2 border-black flex items-center justify-center shrink-0 shadow-brutal-black font-pixel text-lg">
+              🏆
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2 font-pixel text-[9px] sm:text-[10px] text-[#FFE600] uppercase font-bold">
+                <span className="w-2 h-2 bg-[#FFE600] inline-block animate-arcade-blink" />
+                <span>TORNEOS CONCLUIDOS // PARTICIPANTES ARCHIVADOS</span>
+              </div>
+              <p className="text-xs font-cyber text-slate-300 max-w-2xl leading-relaxed">
+                Los participantes de <strong>Clash Royale</strong> y <strong>Free Fire</strong> han sido archivados tras concluir sus torneos. En competencia activa permanecen <strong>Valorant (5v5)</strong> y <strong>Fortnite (Dúos)</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-stretch sm:self-auto shrink-0">
+            <a
+              href="#brackets"
+              className="btn-arcade-press font-pixel text-[9px] px-3.5 py-2.5 bg-[#FFE600] hover:bg-[#FFF04D] text-black border-2 border-black font-black uppercase text-center flex-1 sm:flex-initial shadow-brutal-black cursor-pointer"
+            >
+              🏆 VER RESULTADOS Y CAMPEONES
+            </a>
+            <button
+              onClick={() => {
+                setShowArchived(!showArchived);
+                setSelectedGame('all');
+              }}
+              className="btn-arcade-press font-pixel text-[9px] px-3 py-2.5 bg-black hover:bg-[#1E293B] text-slate-300 border-2 border-slate-700 uppercase font-bold text-center flex-1 sm:flex-initial shadow-brutal-black cursor-pointer"
+            >
+              {showArchived ? '🙈 OCULTAR ARCHIVADOS' : '📂 VER ARCHIVADOS'}
+            </button>
+          </div>
+        </div>
+
         <div className="bg-[#0B101A] border-4 border-black p-4 mb-8 shadow-brutal-black space-y-4">
           
           {/* Game Selection Cartridge Tabs */}
@@ -264,7 +322,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
                     : 'bg-black text-slate-400 hover:text-white shadow-brutal-black'
                 }`}
               >
-                ALL ({registrations.length})
+                ALL ({visibleRegistrations.length})
               </button>
 
               <button
@@ -288,7 +346,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
                 }`}
               >
                 <User className="w-3 h-3" />
-                <span>SOLO ({registrations.length - totalTeams})</span>
+                <span>SOLO ({visibleRegistrations.length - totalTeams})</span>
               </button>
             </div>
 
