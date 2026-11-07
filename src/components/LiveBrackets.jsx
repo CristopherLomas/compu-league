@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v17_fortnite_official_scoring_flyer';
+      const CURRENT_DATA_VERSION = 'v18_fortnite_round1_ciber_winners_perritos';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -476,8 +476,9 @@ export default function LiveBrackets() {
                   <tr className="border-b-2 border-black bg-black font-pixel text-[8px] text-slate-400 uppercase">
                     <th className="p-2.5">RANK</th>
                     <th className="p-2.5">EQUIPO / JUGADOR</th>
-                    <th className="p-2.5">CAPITAN</th>
+                    <th className="p-2.5">CAPITAN / DUO</th>
                     <th className="p-2.5 text-center">KILLS</th>
+                    {activeTab === 'fortnite' && <th className="p-2.5 text-center text-[#FFE600]">PUNTOS R1</th>}
                     <th className="p-2.5 text-right">ESTADO</th>
                   </tr>
                 </thead>
@@ -492,6 +493,11 @@ export default function LiveBrackets() {
                       <td className="p-2.5 font-bold text-white uppercase">{row.team}</td>
                       <td className="p-2.5 text-slate-400">{row.captain}</td>
                       <td className="p-2.5 text-center font-pixel text-[10px] text-[#00F0FF]">{row.kills}</td>
+                      {activeTab === 'fortnite' && (
+                        <td className="p-2.5 text-center font-pixel text-[11px] font-black text-[#FFE600]">
+                          {row.points !== undefined ? `${row.points} PTS` : '-'}
+                        </td>
+                      )}
                       <td className="p-2.5 text-right font-pixel text-[8px]">
                         <span className={row.isWinner ? 'bg-[#10B981] text-black px-1.5 py-0.5 font-black' : 'text-slate-500'}>
                           {row.status}
