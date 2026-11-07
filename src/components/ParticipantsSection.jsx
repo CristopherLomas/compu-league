@@ -33,7 +33,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
   }, []);
 
   // Juegos concluidos cuyos participantes se archivan de la vista principal
-  const isFinishedGame = (g) => g === 'clash_royale' || g === 'free_fire';
+  const isFinishedGame = (g) => g === 'clash_royale' || g === 'free_fire' || g === 'fortnite';
 
   // Registros válidos (excluye rechazados)
   const approvedRegistrations = registrations.filter(
@@ -103,13 +103,12 @@ export default function ParticipantsSection({ onOpenRegister }) {
   const gameFilters = showArchived ? [
     { id: 'all', label: 'TODOS (GENERAL)', icon: Zap, color: '#FFE600' },
     { id: 'valorant', label: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
-    { id: 'fortnite', label: 'FORTNITE (DUOS)', icon: Crosshair, color: '#00F0FF' },
+    { id: 'fortnite', label: 'FORTNITE (ARCHIVADO)', icon: Crosshair, color: '#00F0FF' },
     { id: 'free_fire', label: 'FREE FIRE (ARCHIVADO)', icon: Flame, color: '#FFE600' },
     { id: 'clash_royale', label: 'CLASH ROYALE (ARCHIVADO)', icon: Crown, color: '#A855F7' },
   ] : [
     { id: 'all', label: 'TODOS (EN COMPETENCIA)', icon: Zap, color: '#FFE600' },
     { id: 'valorant', label: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
-    { id: 'fortnite', label: 'FORTNITE (DUOS)', icon: Crosshair, color: '#00F0FF' },
   ];
 
   const getGameBadge = (gameId, modality) => {
@@ -222,9 +221,12 @@ export default function ParticipantsSection({ onOpenRegister }) {
             <span className="font-display text-2xl sm:text-4xl font-black text-[#FF0055] block leading-none">{valorantCount}</span>
           </div>
 
-          <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
+          <div className="bg-[#0D131F] border-2 border-[#00F0FF]/40 p-3.5 shadow-brutal-cyan text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#00F0FF] uppercase block">FORTNITE</span>
-            <span className="font-display text-2xl sm:text-4xl font-black text-[#00F0FF] block leading-none">{fortniteCount}</span>
+            <span className="font-pixel text-xs sm:text-sm font-black text-[#00F0FF] block leading-tight pt-1">
+              🏆 FINALIZADO
+            </span>
+            <span className="text-[9px] text-slate-400 font-cyber block truncate">Winners (21 pts)</span>
           </div>
 
           <div className="bg-[#0D131F] border-2 border-[#FFE600]/40 p-3.5 shadow-brutal-yellow text-center space-y-1">
@@ -256,7 +258,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
                 <span>TORNEOS CONCLUIDOS // PARTICIPANTES ARCHIVADOS</span>
               </div>
               <p className="text-xs font-cyber text-slate-300 max-w-2xl leading-relaxed">
-                Los participantes de <strong>Clash Royale</strong> y <strong>Free Fire</strong> han sido archivados tras concluir sus torneos. En competencia activa permanecen <strong>Valorant (5v5)</strong> y <strong>Fortnite (Dúos)</strong>.
+                Los participantes de <strong>Clash Royale</strong>, <strong>Free Fire</strong> y <strong>Fortnite</strong> han sido archivados tras concluir sus torneos. En competencia activa permanece <strong>Valorant (5v5)</strong> rumbo a la Gran Final.
               </p>
             </div>
           </div>

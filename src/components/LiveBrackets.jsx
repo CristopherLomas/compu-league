@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v18_fortnite_round1_ciber_winners_perritos';
+      const CURRENT_DATA_VERSION = 'v19_fortnite_final_champions_winners_21pts';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -67,7 +67,7 @@ export default function LiveBrackets() {
 
   const tabs = [
     { id: 'valorant', name: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
-    { id: 'fortnite', name: 'FORTNITE (DUOS)', icon: Crosshair, color: '#00F0FF' },
+    { id: 'fortnite', name: 'FORTNITE (🏆 FINALIZADO)', icon: Crosshair, color: '#00F0FF' },
     { id: 'free_fire', name: 'FREE FIRE (🏆 FINALIZADO)', icon: Flame, color: '#FFE600' },
     { id: 'clash_royale', name: 'CLASH ROYALE (🏆 FINALIZADO)', icon: Crown, color: '#A855F7' },
   ];
@@ -396,48 +396,78 @@ export default function LiveBrackets() {
                 </div>
               </div>
             )}
-            {/* Fortnite Official Scoring System Showcase (Matching Official Flyer) */}
+            {/* Fortnite Champions Showcase Podium */}
             {activeTab === 'fortnite' && (
-              <div className="border-4 border-black bg-gradient-to-r from-[#00F0FF]/15 via-black to-[#00F0FF]/15 p-4 sm:p-6 shadow-brutal-cyan space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-black pb-3 font-pixel">
-                  <div>
-                    <span className="text-[#00F0FF] text-xs font-bold uppercase tracking-wider block">
-                      FORTNITE DÚOS // SISTEMA OFICIAL DE PUNTOS
-                    </span>
-                    <p className="text-[10px] text-slate-300 font-cyber mt-0.5">
-                      2 Partidas en Sala Privada: Partida 1 (Con Construcción) + Partida 2 (Cero Construcción).
-                    </p>
-                  </div>
-                  <span className="text-[9px] px-2.5 py-1 bg-black text-[#00F0FF] border border-[#00F0FF] font-bold self-start sm:self-auto">
-                    13 DÚOS // SALA CON CLAVE
-                  </span>
+              <div className="border-4 border-black bg-gradient-to-r from-[#00F0FF]/15 via-black to-[#00F0FF]/15 p-5 sm:p-7 text-center space-y-5 shadow-brutal-cyan">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#00F0FF] text-black font-pixel text-xs font-black uppercase border-2 border-black">
+                  <Trophy className="w-4 h-4 text-black" /> ¡TORNEO OFICIAL FORTNITE DÚOS CONCLUIDO! 🏆
                 </div>
 
-                {/* Points Cards Grid matching the official flyer */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 font-pixel text-center">
-                  <div className="bg-black/90 border-2 border-[#FFE600] p-2.5 shadow-brutal-black">
-                    <span className="text-[9px] text-[#FFE600] block mb-0.5">🏆 1º LUGAR</span>
-                    <span className="text-white text-base sm:text-lg font-black">10 PTS</span>
+                <div className="space-y-1">
+                  <div className="text-2xl sm:text-4xl font-black font-display text-white tracking-wide uppercase drop-shadow-[2px_2px_0px_#000]">
+                    👑 <span className="text-[#FFE600]">WINNERS</span> // <span className="text-[#00F0FF]">GRAN CAMPEÓN (21 PTS)</span> 👑
                   </div>
-                  <div className="bg-black/90 border-2 border-slate-300 p-2.5 shadow-brutal-black">
-                    <span className="text-[9px] text-slate-300 block mb-0.5">🥈 2º LUGAR</span>
-                    <span className="text-white text-base sm:text-lg font-black">5 PTS</span>
+                  <p className="text-xs sm:text-sm font-cyber text-slate-300 max-w-2xl mx-auto">
+                    ¡Felicitaciones a <strong>Anthony Hurtado</strong> (Thony_Jh) y <strong>Darío Castro</strong> (Daribootfn)! Coronados campeones tras sumar 21 puntos y 11 kills en las 2 rondas oficiales.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left pt-2">
+                  {/* Gran Campeón */}
+                  <div className="border-2 border-[#FFE600] bg-gradient-to-b from-[#1E1904] to-black p-4 space-y-2 shadow-brutal-yellow ring-2 ring-[#FFE600]/40 relative overflow-hidden">
+                    <div className="flex items-center justify-between font-pixel text-[9px] text-[#FFE600] border-b border-white/10 pb-1.5">
+                      <span>👑 1º LUGAR // CAMPEÓN</span>
+                      <span className="bg-[#FFE600] text-black px-1.5 py-0.5 font-black">21 PTS</span>
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black font-display text-white uppercase">
+                      WINNERS
+                    </div>
+                    <div className="text-xs font-cyber text-slate-300">
+                      Anthony Hurtado & Darío Castro
+                    </div>
+                    <div className="text-[11px] font-cyber text-slate-400 space-y-0.5 pt-1 border-t border-white/5">
+                      <div>• R1 (Build): 9 pts (Top 2 + 4 Kills)</div>
+                      <div>• R2 (Zero Build): 12 pts (Top 2 + 7 Kills)</div>
+                      <div className="text-[#FFE600] font-bold">Total: 11 Kills acumuladas</div>
+                    </div>
                   </div>
-                  <div className="bg-black/90 border-2 border-[#D97706] p-2.5 shadow-brutal-black">
-                    <span className="text-[9px] text-[#F59E0B] block mb-0.5">🥉 3º LUGAR</span>
-                    <span className="text-white text-base sm:text-lg font-black">3 PTS</span>
+
+                  {/* Subcampeón */}
+                  <div className="border-2 border-slate-300 bg-black p-4 space-y-2 shadow-brutal-black relative overflow-hidden">
+                    <div className="flex items-center justify-between font-pixel text-[9px] text-slate-300 border-b border-white/10 pb-1.5">
+                      <span>🥈 2º LUGAR // SUBCAMPEÓN</span>
+                      <span className="bg-white text-black px-1.5 py-0.5 font-black">16 PTS</span>
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black font-display text-white uppercase">
+                      PERRITOS ORG
+                    </div>
+                    <div className="text-xs font-cyber text-slate-300">
+                      Romel Maldonado & Alejandro Rivera
+                    </div>
+                    <div className="text-[11px] font-cyber text-slate-400 space-y-0.5 pt-1 border-t border-white/5">
+                      <div>• R1 (Build): 9 pts (Top 3 + 6 Kills)</div>
+                      <div>• R2 (Zero Build): 7 pts (Top 5 + 6 Kills)</div>
+                      <div className="text-[#00F0FF] font-bold">¡Top Fraggers: 12 Kills totales!</div>
+                    </div>
                   </div>
-                  <div className="bg-black/90 border-2 border-[#00F0FF] p-2.5 shadow-brutal-black">
-                    <span className="text-[9px] text-[#00F0FF] block mb-0.5">🎖️ 4º LUGAR</span>
-                    <span className="text-white text-base sm:text-lg font-black">2 PTS</span>
-                  </div>
-                  <div className="bg-black/90 border-2 border-[#00F0FF]/60 p-2.5 shadow-brutal-black">
-                    <span className="text-[9px] text-[#00F0FF]/80 block mb-0.5">👤 5º LUGAR</span>
-                    <span className="text-white text-base sm:text-lg font-black">1 PTO</span>
-                  </div>
-                  <div className="bg-black/90 border-2 border-[#FF0055] p-2.5 shadow-brutal-pink">
-                    <span className="text-[9px] text-[#FF0055] block mb-0.5">🎯 CADA KILL</span>
-                    <span className="text-[#FF0055] text-base sm:text-lg font-black">1 PTO</span>
+
+                  {/* Top 3 & 4 */}
+                  <div className="border-2 border-[#D97706] bg-black p-4 space-y-2 shadow-brutal-black relative overflow-hidden">
+                    <div className="flex items-center justify-between font-pixel text-[9px] text-[#F59E0B] border-b border-white/10 pb-1.5">
+                      <span>🥉 3º & 4º LUGAR (EMPATE)</span>
+                      <span className="bg-[#D97706] text-black px-1.5 py-0.5 font-black">14 PTS</span>
+                    </div>
+                    <div className="text-lg font-black font-display text-white uppercase">
+                      67 BOYS &bull; CIBER
+                    </div>
+                    <div className="text-xs font-cyber text-slate-300">
+                      67 Boys (Carlos & Enrique) • CIBER (Lenin & Luis)
+                    </div>
+                    <div className="text-[11px] font-cyber text-slate-400 space-y-0.5 pt-1 border-t border-white/5">
+                      <div>• CIBER: Top 1 en R1 (14 pts)</div>
+                      <div>• 67 Boys: Top 1 en R2 (14 pts)</div>
+                      <div className="text-[#10B981] font-bold">Ambos ganaron 1 Victoria Magistral</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -478,7 +508,7 @@ export default function LiveBrackets() {
                     <th className="p-2.5">EQUIPO / JUGADOR</th>
                     <th className="p-2.5">CAPITAN / DUO</th>
                     <th className="p-2.5 text-center">KILLS</th>
-                    {activeTab === 'fortnite' && <th className="p-2.5 text-center text-[#FFE600]">PUNTOS R1</th>}
+                    {activeTab === 'fortnite' && <th className="p-2.5 text-center text-[#FFE600]">PUNTOS TOTALES</th>}
                     <th className="p-2.5 text-right">ESTADO</th>
                   </tr>
                 </thead>

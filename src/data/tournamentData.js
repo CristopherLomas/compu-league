@@ -203,8 +203,8 @@ export const INITIAL_SCHEDULE = [
     time: '21:35 - 22:15',
     gameId: 'fortnite',
     gameName: 'Fortnite (Dúos) - Partida 2: Cero Construcción (Zero Build)',
-    stageTitle: 'Misma escala de puntos oficiales + cómputo final acumulado para definir al Dúo Campeón',
-    status: 'Programado',
+    stageTitle: '🏆 ¡TORNEO CONCLUIDO! Campeón: Winners (21 pts) • Subcampeón: PERRITOS ORG (16 pts)',
+    status: 'Finalizado',
     streamLabel: 'En vivo por Facebook',
   },
   {
@@ -305,6 +305,40 @@ export const FREE_FIRE_CHAMPIONS = {
   completedDate: '2026-11-05'
 };
 
+export const FORTNITE_CHAMPIONS = {
+  champion: {
+    team: 'Winners',
+    captain: 'Anthony Hurtado (Thony_Jh)',
+    partner: 'Darío Castro (Daribootfn)',
+    points: 21,
+    kills: 11,
+    title: 'Gran Campeón Oficial Fortnite Dúos 2026',
+  },
+  runnerUp: {
+    team: 'PERRITOS ORG',
+    captain: 'Romel Maldonado (DrackRomel)',
+    partner: 'Alejandro Rivera (Flaizzz ﾒ)',
+    points: 16,
+    kills: 12,
+    title: 'Subcampeón Oficial',
+  },
+  thirdPlace: {
+    team: '67 Boys',
+    captain: 'Carlos Loza (Carloxin67)',
+    partner: 'Enrique Patiño (Moonsoft 67)',
+    points: 14,
+    kills: 4,
+  },
+  fourthPlace: {
+    team: 'CIBER',
+    captain: 'Lenin Pozo (leninpx_)',
+    partner: 'Luis Ibujes (Laiib)',
+    points: 14,
+    kills: 4,
+  },
+  completedDate: '2026-11-06'
+};
+
 export const DEMO_BATTLE_ROYALE_STANDINGS = {
   free_fire_escuadras: [
     { rank: 1, team: 'pisa cabezas', captain: 'Leonel De La Torre', kills: 14, status: '🏆 BOOYAH RONDA 2 (CAMPEÓN)', isWinner: true },
@@ -343,18 +377,18 @@ export const DEMO_BATTLE_ROYALE_STANDINGS = {
     { rank: 16, team: 'Maicol Flores', captain: 'Maicol Flores', kills: 0, status: 'Finalizado' },
   ],
   fortnite_duos: [
-    { rank: 1, team: 'CIBER', captain: 'Lenin Pozo (leninpx_) / Luis Ibujes (Laiib)', kills: 4, points: 14, status: '🏆 Top 1 (10 pts) + 4 Kills = 14 PTS' },
-    { rank: 2, team: 'Winners', captain: 'Anthony Hurtado (Thony_Jh) / Darío Castro (Daribootfn)', kills: 4, points: 9, status: '🥈 Top 2 (5 pts) + 4 Kills = 9 PTS' },
-    { rank: 3, team: 'PERRITOS ORG', captain: 'Romel Maldonado (DrackRomel) / Alejandro Rivera (Flaizzz)', kills: 6, points: 9, status: '🥉 Top 3 (3 pts) + 6 Kills = 9 PTS' },
-    { rank: 4, team: 'G2 Encebollados', captain: 'Fernando Muñoz (Ferxxr_) / Alair Vinueza (Benji.vin)', kills: 0, points: 2, status: 'Top 4 (2 pts) + 0 Kills = 2 PTS' },
-    { rank: 5, team: 'Herederos de epstein', captain: 'Angel Yar (angelooxx1724) / Joelin Garcia (Joel.xdxd)', kills: 2, points: 2, status: 'Top 6 (0 pts) + 2 Kills = 2 PTS' },
-    { rank: 6, team: 'LOS GUACHITURROS', captain: 'Jeremy Valdivieso (JEREMY214v2) / Sebastian Paucar (ZZSebaStia)', kills: 2, points: 2, status: 'Top 7 (0 pts) + 2 Kills = 2 PTS' },
-    { rank: 7, team: 'Los saiyans', captain: 'Andrés Argoti (Rocrak675) / Daniel Revelo (ROBEN30)', kills: 0, points: 1, status: 'Top 5 (1 pt) + 0 Kills = 1 PTO' },
-    { rank: 8, team: '𓆰LOS MISMISIMOS𓆪', captain: 'Alejandr (kevgokiu) / Juan Viñachi', kills: 0, points: 0, status: 'Top 8 (0 pts) = 0 PTS' },
-    { rank: 9, team: 'TEAM ING', captain: 'Edison Godoy (Edy22O) / Kevin Mejia (diaz_Kevin)', kills: 0, points: 0, status: 'Top 9 (0 pts) = 0 PTS' },
-    { rank: 10, team: 'Inges sin título', captain: 'José Jiménez (Hod plays) / Sebastian Jiménez (sebistis12)', kills: 0, points: 0, status: 'Top 11 (0 pts) = 0 PTS' },
-    { rank: 11, team: 'LOS SIN MANOS', captain: 'ANTHONY JIMENEZ / Nahim Arciniegas', kills: 0, points: 0, status: '0 PTS' },
-    { rank: 12, team: '67 Boys', captain: 'Carlos Loza / Enrique Patiño', kills: 0, points: 0, status: '0 PTS' },
-    { rank: 13, team: 'Los legendarios', captain: 'Richard Bonilla / Dylan Cuacés', kills: 0, points: 0, status: '0 PTS' },
+    { rank: 1, team: 'Winners', captain: 'Anthony Hurtado (Thony_Jh) / Darío Castro (Daribootfn)', kills: 11, points: 21, status: '👑 GRAN CAMPEÓN (21 PTS)', isWinner: true },
+    { rank: 2, team: 'PERRITOS ORG', captain: 'Romel Maldonado (DrackRomel) / Alejandro Rivera (Flaizzz)', kills: 12, points: 16, status: '🥈 SUBCAMPEÓN (16 PTS)', isWinner: true },
+    { rank: 3, team: '67 Boys', captain: 'Carlos Loza (Carloxin67) / Enrique Patiño (Moonsoft)', kills: 4, points: 14, status: '🥉 3º LUGAR (14 PTS)' },
+    { rank: 4, team: 'CIBER', captain: 'Lenin Pozo (leninpx_) / Luis Ibujes (Laiib)', kills: 4, points: 14, status: '🎖️ 4º LUGAR (14 PTS)' },
+    { rank: 5, team: 'Los saiyans', captain: 'Andrés Argoti (Rocrak675) / Daniel Revelo (ROBEN30)', kills: 5, points: 9, status: '5º Lugar (9 PTS)' },
+    { rank: 6, team: 'G2 Encebollados', captain: 'Fernando Muñoz (Ferxxr_) / Alair Vinueza (Benji.vin)', kills: 0, points: 4, status: '6º Lugar (4 PTS)' },
+    { rank: 7, team: 'LOS SIN MANOS', captain: 'Anthony Jimenez (ElMalius) / Nahim Arciniegas (n4him_xo)', kills: 3, points: 3, status: '7º Lugar (3 PTS)' },
+    { rank: 8, team: 'Herederos de epstein', captain: 'Angel Yar (angelooxx1724) / Joelin Garcia (Joel.xdxd)', kills: 2, points: 2, status: '8º Lugar (2 PTS)' },
+    { rank: 9, team: 'LOS GUACHITURROS', captain: 'Jeremy Valdivieso (JEREMY214v2) / Sebastian Paucar (ZZSebaStia)', kills: 2, points: 2, status: '9º Lugar (2 PTS)' },
+    { rank: 10, team: '𓆰LOS MISMISIMOS𓆪', captain: 'Alejandr (kevgokiu) / Juan Viñachi (CarlxsSJJ)', kills: 0, points: 0, status: '0 PTS' },
+    { rank: 11, team: 'TEAM ING', captain: 'Edison Godoy (Edy22O) / Kevin Mejia (diaz_Kevin)', kills: 0, points: 0, status: '0 PTS' },
+    { rank: 12, team: 'Los legendarios', captain: 'Richard Bonilla (Richi.137) / Dylan Cuacés (Miki_c137)', kills: 0, points: 0, status: '0 PTS' },
+    { rank: 13, team: 'Inges sin título', captain: 'José Jiménez (Hod plays) / Sebastian Jiménez (sebistis12)', kills: 0, points: 0, status: '0 PTS' },
   ]
 };

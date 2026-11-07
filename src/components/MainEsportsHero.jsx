@@ -81,6 +81,9 @@ export default function MainEsportsHero({
 
           <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">🏆 CAMPEONES FREE FIRE</span>
           <span className="tracking-wider text-[#00F0FF] font-black">★ R1: LOWE • R2: PISA CABEZAS • IND: SEBASTIÁN GUZMÁN ★</span>
+
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">👑 CAMPEÓN FORTNITE</span>
+          <span className="tracking-wider text-[#FFE600] font-black">★ ¡WINNERS SE CORONA CAMPEÓN CON 21 PUNTOS! ★</span>
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT • FREE FIRE • FORTNITE</span>
           <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold">PREMIOS LISTOS</span>
           
@@ -99,6 +102,9 @@ export default function MainEsportsHero({
 
           <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">🏆 CAMPEONES FREE FIRE</span>
           <span className="tracking-wider text-[#00F0FF] font-black">★ R1: LOWE • R2: PISA CABEZAS • IND: SEBASTIÁN GUZMÁN ★</span>
+
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">👑 CAMPEÓN FORTNITE</span>
+          <span className="tracking-wider text-[#FFE600] font-black">★ ¡WINNERS SE CORONA CAMPEÓN CON 21 PUNTOS! ★</span>
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT • FREE FIRE • FORTNITE</span>
           <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold">PREMIOS LISTOS</span>
           
