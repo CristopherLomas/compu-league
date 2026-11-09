@@ -148,8 +148,8 @@ export const INITIAL_SCHEDULE = [
     time: '22:15 - 23:45',
     gameId: 'valorant',
     gameName: 'Valorant (5v5) - Jornada 1: Cuartos de Final',
-    stageTitle: 'Match 1: TEAM ING superó a LOS SIN MANOS (1-0) | Match 2: Chupines 2027 vs Profugos | Match 3: Pusydystroyer vs VIPERX',
-    status: 'En Curso',
+    stageTitle: 'M1: TEAM ING (1-0) | M2: Profugos de la pala (1-0) | M3: VIPERX (1-0)',
+    status: 'Finalizado',
     streamLabel: 'En vivo por Facebook',
   },
   {
@@ -181,8 +181,8 @@ export const INITIAL_SCHEDULE = [
     time: '22:30 - 23:45',
     gameId: 'valorant',
     gameName: 'Valorant (5v5) - Jornada 2: Semifinales',
-    stageTitle: 'Semi 1: ikonikos vs Ganador M2 | Semi 2: TEAM ING vs Ganador M3',
-    status: 'Programado',
+    stageTitle: 'Semi 1: Profugos de la pala (1-0 ikonikos) | Semi 2: TEAM ING (1-0 VIPERX)',
+    status: 'Finalizado',
     streamLabel: 'En vivo por Facebook',
   },
   {
@@ -213,9 +213,9 @@ export const INITIAL_SCHEDULE = [
     date: '2026-11-06',
     time: '22:15 - 23:40',
     gameId: 'valorant',
-    gameName: 'Valorant (5v5) - Jornada 3: LA GRAN FINAL (Bo3)',
-    stageTitle: 'Duelo Supremo al mejor de 3 mapas por el Campeonato de Valorant',
-    status: 'Programado',
+    gameName: 'Valorant (5v5) - LA GRAN FINAL (Bo3)',
+    stageTitle: '🏆 ¡CAMPEÓN SUPREMO: PROFUGOS DE LA PALA (2-0)! Subcampeón: TEAM ING (Torneo Concluido)',
+    status: 'Finalizado',
     streamLabel: 'En vivo por Facebook',
   },
   {
@@ -225,8 +225,8 @@ export const INITIAL_SCHEDULE = [
     time: '23:40 - 23:55',
     gameId: 'valorant',
     gameName: 'Ceremonia de Clausura & Premiación General',
-    stageTitle: 'Cuadro de Honor y Entrega de Títulos de los 4 Juegos',
-    status: 'Programado',
+    stageTitle: '🏆 Cuadro de Honor Completo de los 4 Juegos • ¡Compu League 2026 Finalizado con Éxito!',
+    status: 'Finalizado',
     streamLabel: 'En vivo por Facebook',
   },
 ];
@@ -235,15 +235,15 @@ export const INITIAL_SCHEDULE = [
 export const DEMO_VALORANT_MATCHES = [
   // Cuartos de Final (Bo1)
   { id: 'v-1', bracket: 'cuartos', round: 'Cuartos de Final', matchIndex: 1, teamA: 'LOS SIN MANOS', teamB: 'TEAM ING', scoreA: 0, scoreB: 1, winner: 'TEAM ING', status: 'completed' },
-  { id: 'v-2', bracket: 'cuartos', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-3', bracket: 'cuartos', round: 'Cuartos de Final', matchIndex: 3, teamA: 'Los pusydystroyer', teamB: 'VIPERX', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-2', bracket: 'cuartos', round: 'Cuartos de Final', matchIndex: 2, teamA: 'Chupines 2027', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 1, winner: 'Profugos de la pala', status: 'completed' },
+  { id: 'v-3', bracket: 'cuartos', round: 'Cuartos de Final', matchIndex: 3, teamA: 'Los pusydystroyer', teamB: 'VIPERX', scoreA: 0, scoreB: 1, winner: 'VIPERX', status: 'completed' },
   
   // Semifinales (Bo1)
-  { id: 'v-4', bracket: 'semis', round: 'Semifinales', matchIndex: 4, teamA: 'ikonikos', teamB: 'Ganador Match 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
-  { id: 'v-5', bracket: 'semis', round: 'Semifinales', matchIndex: 5, teamA: 'TEAM ING', teamB: 'Ganador Match 3', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' },
+  { id: 'v-4', bracket: 'semis', round: 'Semifinales', matchIndex: 4, teamA: 'ikonikos', teamB: 'Profugos de la pala', scoreA: 0, scoreB: 1, winner: 'Profugos de la pala', status: 'completed' },
+  { id: 'v-5', bracket: 'semis', round: 'Semifinales', matchIndex: 5, teamA: 'TEAM ING', teamB: 'VIPERX', scoreA: 1, scoreB: 0, winner: 'TEAM ING', status: 'completed' },
 
   // Gran Final (Bo3)
-  { id: 'v-6', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 6, teamA: 'Ganador Semifinal 1', teamB: 'Ganador Semifinal 2', scoreA: 0, scoreB: 0, winner: null, status: 'scheduled' }
+  { id: 'v-6', bracket: 'grand_final', round: 'GRAN FINAL (Bo3)', matchIndex: 6, teamA: 'Profugos de la pala', teamB: 'TEAM ING', scoreA: 2, scoreB: 0, winner: 'Profugos de la pala', status: 'completed' }
 ];
 
 export const DEMO_CLASH_MATCHES = [
@@ -273,6 +273,34 @@ export const DEMO_CLASH_MATCHES = [
   // Gran Final (Al mejor de 2/3 - Victoria 2-0)
   { id: 'cr-15', round: 'GRAN FINAL (2 - 0)', matchIndex: 15, playerA: 'Edwin Landeta', playerB: 'Stalin Obando', scoreA: 2, scoreB: 0, winner: 'Edwin Landeta', status: 'completed' },
 ];
+
+export const VALORANT_CHAMPIONS = {
+  champion: {
+    team: 'Profugos de la pala',
+    captain: 'Mateo Huera (БАЙЧИ#КОЗЕЛ)',
+    members: [
+      'Juan Buelvas (BerteX 乂#PAN)',
+      'Joseph Ramírez (RYOU HANABI#花火02)',
+      'Anthony Huera (AnthonyHxe#GGZ)',
+      'Diego Escobar (Dieguinho#3030)'
+    ],
+    score: '2-0',
+    title: 'Gran Campeón Oficial Valorant 5v5 2026',
+  },
+  runnerUp: {
+    team: 'TEAM ING',
+    captain: 'Alex Pilacuan (AleXx #ECUA)',
+    members: [
+      'Edison Godoy (Edy #ECU)',
+      'kevin Diaz (K3ViN #7004)',
+      'Oscar Ger (Gero #2819)',
+      'Kevin Mejia (AlexanderMy #UWU)'
+    ],
+    title: 'Subcampeón Oficial',
+  },
+  semifinalists: ['ikonikos', 'VIPERX'],
+  completedDate: '2026-11-09'
+};
 
 export const CLASH_ROYALE_CHAMPION = {
   champion: 'Edwin Landeta',

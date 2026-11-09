@@ -191,7 +191,7 @@ export default function ParticipantsSection({ onOpenRegister }) {
               </h2>
 
               <p className="text-slate-300 font-cyber text-xs sm:text-sm max-w-2xl">
-                Registro oficial en vivo de escuadras y duelistas inscritos para Compu League 2026.
+                Registro histórico oficial de los 4 torneos concluidos de Compu League 2026. ¡Felicitaciones a los campeones!
               </p>
             </div>
 
@@ -216,9 +216,12 @@ export default function ParticipantsSection({ onOpenRegister }) {
             <span className="font-display text-2xl sm:text-4xl font-black text-white block leading-none">{totalPlayers}</span>
           </div>
 
-          <div className="bg-[#0D131F] border-2 border-black p-3.5 shadow-brutal-black text-center space-y-1">
+          <div className="bg-[#0D131F] border-2 border-[#FF0055]/40 p-3.5 shadow-brutal-pink text-center space-y-1">
             <span className="font-pixel text-[8px] sm:text-[9px] text-[#FF0055] uppercase block">VALORANT</span>
-            <span className="font-display text-2xl sm:text-4xl font-black text-[#FF0055] block leading-none">{valorantCount}</span>
+            <span className="font-pixel text-xs sm:text-sm font-black text-[#FF0055] block leading-tight pt-1">
+              🏆 FINALIZADO
+            </span>
+            <span className="text-[9px] text-slate-400 font-cyber block truncate">Profugos de la pala</span>
           </div>
 
           <div className="bg-[#0D131F] border-2 border-[#00F0FF]/40 p-3.5 shadow-brutal-cyan text-center space-y-1">

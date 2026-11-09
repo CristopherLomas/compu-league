@@ -71,45 +71,41 @@ export default function MainEsportsHero({
       <div className="w-full bg-[#FF0055] text-white font-pixel py-2.5 text-[10px] sm:text-xs overflow-hidden select-none border-b-2 border-black relative z-20">
         <div className="animate-marquee whitespace-nowrap flex items-center gap-6 font-black">
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">ESTADO</span>
-          <span className="tracking-wider text-white">★ INSCRIPCIONES CERRADAS ★</span>
+          <span className="tracking-wider text-white">★ ¡COMPU LEAGUE 2026 CONCLUIDO CON ÉXITO! ★</span>
           
-          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">INICIO DEL TORNEO</span>
-          <span className="tracking-wider text-[#FFE600]">★ MIÉRCOLES 4 DE NOVIEMBRE - 9:00 PM (21:00) ★</span>
-          
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">👑 CAMPEÓN CLASH</span>
-          <span className="tracking-wider text-[#FFE600] font-black">★ ¡EDWIN LANDETA SE CORONA CAMPEÓN 2-0! ★</span>
+          <span className="bg-black text-[#FF0055] px-2.5 py-0.5">👑 CAMPEÓN VALORANT</span>
+          <span className="tracking-wider text-[#FF0055] font-black">★ ¡PROFUGOS DE LA PALA SE CORONA CAMPEÓN (2-0)! ★</span>
 
-          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">🏆 CAMPEONES FREE FIRE</span>
-          <span className="tracking-wider text-[#00F0FF] font-black">★ R1: LOWE • R2: PISA CABEZAS • IND: SEBASTIÁN GUZMÁN ★</span>
+          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">👑 CAMPEÓN FORTNITE</span>
+          <span className="tracking-wider text-[#00F0FF] font-black">★ ¡WINNERS SE CORONA CAMPEÓN (21 PTS)! ★</span>
 
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">👑 CAMPEÓN FORTNITE</span>
-          <span className="tracking-wider text-[#FFE600] font-black">★ ¡WINNERS SE CORONA CAMPEÓN CON 21 PUNTOS! ★</span>
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT • FREE FIRE • FORTNITE</span>
-          <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold">PREMIOS LISTOS</span>
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">🏆 CAMPEONES FREE FIRE</span>
+          <span className="tracking-wider text-[#FFE600] font-black">★ R1: LOWE • R2: PISA CABEZAS • IND: SEBASTIÁN GUZMÁN ★</span>
+
+          <span className="bg-black text-[#A855F7] px-2.5 py-0.5">👑 CAMPEÓN CLASH</span>
+          <span className="tracking-wider text-[#A855F7] font-black">★ ¡EDWIN LANDETA SE CORONA CAMPEÓN (2-0)! ★</span>
           
           <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">CARRERA DE COMPUTACION</span>
-          <span className="tracking-wider">★ TRANSMISION EN VIVO ★</span>
+          <span className="tracking-wider">★ ¡GRACIAS A TODOS LOS PARTICIPANTES! ★</span>
 
           {/* Duplicated for smooth infinite loop */}
           <span className="bg-black text-[#FFE600] px-2.5 py-0.5">ESTADO</span>
-          <span className="tracking-wider text-white">★ INSCRIPCIONES CERRADAS ★</span>
+          <span className="tracking-wider text-white">★ ¡COMPU LEAGUE 2026 CONCLUIDO CON ÉXITO! ★</span>
           
-          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">INICIO DEL TORNEO</span>
-          <span className="tracking-wider text-[#FFE600]">★ MIÉRCOLES 4 DE NOVIEMBRE - 9:00 PM (21:00) ★</span>
-          
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">👑 CAMPEÓN CLASH</span>
-          <span className="tracking-wider text-[#FFE600] font-black">★ ¡EDWIN LANDETA SE CORONA CAMPEÓN 2-0! ★</span>
+          <span className="bg-black text-[#FF0055] px-2.5 py-0.5">👑 CAMPEÓN VALORANT</span>
+          <span className="tracking-wider text-[#FF0055] font-black">★ ¡PROFUGOS DE LA PALA SE CORONA CAMPEÓN (2-0)! ★</span>
 
-          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">🏆 CAMPEONES FREE FIRE</span>
-          <span className="tracking-wider text-[#00F0FF] font-black">★ R1: LOWE • R2: PISA CABEZAS • IND: SEBASTIÁN GUZMÁN ★</span>
+          <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">👑 CAMPEÓN FORTNITE</span>
+          <span className="tracking-wider text-[#00F0FF] font-black">★ ¡WINNERS SE CORONA CAMPEÓN (21 PTS)! ★</span>
 
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">👑 CAMPEÓN FORTNITE</span>
-          <span className="tracking-wider text-[#FFE600] font-black">★ ¡WINNERS SE CORONA CAMPEÓN CON 21 PUNTOS! ★</span>
-          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">VALORANT • FREE FIRE • FORTNITE</span>
-          <span className="bg-[#FFE600] text-black px-2 py-0.5 font-bold">PREMIOS LISTOS</span>
+          <span className="bg-black text-[#FFE600] px-2.5 py-0.5">🏆 CAMPEONES FREE FIRE</span>
+          <span className="tracking-wider text-[#FFE600] font-black">★ R1: LOWE • R2: PISA CABEZAS • IND: SEBASTIÁN GUZMÁN ★</span>
+
+          <span className="bg-black text-[#A855F7] px-2.5 py-0.5">👑 CAMPEÓN CLASH</span>
+          <span className="tracking-wider text-[#A855F7] font-black">★ ¡EDWIN LANDETA SE CORONA CAMPEÓN (2-0)! ★</span>
           
           <span className="bg-black text-[#00F0FF] px-2.5 py-0.5">CARRERA DE COMPUTACION</span>
-          <span className="tracking-wider">★ TRANSMISION EN VIVO ★</span>
+          <span className="tracking-wider">★ ¡GRACIAS A TODOS LOS PARTICIPANTES! ★</span>
         </div>
       </div>
 
@@ -167,9 +163,73 @@ export default function MainEsportsHero({
               </p>
             </div>
 
-            {/* 🏆 Featured Champions Showcase: CLASH ROYALE & FREE FIRE */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-              {/* Card 1: Clash Royale */}
+            {/* 🏆 Featured Champions Showcase: ALL 4 GAMES */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+              {/* Card 1: Valorant */}
+              <div className="bg-[#0E1526] border-2 border-[#FF0055] p-4 shadow-brutal-pink flex flex-col justify-between gap-3 relative overflow-hidden">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-[#FF0055] text-white border-2 border-black shadow-brutal-black flex items-center justify-center shrink-0">
+                    <Trophy className="w-5 h-5 stroke-[2.5]" />
+                  </div>
+                  <div className="space-y-0.5 text-left">
+                    <div className="flex items-center gap-1.5 font-pixel text-[8px] text-[#FF0055] uppercase tracking-wider">
+                      <span className="w-1.5 h-1.5 bg-[#FF0055] inline-block animate-arcade-blink" />
+                      <span>CAMPEÓN VALORANT 5V5</span>
+                    </div>
+                    <div className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight flex items-center gap-1.5">
+                      <span className="truncate">👑 PROFUGOS DE LA PALA</span>
+                      <span className="text-[9px] font-pixel px-1.5 py-0.5 bg-[#FF0055] text-white border border-black shadow-sm font-black shrink-0">
+                        2 - 0
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-cyber text-slate-300">
+                      Cap. Mateo Huera • Venció 2-0 a <strong>TEAM ING</strong> en la Final.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={onScrollToBrackets}
+                  className="btn-arcade-press bg-black hover:bg-[#1E293B] text-[#FF0055] border border-[#FF0055] font-pixel text-[9px] px-3 py-1.5 uppercase font-black shadow-brutal-black cursor-pointer flex items-center justify-center gap-1.5 self-end w-full sm:w-auto"
+                >
+                  <span>VER BRACKET</span>
+                  <ArrowRight className="w-3 h-3 stroke-[3]" />
+                </button>
+              </div>
+
+              {/* Card 2: Fortnite */}
+              <div className="bg-[#0E1526] border-2 border-[#00F0FF] p-4 shadow-brutal-cyan flex flex-col justify-between gap-3 relative overflow-hidden">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-[#00F0FF] text-black border-2 border-black shadow-brutal-black flex items-center justify-center shrink-0">
+                    <Trophy className="w-5 h-5 stroke-[2.5]" />
+                  </div>
+                  <div className="space-y-0.5 text-left">
+                    <div className="flex items-center gap-1.5 font-pixel text-[8px] text-[#00F0FF] uppercase tracking-wider">
+                      <span className="w-1.5 h-1.5 bg-[#00F0FF] inline-block animate-arcade-blink" />
+                      <span>CAMPEÓN FORTNITE DÚOS</span>
+                    </div>
+                    <div className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight flex items-center gap-1.5">
+                      <span>👑 WINNERS</span>
+                      <span className="text-[9px] font-pixel px-1.5 py-0.5 bg-[#00F0FF] text-black border border-black shadow-sm font-black shrink-0">
+                        21 PTS
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-cyber text-slate-300">
+                      Anthony Hurtado & Darío Castro • 11 Kills acumuladas.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={onScrollToBrackets}
+                  className="btn-arcade-press bg-black hover:bg-[#1E293B] text-[#00F0FF] border border-[#00F0FF] font-pixel text-[9px] px-3 py-1.5 uppercase font-black shadow-brutal-black cursor-pointer flex items-center justify-center gap-1.5 self-end w-full sm:w-auto"
+                >
+                  <span>VER TABLA</span>
+                  <ArrowRight className="w-3 h-3 stroke-[3]" />
+                </button>
+              </div>
+
+              {/* Card 3: Free Fire */}
               <div className="bg-[#0E1526] border-2 border-[#FFE600] p-4 shadow-brutal-yellow flex flex-col justify-between gap-3 relative overflow-hidden">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 bg-[#FFE600] text-black border-2 border-black shadow-brutal-black flex items-center justify-center shrink-0">
@@ -178,11 +238,40 @@ export default function MainEsportsHero({
                   <div className="space-y-0.5 text-left">
                     <div className="flex items-center gap-1.5 font-pixel text-[8px] text-[#FFE600] uppercase tracking-wider">
                       <span className="w-1.5 h-1.5 bg-[#FFE600] inline-block animate-arcade-blink" />
-                      <span>CAMPEÓN OFICIAL CLASH ROYALE</span>
+                      <span>CAMPEONES FREE FIRE</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-black font-display text-white uppercase tracking-tight flex items-center gap-2">
+                    <div className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight">
+                      🏆 <span className="text-[#FFE600]">LOWE</span> &bull; <span className="text-[#FFE600]">PISA CABEZAS</span>
+                    </div>
+                    <p className="text-[11px] font-cyber text-slate-300">
+                      R1: <strong>Lowe</strong> | R2: <strong>Pisa Cabezas</strong> | Ind: <strong className="text-[#FFE600]">S. Guzmán</strong>
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={onScrollToBrackets}
+                  className="btn-arcade-press bg-black hover:bg-[#1E293B] text-[#FFE600] border border-[#FFE600] font-pixel text-[9px] px-3 py-1.5 uppercase font-black shadow-brutal-black cursor-pointer flex items-center justify-center gap-1.5 self-end w-full sm:w-auto"
+                >
+                  <span>VER RESULTADOS</span>
+                  <ArrowRight className="w-3 h-3 stroke-[3]" />
+                </button>
+              </div>
+
+              {/* Card 4: Clash Royale */}
+              <div className="bg-[#0E1526] border-2 border-[#A855F7] p-4 shadow-brutal-purple flex flex-col justify-between gap-3 relative overflow-hidden">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-[#A855F7] text-white border-2 border-black shadow-brutal-black flex items-center justify-center shrink-0">
+                    <Trophy className="w-5 h-5 stroke-[2.5]" />
+                  </div>
+                  <div className="space-y-0.5 text-left">
+                    <div className="flex items-center gap-1.5 font-pixel text-[8px] text-[#A855F7] uppercase tracking-wider">
+                      <span className="w-1.5 h-1.5 bg-[#A855F7] inline-block animate-arcade-blink" />
+                      <span>CAMPEÓN CLASH ROYALE</span>
+                    </div>
+                    <div className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight flex items-center gap-1.5">
                       <span>👑 EDWIN LANDETA</span>
-                      <span className="text-[10px] font-pixel px-1.5 py-0.5 bg-[#FFE600] text-black border border-black shadow-sm font-black">
+                      <span className="text-[9px] font-pixel px-1.5 py-0.5 bg-[#A855F7] text-white border border-black shadow-sm font-black shrink-0">
                         2 - 0
                       </span>
                     </div>
@@ -194,38 +283,9 @@ export default function MainEsportsHero({
                 <button
                   type="button"
                   onClick={onScrollToBrackets}
-                  className="btn-arcade-press bg-black hover:bg-[#1E293B] text-[#FFE600] border border-[#FFE600] font-pixel text-[9px] px-3 py-1.5 uppercase font-black shadow-brutal-black cursor-pointer flex items-center justify-center gap-1.5 self-end w-full sm:w-auto"
+                  className="btn-arcade-press bg-black hover:bg-[#1E293B] text-[#A855F7] border border-[#A855F7] font-pixel text-[9px] px-3 py-1.5 uppercase font-black shadow-brutal-black cursor-pointer flex items-center justify-center gap-1.5 self-end w-full sm:w-auto"
                 >
                   <span>VER BRACKET</span>
-                  <ArrowRight className="w-3 h-3 stroke-[3]" />
-                </button>
-              </div>
-
-              {/* Card 2: Free Fire */}
-              <div className="bg-[#0E1526] border-2 border-[#00F0FF] p-4 shadow-brutal-cyan flex flex-col justify-between gap-3 relative overflow-hidden">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-[#00F0FF] text-black border-2 border-black shadow-brutal-black flex items-center justify-center shrink-0">
-                    <Trophy className="w-5 h-5 stroke-[2.5]" />
-                  </div>
-                  <div className="space-y-0.5 text-left">
-                    <div className="flex items-center gap-1.5 font-pixel text-[8px] text-[#00F0FF] uppercase tracking-wider">
-                      <span className="w-1.5 h-1.5 bg-[#00F0FF] inline-block animate-arcade-blink" />
-                      <span>CAMPEONES OFICIALES FREE FIRE</span>
-                    </div>
-                    <div className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight">
-                      🏆 <span className="text-[#FFE600]">LOWE</span> &bull; <span className="text-[#FFE600]">PISA CABEZAS</span>
-                    </div>
-                    <p className="text-[11px] font-cyber text-slate-300">
-                      R1: <strong>Lowe</strong> | R2: <strong>Pisa Cabezas</strong> | Ind: <strong className="text-[#00F0FF]">Sebastián Guzmán</strong>
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={onScrollToBrackets}
-                  className="btn-arcade-press bg-black hover:bg-[#1E293B] text-[#00F0FF] border border-[#00F0FF] font-pixel text-[9px] px-3 py-1.5 uppercase font-black shadow-brutal-black cursor-pointer flex items-center justify-center gap-1.5 self-end w-full sm:w-auto"
-                >
-                  <span>VER RESULTADOS</span>
                   <ArrowRight className="w-3 h-3 stroke-[3]" />
                 </button>
               </div>

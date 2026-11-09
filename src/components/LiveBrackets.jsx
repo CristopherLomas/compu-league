@@ -24,7 +24,7 @@ export default function LiveBrackets() {
 
   const loadData = () => {
     try {
-      const CURRENT_DATA_VERSION = 'v19_fortnite_final_champions_winners_21pts';
+      const CURRENT_DATA_VERSION = 'v20_all_tournaments_concluded_profugos_valorant_champions';
       const savedVersion = localStorage.getItem('compu_league_brackets_version');
       const savedVal = localStorage.getItem('compu_league_valorant_matches');
       const savedClash = localStorage.getItem('compu_league_clash_matches');
@@ -33,6 +33,9 @@ export default function LiveBrackets() {
       const isOutdated = 
         savedVersion !== CURRENT_DATA_VERSION ||
         !savedVal ||
+        !savedVal.includes('Profugos de la pala') ||
+        !savedVal.includes('"winner":"Profugos de la pala"') ||
+        !savedVal.includes('"scoreA":2') ||
         !savedVal.includes('VIPERX') ||
         !savedVal.includes('LOS SIN MANOS') ||
         !savedVal.includes('"bracket":"cuartos"') || !savedVal.includes('"winner":"TEAM ING"') ||
@@ -66,7 +69,7 @@ export default function LiveBrackets() {
   }, []);
 
   const tabs = [
-    { id: 'valorant', name: 'VALORANT (5v5)', icon: Shield, color: '#FF0055' },
+    { id: 'valorant', name: 'VALORANT (🏆 FINALIZADO)', icon: Shield, color: '#FF0055' },
     { id: 'fortnite', name: 'FORTNITE (🏆 FINALIZADO)', icon: Crosshair, color: '#00F0FF' },
     { id: 'free_fire', name: 'FREE FIRE (🏆 FINALIZADO)', icon: Flame, color: '#FFE600' },
     { id: 'clash_royale', name: 'CLASH ROYALE (🏆 FINALIZADO)', icon: Crown, color: '#A855F7' },
@@ -140,6 +143,70 @@ export default function LiveBrackets() {
         {/* ------------------------------------------------------------- */}
         {activeTab === 'valorant' && (
           <div className="space-y-8">
+            
+            {/* Valorant Champion Showcase Podium */}
+            <div className="border-4 border-black bg-gradient-to-r from-[#FF0055]/15 via-black to-[#FF0055]/15 p-5 sm:p-7 text-center space-y-4 shadow-brutal-pink">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#FF0055] text-white font-pixel text-xs font-black uppercase border-2 border-black">
+                <Trophy className="w-4 h-4 text-white" /> ¡GRAN CAMPEÓN OFICIAL VALORANT 5v5! 🏆
+              </div>
+              <div className="text-3xl sm:text-5xl font-black font-display text-white tracking-wide uppercase drop-shadow-[3px_3px_0px_#000]">
+                👑 <span className="text-[#FF0055]">PROFUGOS DE LA PALA</span> 👑
+              </div>
+              <p className="text-xs sm:text-sm font-cyber text-slate-200 max-w-2xl mx-auto">
+                ¡Se coronan campeones supremos de Valorant tras una victoria contundente 2-0 frente a TEAM ING en la Gran Final (Bo3)!
+              </p>
+              
+              {/* Roster del Campeón & Subcampeón */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left pt-2 max-w-3xl mx-auto">
+                {/* Campeón Card */}
+                <div className="border-2 border-[#FF0055] bg-black p-4 space-y-2 shadow-brutal-pink relative overflow-hidden">
+                  <div className="flex items-center justify-between font-pixel text-[9px] text-[#FF0055] border-b border-white/10 pb-1.5">
+                    <span>🥇 1º LUGAR // CAMPEÓN (2-0)</span>
+                    <span className="bg-[#FF0055] text-white px-1.5 py-0.5 font-black">CHAMPION</span>
+                  </div>
+                  <div className="text-lg sm:text-xl font-black font-display text-white uppercase">
+                    PROFUGOS DE LA PALA
+                  </div>
+                  <div className="text-xs font-cyber text-slate-200">
+                    Capitán: <strong className="text-white">Mateo Huera</strong> <span className="text-slate-400 font-mono text-[11px]">(БАЙЧИ#КОЗЕЛ)</span>
+                  </div>
+                  <div className="text-[11px] font-cyber text-slate-300 space-y-0.5 pt-1 border-t border-white/10">
+                    <div>• Juan Buelvas <span className="text-slate-400 font-mono text-[10px]">(BerteX 乂#PAN)</span></div>
+                    <div>• Joseph Ramírez <span className="text-slate-400 font-mono text-[10px]">(RYOU HANABI#花火02)</span></div>
+                    <div>• Anthony Huera <span className="text-slate-400 font-mono text-[10px]">(AnthonyHxe#GGZ)</span></div>
+                    <div>• Diego Escobar <span className="text-slate-400 font-mono text-[10px]">(Dieguinho#3030)</span></div>
+                  </div>
+                </div>
+
+                {/* Subcampeón Card */}
+                <div className="border-2 border-slate-400 bg-black p-4 space-y-2 shadow-brutal-black relative overflow-hidden">
+                  <div className="flex items-center justify-between font-pixel text-[9px] text-slate-400 border-b border-white/10 pb-1.5">
+                    <span>🥈 2º LUGAR // SUBCAMPEÓN</span>
+                    <span className="bg-slate-300 text-black px-1.5 py-0.5 font-black">RUNNER-UP</span>
+                  </div>
+                  <div className="text-lg sm:text-xl font-black font-display text-white uppercase">
+                    TEAM ING
+                  </div>
+                  <div className="text-xs font-cyber text-slate-200">
+                    Capitán: <strong className="text-white">Alex Pilacuan</strong> <span className="text-slate-400 font-mono text-[11px]">(AleXx #ECUA)</span>
+                  </div>
+                  <div className="text-[11px] font-cyber text-slate-300 space-y-0.5 pt-1 border-t border-white/10">
+                    <div>• Edison Godoy <span className="text-slate-400 font-mono text-[10px]">(Edy #ECU)</span></div>
+                    <div>• Kevin Diaz <span className="text-slate-400 font-mono text-[10px]">(K3ViN #7004)</span></div>
+                    <div>• Oscar Ger <span className="text-slate-400 font-mono text-[10px]">(Gero #2819)</span></div>
+                    <div>• Kevin Mejia <span className="text-slate-400 font-mono text-[10px]">(AlexanderMy #UWU)</span></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Semifinalistas */}
+              <div className="flex flex-wrap justify-center items-center gap-3 pt-1 text-xs font-cyber">
+                <div className="px-3.5 py-1.5 bg-black/90 border-2 border-slate-700 flex items-center gap-2 shadow-brutal-black">
+                  <span className="font-pixel text-[9px] text-[#00F0FF] uppercase">🥉 TOP 4 (SEMIFINALISTAS)</span>
+                  <span className="text-slate-200 font-bold">ikonikos &bull; VIPERX</span>
+                </div>
+              </div>
+            </div>
             
             {/* Single Elimination Main Bracket */}
             <div className="border-4 border-black bg-[#0B101A] p-5 sm:p-7 shadow-brutal-cyan">
