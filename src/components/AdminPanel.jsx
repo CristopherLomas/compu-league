@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   X, Lock, CheckCircle, XCircle, Eye, Phone, Copy, Check, 
   Users, DollarSign, Database, Trophy, AlertCircle, Search, Bell, 
-  FileText, Download, Printer, RefreshCw 
+  FileText, Download, Printer, RefreshCw, 
+  Send, MessageSquare, Sparkles, Award 
 } from 'lucide-react';
 import { 
   sanitizeRegistrationRecord,
@@ -19,6 +20,94 @@ import {
   saveSupabaseCredentials
 } from '../lib/storage';
 import { GAMES, BANK_INFO } from '../data/tournamentData';
+
+// ─── Ganadores Oficiales de Compu League 2026 ─────────────────────────────────
+export const OFFICIAL_WINNERS = [
+  {
+    id: 'val_profugos',
+    gameId: 'valorant',
+    gameName: 'Valorant (5v5)',
+    teamName: 'Profugos de la pala',
+    winnerTitle: 'Gran Campeón Valorant 5v5 (2 - 0 en Gran Final)',
+    captainName: 'Mateo Huera',
+    captainPhone: '0963138416',
+    captainTag: 'БАЙЧИ#КОЗЕЛ',
+    members: 'Juan Buelvas, Joseph Ramírez, Anthony Huera, Diego Escobar',
+    badgeColor: '#FF0055',
+  },
+  {
+    id: 'fort_winners',
+    gameId: 'fortnite',
+    gameName: 'Fortnite (Dúos)',
+    teamName: 'Winners',
+    winnerTitle: 'Gran Campeón Fortnite Dúos (21 Pts • 11 Kills)',
+    captainName: 'Anthony Hurtado',
+    captainPhone: '0985331735',
+    captainTag: 'Thony_jh',
+    members: 'Darío Castro (Daribootfn)',
+    badgeColor: '#00F0FF',
+  },
+  {
+    id: 'ff_lowe',
+    gameId: 'free_fire',
+    gameName: 'Free Fire (R1 Escuadras)',
+    teamName: 'LOWE',
+    winnerTitle: 'Campeón Escuadras Ronda 1 (Booyah!)',
+    captainName: 'Xavier Lema',
+    captainPhone: '0995581300',
+    captainTag: '339299831',
+    members: 'Edison (406508681), JuanPa (2677070637), Daniel (383753985)',
+    badgeColor: '#FFE600',
+  },
+  {
+    id: 'ff_pisacabezas',
+    gameId: 'free_fire',
+    gameName: 'Free Fire (R2 Escuadras)',
+    teamName: 'PISA CABEZAS',
+    winnerTitle: 'Campeón Escuadras Ronda 2 (Booyah!)',
+    captainName: 'Leonel De La Torre',
+    captainPhone: '0980713620',
+    captainTag: '693056546',
+    members: 'Marlon Guamán, Juan Morán, Sebastián Guzmán',
+    badgeColor: '#FFE600',
+  },
+  {
+    id: 'ff_solo_sebas',
+    gameId: 'free_fire',
+    gameName: 'Free Fire (Solitario)',
+    teamName: 'Sebastián Guzmán',
+    winnerTitle: 'Gran Campeón Individual Free Fire',
+    captainName: 'Sebastián Guzmán',
+    captainPhone: '0980713620',
+    captainTag: '2297093616',
+    members: 'Campeón Modo Solitario',
+    badgeColor: '#FFE600',
+  },
+  {
+    id: 'cr_edwin',
+    gameId: 'clash_royale',
+    gameName: 'Clash Royale (1v1)',
+    teamName: 'Edwin Landeta',
+    winnerTitle: 'Gran Campeón Clash Royale (2 - 0 en Gran Final)',
+    captainName: 'Edwin Landeta',
+    captainPhone: '0981960447',
+    captainTag: 'Junior#YLL8YLYQ2',
+    members: 'Titular Único',
+    badgeColor: '#A855F7',
+  },
+];
+
+const DEFAULT_CONGRATULATION_TEMPLATE = `¡Hola {nombre}! 🏆🎉 Te saluda el Staff de Compu League E-Sports 2026.
+
+¡QUEREMOS FELICITARTE! 👑
+En nombre de la Carrera de Computación, felicitamos a *{equipo}* por consagrarse como *{titulo}* en el torneo oficial de *{juego}*. 🎮🔥
+
+Demostraron un nivel extraordinario y un juego impecable a lo largo de toda la competencia. ¡Muchísimas gracias por su participación y por dejar en alto el nombre de su equipo!
+
+🎁 *Premiación y Reconocimiento Oficial:*
+En breve nos pondremos en contacto contigo para coordinar la entrega de tu premio y el reconocimiento oficial del torneo.
+
+¡Un fuerte abrazo y muchas felicitaciones, Campeón! 🏅👏`;
 
 export default function AdminPanel({ isOpen = true, onClose, isStandalone = false, onGoHome }) {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -55,6 +144,12 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
   const [selectedReceipt, setSelectedReceipt] = useState(null);
   const [copiedPhones, setCopiedPhones] = useState(false);
   const [copiedTeamId, setCopiedTeamId] = useState(null);
+
+  // Congratulations Modal States
+  const [showCongratulationsModal, setShowCongratulationsModal] = useState(false);
+  const [congratulationTemplate, setCongratulationTemplate] = useState(DEFAULT_CONGRATULATION_TEMPLATE);
+  const [copiedWinnerId, setCopiedWinnerId] = useState(null);
+  const [copiedAllWinnersPhones, setCopiedAllWinnersPhones] = useState(false);
 
   // Brackets states
   const [valorantMatches, setValorantMatches] = useState([]);
@@ -139,6 +234,114 @@ export default function AdminPanel({ isOpen = true, onClose, isStandalone = fals
 
     const updated = await updateRegistrationStatus(id, newStatus, notes);
     setRegistrations(updated);
+  };
+
+
+  // Helper to get winner phone from registrations or fallback to official roster
+  const getWinnerPhone = (winner) => {
+    const reg = registrations.find(r => {
+      const t = (r.team_name || '').toLowerCase();
+      const c = (r.captain_name || '').toLowerCase();
+      const targetTeam = winner.teamName.toLowerCase();
+      const targetCap = winner.captainName.toLowerCase();
+      return (t && t.includes(targetTeam)) || (c && c.includes(targetCap));
+    });
+    if (reg && reg.captain_whatsapp) {
+      return reg.captain_whatsapp;
+    }
+    return winner.captainPhone;
+  };
+
+  // Generate congratulation message with variable replacement
+  const getCongratulationMessage = (winner, customTemplate = null) => {
+    const template = customTemplate || congratulationTemplate;
+    return template
+      .replace(/{nombre}/g, winner.captainName)
+      .replace(/{equipo}/g, winner.teamName)
+      .replace(/{juego}/g, winner.gameName)
+      .replace(/{titulo}/g, winner.winnerTitle)
+      .replace(/{integrantes}/g, winner.members || '')
+      .replace(/{gamertag}/g, winner.captainTag || '');
+  };
+
+  // WhatsApp link generator for winners
+  const getWinnerWhatsAppUrl = (winner, customTemplate = null) => {
+    const rawPhone = getWinnerPhone(winner);
+    let clean = getCleanPhone(rawPhone);
+    if (!clean) return '';
+    if (clean.startsWith('09') && clean.length === 10) {
+      clean = '593' + clean.slice(1);
+    } else if (!clean.startsWith('593') && clean.length === 9) {
+      clean = '593' + clean;
+    }
+    const msg = getCongratulationMessage(winner, customTemplate);
+    return `https://wa.me/${clean}?text=${encodeURIComponent(msg)}`;
+  };
+
+  // Copy single winner congratulation message
+  const handleCopyWinnerMessage = (winner) => {
+    const msg = getCongratulationMessage(winner);
+    if (msg) {
+      navigator.clipboard.writeText(msg);
+      setCopiedWinnerId(winner.id);
+      setTimeout(() => setCopiedWinnerId(null), 2500);
+    }
+  };
+
+  // Copy all winners WhatsApp numbers
+  const handleCopyAllWinnersPhones = () => {
+    const phones = OFFICIAL_WINNERS.map(w => getCleanPhone(getWinnerPhone(w))).filter(Boolean);
+    const unique = [...new Set(phones)].join(', ');
+    if (unique) {
+      navigator.clipboard.writeText(unique);
+      setCopiedAllWinnersPhones(true);
+      setTimeout(() => setCopiedAllWinnersPhones(false), 2500);
+    }
+  };
+
+  // Reset template to default
+  const handleResetCongratulationTemplate = () => {
+    setCongratulationTemplate(DEFAULT_CONGRATULATION_TEMPLATE);
+  };
+
+  // Check if a registration record is an official winner
+  const isWinnerRegistration = (reg) => {
+    const t = (reg.team_name || '').toLowerCase();
+    const c = (reg.captain_name || '').toLowerCase();
+    return (
+      t.includes('profugos') ||
+      t.includes('winners') ||
+      t.includes('lowe') ||
+      t.includes('pisa') ||
+      c.includes('edwin landeta') ||
+      c.includes('mateo huera') ||
+      c.includes('xavier lema') ||
+      c.includes('leonel de la torre') ||
+      c.includes('anthony hurtado')
+    );
+  };
+
+  // WhatsApp URL generator directly from a registration row
+  const getWinnerWhatsAppUrlFromReg = (reg) => {
+    const matchedWinner = OFFICIAL_WINNERS.find(w => {
+      const t = (reg.team_name || '').toLowerCase();
+      const c = (reg.captain_name || '').toLowerCase();
+      return (t && t.includes(w.teamName.toLowerCase())) || (c && c.includes(w.captainName.toLowerCase()));
+    });
+    if (matchedWinner) {
+      return getWinnerWhatsAppUrl(matchedWinner);
+    }
+    const cleanKey = String(reg.game || 'Torneo').toUpperCase();
+    return getWinnerWhatsAppUrl({
+      id: reg.id,
+      teamName: reg.team_name || reg.captain_name,
+      captainName: reg.captain_name || 'Campeón',
+      captainPhone: reg.captain_whatsapp,
+      gameName: cleanKey,
+      winnerTitle: 'Gran Campeón Oficial',
+      captainTag: reg.captain_game_id || '',
+      members: Array.isArray(reg.members) ? reg.members.map(m => m.name).join(', ') : '',
+    });
   };
 
   // Phone utilities for WhatsApp and copy
@@ -636,6 +839,15 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
           <>
             <button
               type="button"
+              onClick={() => setShowCongratulationsModal(true)}
+              className="px-2.5 py-1.5 bg-[#FFE600] hover:bg-white text-black font-pixel text-[8px] sm:text-[9px] font-black uppercase transition cursor-pointer flex items-center gap-1.5 border border-black shadow-sm"
+              title="Enviar mensaje oficial de felicitación a los ganadores"
+            >
+              <Trophy className="w-3 h-3 stroke-[2.5]" />
+              <span>FELICITAR GANADORES</span>
+            </button>
+            <button
+              type="button"
               onClick={loadAllData}
               disabled={isLoadingData}
               className="px-2.5 py-1.5 bg-[#1B273F] hover:bg-[#28395B] border border-cyan-500/40 text-cyan-300 font-pixel text-[8px] sm:text-[9px] uppercase transition cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
@@ -889,6 +1101,16 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
 
                   {/* Action Buttons: Copy WhatsApp & Export PDF Roster */}
                   <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => setShowCongratulationsModal(true)}
+                      className="flex-1 sm:flex-initial px-3.5 py-2.5 bg-[#FFE600] hover:bg-white text-black font-black text-xs flex items-center justify-center gap-2 transition cursor-pointer border-2 border-black shadow-brutal-yellow font-pixel"
+                      title="Enviar mensaje oficial de felicitación a los campeones de cada torneo"
+                    >
+                      <Trophy className="w-4 h-4 stroke-[2.5]" />
+                      <span>Felicitar Ganadores</span>
+                    </button>
+
                     <button
                       type="button"
                       onClick={handleCopyAllPhones}
@@ -1416,7 +1638,19 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
                                 </span>
                               </td>
                               <td className="py-3 px-4 text-right">
-                                <div className="flex items-center justify-end gap-1.5">
+                                <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                                  {isWinnerRegistration(reg) && reg.captain_whatsapp && (
+                                    <a
+                                      href={getWinnerWhatsAppUrlFromReg(reg)}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      title={`Enviar mensaje de felicitación de Campeón a ${reg.captain_name}`}
+                                      className="px-2 py-1 rounded-none bg-[#FFE600] hover:bg-white text-black border border-black font-mono text-[10px] font-black flex items-center gap-1 transition shadow-sm"
+                                    >
+                                      <Trophy className="w-3 h-3 text-black stroke-[2.5]" />
+                                      <span>Felicitar</span>
+                                    </a>
+                                  )}
                                   {reg.captain_whatsapp && (
                                     reg.status === 'payment_pending' ? (
                                       <a
@@ -1544,6 +1778,31 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
             {/* ----------------------------------------------------------- */}
             {activeAdminTab === 'brackets' && (
               <div className="space-y-8">
+                {/* Banner de Torneo Concluido y Felicitación a Ganadores */}
+                <div className="bg-gradient-to-r from-yellow-500/15 via-black to-yellow-500/15 border-2 border-[#FFE600] p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-brutal-yellow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#FFE600] text-black border-2 border-black flex items-center justify-center shrink-0 shadow-brutal-black">
+                      <Trophy className="w-5 h-5 stroke-[2.5]" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-black uppercase text-white tracking-wide flex items-center gap-2 font-display">
+                        <span>¡Torneos Concluidos! 4 Campeones Coronados</span>
+                        <span className="text-[8px] font-pixel px-1.5 py-0.5 bg-[#FFE600] text-black font-black uppercase">OFICIAL</span>
+                      </h4>
+                      <p className="text-xs text-slate-300 font-cyber">
+                        Profugos de la pala (Val) • Winners (Fort) • Lowe & Pisa Cabezas (FF) • Edwin Landeta (CR).
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCongratulationsModal(true)}
+                    className="btn-arcade-press px-4 py-2.5 bg-[#FFE600] hover:bg-white text-black font-pixel text-[10px] font-black uppercase border-2 border-black shadow-brutal-black flex items-center gap-2 cursor-pointer shrink-0"
+                  >
+                    <Trophy className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>[ ENVIAR FELICITACIÓN A GANADORES ]</span>
+                  </button>
+                </div>
                 
                 {/* Valorant Match Editor */}
                 <div className="space-y-4">
@@ -1774,6 +2033,206 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
           </div>
   );
 
+
+  const congratulationsModal = showCongratulationsModal && (
+    <div className="fixed inset-0 z-[120] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
+      <div className="relative max-w-4xl w-full bg-[#0D1322] border-4 border-black rounded-none shadow-brutal-yellow flex flex-col max-h-[92vh] font-sans text-slate-100 overflow-hidden">
+        
+        {/* Modal Header */}
+        <div className="px-5 py-4 bg-[#141C30] border-b-2 border-black flex items-center justify-between shrink-0 gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#FFE600] text-black border-2 border-black flex items-center justify-center shadow-brutal-black shrink-0">
+              <Trophy className="w-5 h-5 stroke-[2.5]" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-black uppercase text-white tracking-wider flex items-center gap-2 font-display">
+                FELICITAR A LOS GANADORES
+                <span className="text-[8px] font-pixel px-1.5 py-0.5 bg-[#FFE600] text-black font-black uppercase">
+                  COMPU LEAGUE 2026
+                </span>
+              </h3>
+              <p className="text-[11px] text-slate-300 font-cyber">
+                Envía un mensaje oficial de reconocimiento y felicitación por WhatsApp a cada campeón o equipo ganador.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowCongratulationsModal(false)}
+            className="p-1.5 bg-black border-2 border-white/20 text-slate-300 hover:text-white hover:border-[#FFE600] transition cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Modal Scrollable Body */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+
+          {/* Quick Notice Banner */}
+          <div className="p-3.5 bg-gradient-to-r from-yellow-500/10 via-black to-yellow-500/10 border-2 border-[#FFE600]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-brutal-black">
+            <div className="flex items-center gap-2.5">
+              <Sparkles className="w-5 h-5 text-[#FFE600] shrink-0" />
+              <div className="text-xs font-cyber text-slate-200">
+                <span className="font-bold text-[#FFE600]">¡Torneo Concluido con Éxito!</span> Puedes personalizar la plantilla de mensaje a continuación; las etiquetas se reemplazan automáticamente para cada campeón.
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyAllWinnersPhones}
+              className="btn-arcade-press text-[10px] font-pixel py-1.5 px-3 bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 font-bold uppercase tracking-wider shadow-sm shrink-0 cursor-pointer flex items-center gap-1.5"
+            >
+              {copiedAllWinnersPhones ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedAllWinnersPhones ? '¡Teléfonos Copiados!' : 'Copiar Todos los Números'}</span>
+            </button>
+          </div>
+
+          {/* Message Template Editor */}
+          <div className="bg-[#080C16] border-2 border-black p-4 space-y-2.5 shadow-brutal-black">
+            <div className="flex items-center justify-between">
+              <label className="font-pixel text-[10px] text-[#FFE600] uppercase font-bold flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>PLANTILLA DEL MENSAJE (EDITABLE):</span>
+              </label>
+              <button
+                type="button"
+                onClick={handleResetCongratulationTemplate}
+                className="text-[9px] font-pixel text-slate-400 hover:text-cyan-400 underline transition cursor-pointer"
+              >
+                [ Reestablecer Plantilla ]
+              </button>
+            </div>
+            <textarea
+              rows={5}
+              value={congratulationTemplate}
+              onChange={(e) => setCongratulationTemplate(e.target.value)}
+              className="w-full p-3 bg-black border-2 border-white/20 text-xs text-slate-100 font-mono leading-relaxed focus:border-[#FFE600] focus:outline-none"
+              placeholder="Escribe el mensaje de felicitación..."
+            />
+            <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-mono text-slate-400">
+              <span className="text-slate-500">Variables dinámicas:</span>
+              <span className="bg-slate-800 text-cyan-300 px-1 py-0.5 border border-cyan-500/30 font-bold">{'{nombre}'}</span>
+              <span className="bg-slate-800 text-cyan-300 px-1 py-0.5 border border-cyan-500/30 font-bold">{'{equipo}'}</span>
+              <span className="bg-slate-800 text-cyan-300 px-1 py-0.5 border border-cyan-500/30 font-bold">{'{juego}'}</span>
+              <span className="bg-slate-800 text-cyan-300 px-1 py-0.5 border border-cyan-500/30 font-bold">{'{titulo}'}</span>
+            </div>
+          </div>
+
+          {/* Champions Grid */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <span className="font-pixel text-[11px] text-white font-bold uppercase tracking-wider flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-[#FFE600]" />
+                <span>CAMPEONES OFICIALES POR JUEGO (6 CATEGORÍAS)</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-cyber">1 Clic para enviar a WhatsApp</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {OFFICIAL_WINNERS.map((winner) => {
+                const phone = getWinnerPhone(winner);
+                const waUrl = getWinnerWhatsAppUrl(winner);
+                const isCopied = copiedWinnerId === winner.id;
+
+                return (
+                  <div
+                    key={winner.id}
+                    className="p-4 bg-black border-2 space-y-3 shadow-brutal-black relative overflow-hidden"
+                    style={{ borderColor: winner.badgeColor || '#FFE600' }}
+                  >
+                    {/* Top Row: Game Badge + Title */}
+                    <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
+                      <span
+                        className="font-pixel text-[8px] sm:text-[9px] px-2 py-0.5 text-black font-black uppercase"
+                        style={{ backgroundColor: winner.badgeColor || '#FFE600' }}
+                      >
+                        {winner.gameName}
+                      </span>
+                      <span className="font-pixel text-[9px] text-[#FFE600] font-bold">
+                        🏆 GANADOR
+                      </span>
+                    </div>
+
+                    {/* Team & Captain Details */}
+                    <div>
+                      <div className="text-base sm:text-lg font-black font-display text-white uppercase tracking-tight">
+                        {winner.teamName}
+                      </div>
+                      <div className="text-xs font-cyber text-slate-300 space-y-0.5 mt-1">
+                        <div>
+                          <span className="text-slate-400">Capitán / Jugador: </span>
+                          <strong className="text-white">{winner.captainName}</strong>
+                          {winner.captainTag && (
+                            <span className="text-slate-400 font-mono text-[10px] ml-1">({winner.captainTag})</span>
+                          )}
+                        </div>
+                        {winner.members && (
+                          <div className="text-[11px] text-slate-400 truncate">
+                            <span className="text-slate-500">Roster: </span>
+                            {winner.members}
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1.5 text-[11px] pt-1">
+                          <span className="text-slate-400">WhatsApp:</span>
+                          <strong className="text-emerald-400 font-mono">{phone || 'Sin número'}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions: Send WhatsApp & Copy Text */}
+                    <div className="grid grid-cols-2 gap-2 pt-1 border-t border-white/10">
+                      {phone ? (
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-arcade-press py-2 px-3 bg-emerald-500 hover:bg-emerald-400 text-black border border-black font-pixel text-[9px] font-black uppercase flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm"
+                          title={`Enviar felicitación por WhatsApp a ${winner.captainName}`}
+                        >
+                          <Send className="w-3 h-3 text-black" />
+                          <span>ENVIAR WA</span>
+                        </a>
+                      ) : (
+                        <span className="py-2 text-center text-slate-500 text-[10px] font-mono border border-white/10 bg-slate-900">
+                          Sin teléfono
+                        </span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => handleCopyWinnerMessage(winner)}
+                        className="btn-arcade-press py-2 px-3 bg-[#111927] hover:bg-[#1E2B42] text-slate-200 border border-slate-700 font-pixel text-[9px] font-bold uppercase flex items-center justify-center gap-1.5 transition cursor-pointer"
+                        title="Copiar texto del mensaje para enviar manualmente"
+                      >
+                        {isCopied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
+                        <span>{isCopied ? '¡COPIADO!' : 'COPIAR TXT'}</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Modal Footer */}
+        <div className="px-5 py-3.5 bg-[#141C30] border-t-2 border-black flex items-center justify-between shrink-0 gap-3">
+          <div className="text-[10px] text-slate-400 font-cyber hidden sm:block">
+            ★ Mensajes automáticos con enlace <code className="text-cyan-400">wa.me</code> para WhatsApp Web y Móvil.
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowCongratulationsModal(false)}
+            className="btn-arcade-press px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-pixel text-[10px] font-bold uppercase border border-slate-600 cursor-pointer ml-auto"
+          >
+            CERRAR
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+
   const receiptModal = selectedReceipt && (
     <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-4">
       <div className="relative max-w-lg w-full bg-slate-900 border border-cyan-500/40 rounded-none p-4 shadow-2xl flex flex-col max-h-[92vh] font-sans">
@@ -1824,6 +2283,7 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
         {headerBar}
         {!isAuthenticated ? loginScreen : dashboardContent}
         {receiptModal}
+        {congratulationsModal}
       </div>
     );
   }
@@ -1835,6 +2295,7 @@ Fuiste registrado en el equipo *${teamName}* para competir en *${gameName}*. El 
         {!isAuthenticated ? loginScreen : dashboardContent}
       </div>
       {receiptModal}
+      {congratulationsModal}
     </div>
   );
 }
